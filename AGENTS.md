@@ -28,7 +28,7 @@ TESTS: Test behavior only. Assert and verify. Mock external dependencies with na
 - Tests must be F.I.R.S.T: fast, independent, repeatable, self-validating, timely.
 - Workflow: red → green → refactor → check regressions.
 
-FORMAT: Use the language default formatter (`cargo fmt`, `gofmt`, `prettier`, `black`, `rubocop -A`). Don't discuss style beyond that.
+FORMAT: Use the language default formatter (`prettier`, `ruff format`, `sqlfluff`). Don't discuss style beyond that.
 
 LOGGING: Structured JSON when logging for debugging / observability. Plain text only for user-facing CLI output.
 
