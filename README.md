@@ -15,6 +15,7 @@ pi install npm:pi-extension-manager
 pi install npm:pi-mcp-adapter
 pi install npm:pi-mermaid
 pi install npm:pi-smart-fetch
+pi install npm:pi-powerline-footer
 
 # Install skills
 npx skills add upstash/context7
@@ -64,6 +65,7 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 | `pi-mcp-adapter` | Token-efficient MCP proxy. Lazy servers, cached metadata. | `pi install npm:pi-mcp-adapter` |
 | `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
+| `pi-powerline-footer` | Powerline-style status bar with git, context, tokens, vibes, and bash mode. | `pi install npm:pi-powerline-footer` |
 
 ## Context & Rules
 
