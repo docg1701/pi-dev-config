@@ -4,17 +4,33 @@ GIT: Short commit/tag/release messages. Branch for features and fixes. Ask befor
 
 SECURITY: No hardcoded secrets. Keep .gitignore current.
 
-DEPENDENCIES: Install, configure, and update dependencies before dev, run, or refactor.
+DEPENDENCIES: Install, configure, and update dependencies before dev, run, or refactor. Inject through constructor/parameter, not global/import. Wrap third-party libs behind a thin interface owned by this project.
 
-PRINCIPLES: KISS, DRY, YAGNI, TDA.
+PRINCIPLES: KISS, DRY, YAGNI, TDA. One thing per function, one responsibility per module (SRP).
 
-CODE: Native English. UI and user-facing docs may use another language if specified. Functions ≤50 lines. Files ≤700 lines.
+CODE: Native English. UI and user-facing docs may use another language if specified.
+- Functions: 4–20 lines. Split if longer.
+- Files: under 500 lines. Split by responsibility.
+- Names: specific and unique. Avoid `data`, `handler`, `Manager`. Prefer names that return <5 grep hits in the codebase.
+- Types: explicit. No `any`, no `Dict`, no untyped functions.
+- No code duplication. Extract shared logic into a function/module.
+- Early returns over nested ifs. Max 2 levels of indentation.
+- Exception messages must include the offending value and expected shape.
+- Follow the framework's convention (Rails, Django, Next.js, etc.). Prefer small focused modules over god files. Predictable paths: controller/model/view, src/lib/test, etc.
 
-COMMENTS: Guide senior developers only. No TODOs or noise.
+COMMENTS: Guide senior developers only. Keep your own comments on refactor — they carry intent and provenance. Write WHY, not WHAT. No TODOs or noise. Docstrings on public functions: intent + one usage example. Reference issue numbers / commit SHAs when a line exists because of a specific bug or upstream constraint.
 
 DOCUMENTATION: Brief, precise, simple Markdown.
 
-TESTS: Test behavior only. Assert and verify. Mock external dependencies only. Never mock internal logic. Target 80% testable-logic coverage. Workflow: red → green → refactor → check regressions.
+TESTS: Test behavior only. Assert and verify. Mock external dependencies with named fake classes, not inline stubs. Never mock internal logic. Target 80% testable-logic coverage.
+- Tests run with a single command.
+- Every new function gets a test. Bug fixes get a regression test.
+- Tests must be F.I.R.S.T: fast, independent, repeatable, self-validating, timely.
+- Workflow: red → green → refactor → check regressions.
+
+FORMAT: Use the language default formatter (`cargo fmt`, `gofmt`, `prettier`, `black`, `rubocop -A`). Don't discuss style beyond that.
+
+LOGGING: Structured JSON when logging for debugging / observability. Plain text only for user-facing CLI output.
 
 RESEARCH: context7 for library docs. Web search for general queries.
 
