@@ -1,0 +1,35 @@
+Context Files
+Pi loads AGENTS.md (or CLAUDE.md) at startup from:
+~/.pi/agent/AGENTS.md (global)
+Parent directories (walking up from cwd)
+Current directory
+Use for project instructions, conventions, common commands. All matching files are concatenated.
+Disable context file loading with --no-context-files (or -nc).
+System Prompt
+Replace the default system prompt with .pi/SYSTEM.md (project) or ~/.pi/agent/SYSTEM.md (global). Append without replacing via APPEND_SYSTEM.md.
+
+---
+
+FILESYSTEM: usar o maximo possivel o repositorio de trabalho. Arquivos tenporarios sao permitidos, basta fazer a gestão adequada e manter organizado. Leia o que for preciso em qualquer parte do filesystem, mas voce só pode alterar o repositorio de trabalho.
+
+GIT: seja breve na descrição dos commits, tags e releases. Use um branch para desenvolver features e correções. Peça autorização para fazer merge no main/master.
+
+SEGURANÇA: Never hardcode credentials, tokens, or secrets. Crie e mantenha o .gitignore para evitar que conteúdo sensível ou inadequado seja commitado.
+
+DEPENDÊNCIAS: instale, comfigure e atualize todas as depências que o projeto necessita antes do desenvolvimento, execução ou refactor.
+
+PRINCÍPIOS: KISS (keep it simple stupid), DRY (don't repeat yourself), YAGNI (you ain't gonna need it), TDA (tell don't ask).
+
+CÓDIGO: sempre ingles nativo. Apenas UI e documentação direcionada ao usuário final pode ser em outro idioma, se especificado. Funcões até 50 linhas, arquivos até 700 linhas.
+
+COMENTÁRIOS: escreva apenas o necessário para guiar um developer senior. Não faça anotações passageiras ou comentários diversos no código e na documentação.
+
+DOCUMENTAÇÃO: documente o que é importante, seja breve e objetivo. A documentação deve ter markdown simples e deve ser sempre adequada para humanos e LLMs.
+
+TESTES: apenas o estritamente necessário para manter a sanidade do código e guiar o desenvolvimento. Test with assertions and verify behaviour. Use mocks apenas para dependências externas e só se absolutamente necessário. Coverage de 80% do que é válido testar e não de linhas de código. Write failing test, fix, verify, check no regressions.
+
+PESQUISA: use context7 para buscar documentação atualizada. Para todo o resto e quando context7 for insuficiente, use websearch.
+
+CONHECIMENTO: seu conhecimento é desatualizado e insuficiente para executar tarefas de programação, refactor, documentação e devops. Verifique a data de hoje. Verifique a ultima versão que você conhece, verifique a versão utilizada no trabalho, há diferença significativa? leia a documentação. Antes de iniciar qualquer tarefa, se a sua certeza de sucesso em sintaxe, dependências, padrões etc. for < 85%: leia a documentação.
+
+
