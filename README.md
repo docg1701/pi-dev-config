@@ -20,6 +20,7 @@ pi install npm:pi-mcp-adapter
 pi install npm:pi-mermaid
 pi install npm:pi-smart-fetch
 pi install npm:pi-powerline-footer
+pi install npm:@eko24ive/pi-ask
 
 # Install skills
 npx skills add upstash/context7
@@ -27,6 +28,9 @@ npx skills add 199-biotechnologies/claude-deep-research-skill
 
 # Symlink AGENTS.md for global context
 ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
+
+# Copy models.json for custom model providers (copied, not symlinked)
+cp ~/.pi/agent/config/models.json ~/.pi/agent/models.json
 ```
 
 ## Skills
@@ -38,6 +42,7 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 | `find-docs` | Library docs via Context7 CLI. Prefer over web search. | `npx skills add upstash/context7` |
 | `deep-research` | 8-phase citation-backed research. Quick/standard/deep/ultradeep. | `npx skills add 199-biotechnologies/claude-deep-research-skill` |
 | `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add find-skills` |
+| `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
 ### nicobailon Extensions
 
@@ -69,6 +74,7 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 | `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-powerline-footer` | Powerline-style status bar with git, context, tokens, vibes, and bash mode. | `pi install npm:pi-powerline-footer` |
+| `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 
 ## Themes
 
@@ -86,6 +92,24 @@ Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
 
 Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
 
+## Custom Models
+
+Custom providers and models are configured via `models.json`. This repository includes:
+
+- **OpenCode Go** — Low-cost subscription with reliable access to open coding models.
+  - `deepseek-v4-pro` — High-quality reasoning model
+  - `deepseek-v4-flash` — Fast reasoning model
+
+Set your API key as an environment variable:
+
+```bash
+export OPENCODE_GO_API_KEY="your-opencode-go-api-key"
+```
+
+Or use any supported value resolution format (shell command, env var, literal) as documented in the [Pi models configuration docs](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/models.md).
+
+Models appear in `/model` or `--list-models` after symlinking `models.json`.
+
 ## Context & Rules
 
 `AGENTS.md` defines the project-level context loaded by Pi at startup. Place it in:
@@ -98,6 +122,7 @@ Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanaga
 ```
 pi-dev-config/
 ├── AGENTS.md          # Global agent rules and conventions
+├── models.json        # Custom model providers (OpenCode Go, Ollama, etc.)
 ├── README.md          # This file
 ```
 
