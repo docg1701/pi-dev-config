@@ -67,6 +67,22 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-powerline-footer` | Powerline-style status bar with git, context, tokens, vibes, and bash mode. | `pi install npm:pi-powerline-footer` |
 
+## Themes
+
+| Name | Description | Install |
+|------|-------------|---------|
+| `@victor-software-house/pi-curated-themes` | 65 curated dark terminal themes adapted from iTerm2-Color-Schemes to pi's 51-token model. Semantic variants with guaranteed hue separation. | `pi install npm:@victor-software-house/pi-curated-themes` |
+
+Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
+
+```json
+{
+  "theme": "catppuccin-mocha"
+}
+```
+
+Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
+
 ## Context & Rules
 
 `AGENTS.md` defines the project-level context loaded by Pi at startup. Place it in:
