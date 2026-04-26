@@ -31,6 +31,9 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 
 # Copy models.json for custom model providers (copied, not symlinked)
 cp ~/.pi/agent/config/models.json ~/.pi/agent/models.json
+
+# Copy settings.json for Pi settings (copied, not symlinked)
+cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 ```
 
 ## Skills
@@ -123,6 +126,7 @@ Models appear in `/model` or `--list-models` after symlinking `models.json`.
 pi-dev-config/
 ├── AGENTS.md          # Global agent rules and conventions
 ├── models.json        # Custom model providers (OpenCode Go, Ollama, etc.)
+├── settings.json      # Pi settings: theme, default provider/model, packages, subagents
 ├── README.md          # This file
 ```
 

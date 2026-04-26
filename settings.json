@@ -1,0 +1,47 @@
+{
+  "packages": [
+    "npm:pi-mermaid",
+    "npm:pi-agent-browser-native",
+    "npm:pi-extension-manager",
+    "npm:pi-mcp-adapter",
+    "npm:pi-smart-fetch",
+    "npm:pi-powerline-footer",
+    "npm:@victor-software-house/pi-curated-themes",
+    "npm:pi-review-loop",
+    "npm:pi-interview",
+    "npm:pi-subagents",
+    "npm:pi-prompt-template-model",
+    "npm:pi-annotate",
+    "npm:@eko24ive/pi-ask"
+  ],
+  "lastChangelogVersion": "0.70.2",
+  "theme": "brogrammer",
+  "powerline": "default",
+  "transport": "sse",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultThinkingLevel": "high",
+  "quietStartup": true,
+  "enabledModels": [
+    "opencode-go/kimi-k2.6",
+    "opencode-go/qwen3.6-plus",
+    "opencode-go/glm-5.1",
+    "opencode-go/mimo-v2.5-pro",
+    "opencode-go/minimax-m2.7",
+    "opencode-go/deepseek-v4-pro",
+    "opencode-go/deepseek-v4-flash"
+  ],
+  "workingVibeModel": "opencode-go/deepseek-v4-flash",
+  "subagents": {
+    "agentOverrides": {
+      "scout": { "model": "opencode-go/deepseek-v4-flash" },
+      "planner": { "model": "opencode-go/deepseek-v4-pro" },
+      "worker": { "model": "opencode-go/deepseek-v4-pro" },
+      "reviewer": { "model": "opencode-go/kimi-k2.6" },
+      "oracle": { "model": "opencode-go/deepseek-v4-pro" },
+      "oracle-executor": { "model": "opencode-go/deepseek-v4-pro" },
+      "context-builder": { "model": "opencode-go/deepseek-v4-pro" },
+      "researcher": { "model": "opencode-go/deepseek-v4-pro" }
+    }
+  }
+}
