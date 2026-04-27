@@ -230,6 +230,19 @@ Custom providers and models are configured via `models.json`. This repository in
   - `deepseek-v4-pro` — High-quality reasoning model
   - `deepseek-v4-flash` — Fast reasoning model
 
+### Why a custom `models.json` is needed
+
+DeepSeek V4 models use a non-standard thinking/reasoning token format that differs from the default OpenAI-style API expectations. Without the correct `compat` settings, the API returns **HTTP 400** errors on every request.
+
+Two compatibility flags in `models.json` fix this:
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| `thinkingFormat` | `"deepseek"` | Tells Pi to format reasoning tokens in DeepSeek's native format (`reasoning_content`) instead of the OpenAI default |
+| `requiresReasoningContentOnAssistantMessages` | `true` | DeepSeek's API rejects assistant messages that lack `reasoning_content` — this flag ensures every assistant message includes it |
+
+These settings live under `providers.opencode-go.compat` and apply to all models served through the OpenCode Go endpoint.
+
 Set your API key as an environment variable:
 
 ```bash
