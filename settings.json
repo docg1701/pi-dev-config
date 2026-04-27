@@ -31,7 +31,7 @@
     "opencode-go/deepseek-v4-pro",
     "opencode-go/deepseek-v4-flash"
   ],
-  "workingVibe": "star trek",
+  "workingVibe": "startrek",
   "workingVibeMode": "file",
   "workingVibeModel": "opencode-go/deepseek-v4-flash",
   "subagents": {

@@ -99,13 +99,13 @@ Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
 
 Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
 
-## Working Vibes (Star Trek)
+## Working Vibes
 
 This repo includes **four** pre-generated vibe themes:
 
 | Theme | File | Phrases | Sabor |
 |-------|------|---------|-------|
-| `star trek` | `vibes/star-trek.txt` | 99 | Engaging warp drive, scanning for lifeforms… |
+| `startrek` | `vibes/startrek.txt` | 99 | Engaging warp drive, scanning for lifeforms… |
 | `klingon` | `vibes/klingon.txt` | 26 | Qapla'! bortaS bIr jablu'DI'… (com tradução) |
 | `standup` | `vibes/standup.txt` | 32 | Testing the mic… tough crowd today… |
 | `tiozao` | `vibes/tiozao.txt` | 43 | Aperta o play Juvenal… é pavê ou pacumê… |
@@ -125,7 +125,7 @@ Both `settings.json` and `settings-deepseek.json` are already configured:
 
 ```json
 {
-  "workingVibe": "star trek",
+  "workingVibe": "startrek",
   "workingVibeMode": "file",
   "workingVibeModel": "opencode-go/deepseek-v4-flash"
 }
@@ -137,26 +137,26 @@ After copying a settings file, reload pi (`/reload`). To verify:
 /vibe
 ```
 
-Should show: `Vibe: star trek | Mode: file | Model: opencode-go/deepseek-v4-flash | File: 99 vibes`
+Should show: `Vibe: startrek | Mode: file | Model: opencode-go/deepseek-v4-flash | File: 99 vibes`
 
 ### File mode vs generate mode
 
 | Mode | How it works | Latency | Cost |
 |------|-------------|---------|------|
-| `file` | Reads from `vibes/star-trek.txt` (99 pre-generated phrases) | Instant | Zero |
+| `file` | Reads from `vibes/startrek.txt` (99 pre-generated phrases) | Instant | Zero |
 | `generate` | Calls the LLM on-demand for each message | ~1-3s | Per API call |
 
 This repo uses **file mode** — vibes are loaded once at startup and cycled through with seeded shuffle, avoiding repetition.
 
 ### Multi-word theme bug
 
-The `/vibe generate "star trek" 200` command fails for themes with spaces due to whitespace-split argument parsing in the extension. Workarounds:
+The `/vibe generate "star trek"` command (with spaces) fails due to whitespace-split argument parsing in the extension. Single-word themes like `startrek` avoid this. Workarounds:
 
-- **Generate via settings.json:** Set `workingVibeMode` to `generate`, set `workingVibe` to `"star trek"`, and let on-demand generation populate the first few vibes.
+- **Use single-word slugs:** Rename the theme to a single word (e.g. `startrek` instead of `star trek`), then `/vibe generate startrek 200` works normally.
 - **Manual file:** Write vibe phrases to `~/.pi/agent/vibes/<theme-slug>.txt` (one per line, ending in `...`), then switch to file mode.
 - **Generate from templates:** Use `/vibe generate <theme> [count]` (without `"` characters in the theme) to produce the file, then rename it to match your multi-word theme slug.
 
-This repo includes a working `vibes/star-trek.txt` so you don't need to work around the bug.
+This repo includes a pre-generated `vibes/startrek.txt` so you don't need to work around the bug.
 
 ### Switching themes
 
@@ -164,7 +164,7 @@ This repo includes a working `vibes/star-trek.txt` so you don't need to work aro
 /vibe klingon      # Qapla'! — Klingon with translations
 /vibe standup      # Tough crowd today…
 /vibe tiozao       # Aperta o play, Juvenal…
-/vibe star trek    # Back to Starfleet
+/vibe startrek     # Back to Starfleet
 /vibe off          # Disable vibes
 ```
 
@@ -252,7 +252,7 @@ pi-dev-config/
 ├── settings.json              # Variant A: subagents all use Kimi K2.6
 ├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
 ├── vibes/
-│   ├── star-trek.txt          # Star Trek: 99 phrases
+│   ├── startrek.txt           # Startrek: 99 phrases
 │   ├── klingon.txt            # Klingon + translations: 26 phrases
 │   ├── standup.txt            # Standup comedy: 32 phrases
 │   └── tiozao.txt             # Tiozão jokes: 43 phrases
