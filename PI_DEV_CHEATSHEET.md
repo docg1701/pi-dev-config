@@ -33,6 +33,28 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 ## O Fluxo Principal
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e0e7ff','primaryTextColor': '#1e293b','primaryBorderColor': '#6366f1','lineColor': '#94a3b8','tertiaryColor': '#f1f5f9'}}}%%
+flowchart LR
+    CB["context-builder"] --> CTX["context.md<br/>meta-prompt.md"]
+    RS["researcher"] --> RES["research.md"]
+    SC["scout"] --> SCT["scout.md"]
+
+    CTX --> BRIEF["brief.md<br/>(consolidação)"]
+    RES --> BRIEF
+    SCT --> BRIEF
+
+    BRIEF --> PL["planner"]
+    PL --> PLAN["plan.md"]
+
+    PLAN --> RPL{{"/review-plan"}}
+    RPL -- "aprovado" --> WK["worker"]
+
+    WK --> RST{{"/review-start"}}
+    RST -- "aprovado" --> FIM["🏁"]
+```
+
+<!-- backup sem theme:
+```mermaid
 flowchart TD
     CB["context-builder"] --> CTX["context.md<br>meta-prompt.md"]
     RS["researcher"] --> RES["research.md"]
@@ -51,6 +73,7 @@ flowchart TD
     WK --> RST{{"/review-start"}}
     RST -- "aprovado" --> FIM["pronto"]
 ```
+-->
 
 > Todos os arquivos em `docs/` por convenção. O oracle (opcional) é intercalado
 > entre planner e `/review-plan` quando há decisões de alto risco — veja a seção Oracle.
