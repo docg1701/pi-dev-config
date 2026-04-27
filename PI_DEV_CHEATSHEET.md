@@ -33,16 +33,16 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 ## O Fluxo Principal
 
 ```
-Phase 1: Contexto
+Fase 1: Contexto
   context-builder ──> context.md ──┐
   researcher ──────> research.md ──┼──> brief.md
   scout ───────────> scout.md ────┘    (consolidação)
 
-Phase 2: Planejamento
+Fase 2: Planejamento
   brief.md ──> planner ──> plan.md ──> /review-plan
 
-Phase 3: Execução
-  plan ──> worker ──> /review-start ──> pronto
+Fase 3: Execução
+  plan.md ──> worker ──> /review-start ──> pronto
 ```
 
 > `/review-plan` e `/review-start` são loops: corrigem e repetem até "No issues found".
