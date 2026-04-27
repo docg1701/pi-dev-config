@@ -34,32 +34,28 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ```mermaid
 flowchart TD
-    CB["🔍 context-builder"] --> CTX["docs/context.md<br>+ meta-prompt.md"]
-    RS["🌐 researcher"] --> RES["docs/research.md"]
-    SC["🕵️ scout"] --> SCT["docs/scout.md"]
+    CB["context-builder"] --> CTX["context.md<br>meta-prompt.md"]
+    RS["researcher"] --> RES["research.md"]
+    SC["scout"] --> SCT["scout.md"]
 
-    CTX --> BRIEF["docs/brief.md ✎"]
+    CTX --> BRIEF["brief.md<br>(consolidação manual)"]
     RES --> BRIEF
     SCT --> BRIEF
 
-    BRIEF --> PL["📋 planner"]
-    PL --> PLAN["docs/plan.md"]
+    BRIEF --> PL["planner"]
+    PL --> PLAN["plan.md"]
 
-    PLAN --> ORA["🔮 oracle<br>(se arriscado)"]
-    ORA --> RPL{"/review-plan"}
-    PLAN --> RPL
-    RPL -->|"✅ No issues"| WK["🔧 worker"]
-    RPL -->|"🔁 Fixed N issues"| RPL
+    PLAN --> RPL{{"/review-plan"}}
+    RPL -- "corrige e repete" --> RPL
+    RPL -- "aprovado" --> WK["worker"]
 
-    WK --> RST{"/review-start"}
-    RST -->|"🔁 Fixed N issues"| RST
-    RST -->|"✅ No issues"| MAIS{"Mais fases<br>no plano?"}
-    MAIS -->|"sim, próxima fase"| WK
-    MAIS -->|"não"| FIM["🏁 pronto"]
+    WK --> RST{{"/review-start"}}
+    RST -- "corrige e repete" --> RST
+    RST -- "aprovado" --> FIM["pronto"]
 ```
 
-> `✎` = etapa manual de consolidação (não é output de agente).
-> Demais arquivos são outputs padrão dos agentes, redirecionados para `docs/`.
+> Todos os arquivos em `docs/` por convenção. O oracle (opcional) é intercalado
+> entre planner e `/review-plan` quando há decisões de alto risco — veja a seção Oracle.
 
 ### Passo a passo
 
@@ -107,8 +103,8 @@ Peça ao agente principal juntar tudo em `docs/brief.md`:
 "Use o planner para gerar um plano de implementação a partir de docs/brief.md."
 ```
 
-> Output padrão: `plan.md`. O planner lê `context.md` automaticamente; para usar
-> outro arquivo, indique no prompt ou use `reads=docs/brief.md`.
+> Output padrão: `plan.md`. O planner tem `defaultReads: context.md` — como
+> redirecionamos para `docs/`, use `reads=docs/brief.md` ou indique no prompt.
 
 **6. Revisão do plano**
 
