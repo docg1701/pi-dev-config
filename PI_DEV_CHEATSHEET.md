@@ -45,7 +45,9 @@ flowchart TD
     BRIEF --> PL["📋 planner"]
     PL --> PLAN["docs/plan.md"]
 
-    PLAN --> RPL{"/review-plan"}
+    PLAN --> ORA["🔮 oracle<br>(se arriscado)"]
+    ORA --> RPL{"/review-plan"}
+    PLAN --> RPL
     RPL -->|"✅ No issues"| WK["🔧 worker"]
     RPL -->|"🔁 Fixed N issues"| RPL
 
@@ -138,7 +140,7 @@ Se o plano envolver decisões arriscadas, intercale o oracle:
 O loop revisa, corrige, repete até "No issues found." Para foco específico:
 
 ```
-"/review-start foco em tratamento de erros e edge cases"
+"/review-start foco tratamento de erros e edge cases"
 ```
 
 **9. Repita worker → review até esgotar todas as fases do plano.**
@@ -156,7 +158,7 @@ O loop revisa, corrige, repete até "No issues found." Para foco específico:
 ```
 /review-start              → revisa código
 /review-plan               → revisa plano/especificação
-/review-start foco em X    → revisa com instrução extra
+/review-start foco X    → revisa com instrução extra
 /review-fresh on           → cada iteração vê o código com "olhos frescos"
 /review-exit               → sai manualmente
 /review-max 5              → limita a 5 iterações
@@ -217,7 +219,7 @@ O oracle **não implementa nada**. Ele é um revisor consultivo que herda o cont
 
 O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recomendação, riscos e um **suggested execution prompt** — que você passa para o worker se concordar.
 
-**"Oracle-executer" não existe como agente separado.** É o padrão: oracle → aprovação → worker.
+**`oracle-executor` não existe mais como agente separado.** É o padrão: oracle → aprovação → worker.
 
 ---
 
@@ -247,7 +249,7 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 4. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
 5. Incorpore o feedback do oracle no plano
 6. "Use o worker para implementar fase 1"
-7. "/review-start foco em regressões"
+7. "/review-start foco regressões"
 8. [Repita 6-7 para cada fase. Rode os testes entre fases.]
 ```
 
@@ -304,7 +306,7 @@ Ou no teclado:
 |---------|--------|
 | `/review-start` | Inicia loop de revisão de código |
 | `/review-start foco X` | Revisão com instrução extra |
-| `/review-plan leia plan.md` | Loop de revisão de plano (passe o caminho como foco) |
+| `/review-plan leia docs/plan.md` | Loop de revisão de plano (passe o caminho como foco) |
 | `/review-exit` | Sai do loop |
 | `/review-max N` | Limita iterações |
 | `/review-fresh on/off` | Ativa/desativa fresh context |

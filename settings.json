@@ -41,9 +41,9 @@
       "worker": { "model": "opencode-go/kimi-k2.6" },
       "reviewer": { "model": "opencode-go/kimi-k2.6" },
       "oracle": { "model": "opencode-go/kimi-k2.6" },
-      "oracle-executor": { "model": "opencode-go/kimi-k2.6" },
       "context-builder": { "model": "opencode-go/kimi-k2.6" },
-      "researcher": { "model": "opencode-go/kimi-k2.6" }
+      "researcher": { "model": "opencode-go/kimi-k2.6" },
+      "delegate": { "model": "opencode-go/kimi-k2.6" }
     }
   }
 }

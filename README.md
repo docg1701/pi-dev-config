@@ -191,7 +191,7 @@ All eight built-in subagents use `opencode-go/kimi-k2.6`.
 | worker | `kimi-k2.6` |
 | reviewer | `kimi-k2.6` |
 | oracle | `kimi-k2.6` |
-| oracle-executor | `kimi-k2.6` |
+| delegate | `kimi-k2.6` |
 | context-builder | `kimi-k2.6` |
 | researcher | `kimi-k2.6` |
 
@@ -212,7 +212,7 @@ Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
 | worker | `deepseek-v4-pro` |
 | reviewer | `kimi-k2.6` 🔍 |
 | oracle | `deepseek-v4-pro` |
-| oracle-executor | `deepseek-v4-pro` |
+| delegate | `deepseek-v4-pro` |
 | context-builder | `deepseek-v4-pro` |
 | researcher | `deepseek-v4-pro` |
 

@@ -41,9 +41,9 @@
       "worker": { "model": "opencode-go/deepseek-v4-pro" },
       "reviewer": { "model": "opencode-go/kimi-k2.6" },
       "oracle": { "model": "opencode-go/deepseek-v4-pro" },
-      "oracle-executor": { "model": "opencode-go/deepseek-v4-pro" },
       "context-builder": { "model": "opencode-go/deepseek-v4-pro" },
-      "researcher": { "model": "opencode-go/deepseek-v4-pro" }
+      "researcher": { "model": "opencode-go/deepseek-v4-pro" },
+      "delegate": { "model": "opencode-go/deepseek-v4-pro" }
     }
   }
 }
