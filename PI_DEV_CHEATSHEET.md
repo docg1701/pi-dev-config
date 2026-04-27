@@ -32,14 +32,24 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ## O Fluxo Principal
 
-```
-context-builder  ─┐
-researcher       ─┼─→  brief.md  ─→  planner  ─→  plan.md  ─→  reviewer (plano)
-scout            ─┘                                                  │
-                                                                     ▼
-worker  ─→  reviewer (código)  ─→  worker  ─→  ...  (repete até esgotar planos)
-  ↑              │
-  └──────────────┘
+```mermaid
+flowchart TD
+    CB["🔍 context-builder"] --> BRIEF["docs/brief.md"]
+    RS["🌐 researcher"] --> BRIEF
+    SC["🕵️ scout"] --> BRIEF
+
+    BRIEF --> PL["📋 planner"]
+    PL --> PLAN["docs/plan.md"]
+
+    PLAN --> RPL{"/review-plan"}
+    RPL -->|"✅ No issues"| WK["🔧 worker"]
+    RPL -->|"🔁 corrige"| PLAN
+
+    WK --> RST{"/review-start"}
+    RST -->|"🔁 Fixed N issues"| WK
+    RST -->|"✅ No issues"| MAIS{"Mais fases<br>no plano?"}
+    MAIS -->|"sim"| WK
+    MAIS -->|"não"| FIM["🏁 pronto"]
 ```
 
 ### Passo a passo
