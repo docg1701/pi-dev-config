@@ -83,7 +83,7 @@ Peça ao agente principal consolidar os achados:
 **6. Revisão do plano**
 
 ```
-"/review-plan"
+"/review-plan leia docs/plan.md e compare com a codebase"
 ```
 
 O review loop lê o plano contra a codebase, encontra inconsistências, corrige, repete até "No issues found."
@@ -160,6 +160,8 @@ O oracle **não implementa nada**. Ele é um revisor consultivo que herda o cont
 
 **O oracle sugere um "execution prompt"** — uma instrução pronta para o worker executar. Mas você (ou o agente principal) decide se aprova antes de passar para o worker.
 
+> **Nota histórica:** o `oracle-executor` existiu como agente separado mas foi consolidado dentro do `worker` (a partir do pi-subagents v1.x). O `worker` atual já incorpora as guardrails de "approved oracle handoff". O fluxo é o mesmo: oracle audita → você aprova → worker implementa.
+
 ### Quando usar
 
 | Situação | Use |
@@ -197,7 +199,7 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 3. "Use o scout para validar [suposição específica] que o context-builder pode ter perdido"
 4. "Consolide tudo em docs/brief.md"
 5. "Use o planner para gerar um plano a partir de docs/brief.md"
-6. "/review-plan"
+6. "/review-plan leia docs/plan.md"
 7. "Use o worker para implementar o plano"
 8. "/review-start"
 ```
@@ -268,7 +270,7 @@ Ou no teclado:
 |---------|--------|
 | `/review-start` | Inicia loop de revisão de código |
 | `/review-start foco X` | Revisão com instrução extra |
-| `/review-plan` | Loop de revisão de plano |
+| `/review-plan leia docs/plan.md` | Loop de revisão de plano (passe o caminho como foco) |
 | `/review-exit` | Sai do loop |
 | `/review-max N` | Limita iterações |
 | `/review-fresh on/off` | Ativa/desativa fresh context |
