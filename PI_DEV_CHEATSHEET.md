@@ -38,7 +38,7 @@ Fase 1: Contexto
   researcher ──────> research.md ──┼──> brief.md (consolidação)
   scout ───────────> scout.md ─────┘    
 
-Fase 2: Planejamento (um ou mais plan.md, pode numerar plan-01.md, plan-02.md etc. - planner pode fragmentar tarefas grandes)
+Fase 2: Planejamento (plan.md ou plan-01.md, plan-02.md ... plan-N.md)
   brief.md ──> planner ──> plan.md ──> /review-plan ──> plan.md (aprovado)
 
 Fase 3: Execução (repetir para cada plan-N.md)
