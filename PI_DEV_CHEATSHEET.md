@@ -1,4 +1,4 @@
-# pi.dev — Cheatsheet Real
+# pi.dev — Guia Prático
 
 > Você descreve **o quê**. O agente decide **como** e executa. Instale, peça em linguagem natural, veja acontecer.
 
@@ -21,7 +21,7 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 |--------|-----------|
 | **context-builder** | Lê requisitos + codebase, gera `context.md` e `meta-prompt.md` com o que importa |
 | **researcher** | Pesquisa na web: docs oficiais, benchmarks, breaking changes. Gera `research.md` |
-| **scout** | Reconhecimento rápido de código: entry points, fluxo de dados, riscos. Gera `context.md` |
+| **scout** | Reconhecimento rápido de código: entry points, fluxo de dados, riscos. Gera `context.md` (cuidado: sobrescreve o do context-builder se usar mesmo path) |
 | **planner** | Transforma contexto em plano de implementação concreto. Gera `plan.md`. **Não edita código** |
 | **reviewer** | Revisa código contra o plano, testa edge cases, corrige problemas. Pode editar |
 | **worker** | Implementa. Edita arquivos, valida, escala decisões não aprovadas. Um escritor por vez |
@@ -48,7 +48,7 @@ flowchart TD
     WK --> RST{"/review-start"}
     RST -->|"🔁 Fixed N issues"| WK
     RST -->|"✅ No issues"| MAIS{"Mais fases<br>no plano?"}
-    MAIS -->|"sim"| WK
+    MAIS -->|"sim, próxima fase"| WK
     MAIS -->|"não"| FIM["🏁 pronto"]
 ```
 
@@ -72,7 +72,8 @@ flowchart TD
 
 ```
 "Use o scout para inspecionar [módulo/fluxo específico] que o
- context-builder pode ter deixado passar. Valide [suposição X]."
+ context-builder pode ter deixado passar. Valide [suposição X].
+ Grave o resultado em docs/scout.md para não sobrescrever o context.md."
 ```
 
 **4. Brief (junte tudo)**
@@ -124,6 +125,10 @@ O loop revisa, corrige, repete até "No issues found." Para foco específico:
 ```
 
 **9. Repita worker → review até esgotar todas as fases do plano.**
+
+> O worker implementa uma fase por vez. Cada fase passa pelo `/review-start`.
+> Quando "No issues found", o worker avança para a próxima fase do plano
+> (já aprovado pelo `/review-plan`). O ciclo se repete até a última fase.
 
 ---
 
@@ -206,12 +211,13 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 ```
 1. "Use o context-builder para mapear o módulo de [X] e gerar contexto em docs/"
 2. "Use o researcher para investigar [tecnologia] — breaking changes, benchmarks"
-3. "Use o scout para validar [suposição específica] que o context-builder pode ter perdido"
+3. "Use o scout para validar [suposição específica]. Grave em docs/scout.md"
 4. "Consolide tudo em docs/brief.md"
 5. "Use o planner para gerar um plano a partir de docs/brief.md"
 6. "/review-plan leia docs/plan.md"
-7. "Use o worker para implementar o plano"
+7. "Use o worker para implementar fase 1 do plano"
 8. "/review-start"
+9. [Repita 7-8 para cada fase do plano]
 ```
 
 ### Refatoração com segurança
@@ -220,11 +226,12 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 1. "Use o scout para mapear o módulo [X]:
     código duplicado, funções longas, acoplamento"
 2. "Use o planner para criar um plano de refatoração que minimize risco"
-3. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
-4. Incorpore o feedback do oracle no plano
-5. "Use o worker para implementar fase 1"
-6. "/review-start foco em regressões"
-7. "Rode os testes"
+3. "/review-plan leia docs/plan.md"
+4. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
+5. Incorpore o feedback do oracle no plano
+6. "Use o worker para implementar fase 1"
+7. "/review-start foco em regressões"
+8. [Repita 6-7 para cada fase. Rode os testes entre fases.]
 ```
 
 ### Code review de PR (sem mexer em código)
