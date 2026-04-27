@@ -34,21 +34,21 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ```
 ┌─────────────────┐
-│ context-builder │──→ context.md ──┐
-└─────────────────┘                 │
-┌────────────┐                       ├──→ brief.md ──→ planner ──→ plan.md
-│ researcher │──→ research.md ──────┤      (manual)
-└────────────┘                      │
-┌───────┐                           │
-│ scout │──→ scout.md ──────────────┘
+│ context-builder │────> context.md ──┐
+└─────────────────┘                   │
+┌────────────┐                         ├────> brief.md ────> planner ────> plan.md
+│ researcher │────> research.md ──────┤      (manual)
+└────────────┘                        │
+┌───────┐                             │
+│ scout │────> scout.md ──────────────┘
 └───────┘
-                                      ┌──────────────┐
-plan.md ──→ /review-plan ──aprovado──→│    worker    │
-                                      └──────┬───────┘
-                                             │
-                                      ┌──────┴───────┐
-                              /review-start ──aprovado──→ pronto
-                                      └──────────────┘
+                                       ┌──────────────┐
+plan.md ────> /review-plan ──aprovado──>│    worker    │
+                                       └──────┬───────┘
+                                              │
+                                       ┌──────┴──────────────┐
+                               /review-start ──aprovado──> pronto
+                                       └─────────────────────┘
 ```
 
 > O `/review-plan` e `/review-start` são loops: corrigem e repetem até "No issues found".
