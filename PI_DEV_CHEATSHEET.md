@@ -32,28 +32,27 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ## O Fluxo Principal
 
-```mermaid
-flowchart TD
-    CB["context-builder"] --> CTX["context.md<br>meta-prompt.md"]
-    RS["researcher"] --> RES["research.md"]
-    SC["scout"] --> SCT["scout.md"]
-
-    CTX --> BRIEF["brief.md<br>(consolidação)"]
-    RES --> BRIEF
-    SCT --> BRIEF
-
-    BRIEF --> PL["planner"]
-    PL --> PLAN["plan.md"]
-
-    PLAN --> RPL{{"/review-plan"}}
-    RPL -- "aprovado" --> WK["worker"]
-
-    WK --> RST{{"/review-start"}}
-    RST -- "aprovado" --> FIM["pronto"]
+```
+┌─────────────────┐
+│ context-builder │──→ context.md ──┐
+└─────────────────┘                 │
+┌────────────┐                       ├──→ brief.md ──→ planner ──→ plan.md
+│ researcher │──→ research.md ──────┤      (manual)
+└────────────┘                      │
+┌───────┐                           │
+│ scout │──→ scout.md ──────────────┘
+└───────┘
+                                      ┌──────────────┐
+plan.md ──→ /review-plan ──aprovado──→│    worker    │
+                                      └──────┬───────┘
+                                             │
+                                      ┌──────┴───────┐
+                              /review-start ──aprovado──→ pronto
+                                      └──────────────┘
 ```
 
-> Todos os arquivos em `docs/` por convenção. O oracle (opcional) é intercalado
-> entre planner e `/review-plan` quando há decisões de alto risco — veja a seção Oracle.
+> O `/review-plan` e `/review-start` são loops: corrigem e repetem até "No issues found".
+> Todos os arquivos em `docs/` por convenção. Oracle (opcional) entre planner e /review-plan.
 
 ### Passo a passo
 
