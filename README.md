@@ -109,6 +109,7 @@ This repo includes **four** pre-generated vibe themes:
 | `klingon` | `vibes/klingon.txt` | 26 | Qapla'! bortaS bIr jablu'DI'… (com tradução) |
 | `standup` | `vibes/standup.txt` | 32 | Testing the mic… tough crowd today… |
 | `tiozao` | `vibes/tiozao.txt` | 43 | Aperta o play Juvenal… é pavê ou pacumê… |
+| `bbs` | `vibes/bbs.txt` | 52 | NO CARRIER… l33t skillz… RTFM… |
 
 To switch themes:
 ```
@@ -164,6 +165,7 @@ This repo includes a pre-generated `vibes/startrek.txt` so you don't need to wor
 /vibe klingon      # Qapla'! — Klingon with translations
 /vibe standup      # Tough crowd today…
 /vibe tiozao       # Aperta o play, Juvenal…
+/vibe bbs          # NO CARRIER…
 /vibe startrek     # Back to Starfleet
 /vibe off          # Disable vibes
 ```
@@ -255,7 +257,8 @@ pi-dev-config/
 │   ├── startrek.txt           # Startrek: 99 phrases
 │   ├── klingon.txt            # Klingon + translations: 26 phrases
 │   ├── standup.txt            # Standup comedy: 32 phrases
-│   └── tiozao.txt             # Tiozão jokes: 43 phrases
+│   ├── tiozao.txt             # Tiozão jokes: 43 phrases
+│   └── bbs.txt                # BBS taglines 90s: 52 phrases
 ├── README.md                  # This file
 ```
 
