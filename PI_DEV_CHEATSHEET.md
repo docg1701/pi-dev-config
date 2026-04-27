@@ -49,7 +49,7 @@ flowchart TD
     RPL -- "aprovado" --> WK["worker"]
 
     WK --> RST{{"/review-start"}}
-    RST -- "aprovado" --> FIM["🏁"]
+    RST -- "aprovado" --> FIM["pronto"]
 ```
 
 > Todos os arquivos em `docs/` por convenção. O oracle (opcional) é intercalado
