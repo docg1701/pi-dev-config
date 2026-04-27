@@ -34,14 +34,16 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ```mermaid
 flowchart TD
-    CB["🔍 context-builder"] --> CTX["context.md<br>+ meta-prompt.md"]
-    RS["🌐 researcher"] --> RES["research.md"]
-    SC["🕵️ scout"] --> CTX2["context.md"]
+    CB["🔍 context-builder"] --> CTX["docs/context.md<br>+ meta-prompt.md"]
+    RS["🌐 researcher"] --> RES["docs/research.md"]
+    SC["🕵️ scout"] --> SCT["docs/scout.md"]
 
-    CTX --> PL["📋 planner"]
-    CTX2 --> PL
-    RES --> PL
-    PL --> PLAN["plan.md"]
+    CTX --> BRIEF["docs/brief.md ✎"]
+    RES --> BRIEF
+    SCT --> BRIEF
+
+    BRIEF --> PL["📋 planner"]
+    PL --> PLAN["docs/plan.md"]
 
     PLAN --> RPL{"/review-plan"}
     RPL -->|"✅ No issues"| WK["🔧 worker"]
@@ -54,15 +56,19 @@ flowchart TD
     MAIS -->|"não"| FIM["🏁 pronto"]
 ```
 
+> `✎` = etapa manual de consolidação (não é output de agente).
+> Demais arquivos são outputs padrão dos agentes, redirecionados para `docs/`.
+
 ### Passo a passo
 
 **1. Contexto (Brownfield)**
 
 ```
-"Use o context-builder para analisar os requisitos e a codebase."
+"Use o context-builder para analisar os requisitos e a codebase.
+ Grave o resultado em docs/"
 ```
 
-> Gera `context.md` e `meta-prompt.md` no diretório atual por padrão.
+> Output padrão: `context.md` e `meta-prompt.md`. Neste workflow, redirecionamos para `docs/`.
 
 **2. Pesquisa (sempre que houver dependência externa)**
 
@@ -76,34 +82,36 @@ flowchart TD
 ```
 "Use o scout para inspecionar [módulo/fluxo específico] que o
  context-builder pode ter deixado passar. Valide [suposição X].
- Grave em scout-context.md para não sobrescrever o context.md."
+ Grave em docs/scout.md para não sobrescrever o context.md."
 ```
 
-> ⚠️ O scout também grava em `context.md` por padrão — sobrescreve o do context-builder.
-> Sempre redirecione o output.
+> ⚠️ Scout e context-builder dividem o mesmo output padrão (`context.md`). Sempre separe.
 
-**4. Consolide o contexto**
+**4. Brief — consolide o contexto**
 
-Peça ao agente principal juntar tudo em um resumo para o planner:
+Peça ao agente principal juntar tudo em `docs/brief.md`:
 
 ```
-"Leia context.md, meta-prompt.md, research.md e scout-context.md.
- Consolide os requisitos, restrições e decisões em um resumo
- para o planner usar como entrada."
+"Leia docs/context.md, docs/meta-prompt.md, docs/research.md e docs/scout.md.
+ Consolide os requisitos, restrições e decisões em docs/brief.md."
 ```
+
+> `brief.md` é uma etapa manual de consolidação — não é output de agente.
+> Serve como entrada única e enxuta para o planner.
 
 **5. Planejamento**
 
 ```
-"Use o planner para gerar um plano de implementação."
+"Use o planner para gerar um plano de implementação a partir de docs/brief.md."
 ```
 
-> Gera `plan.md` por padrão. O planner lê `context.md` automaticamente se presente.
+> Output padrão: `plan.md`. O planner lê `context.md` automaticamente; para usar
+> outro arquivo, indique no prompt ou use `reads=docs/brief.md`.
 
 **6. Revisão do plano**
 
 ```
-"/review-plan leia plan.md e compare com a codebase"
+"/review-plan leia docs/plan.md e compare com a codebase"
 ```
 
 O review loop lê o plano contra a codebase, encontra inconsistências, corrige, repete até "No issues found."
@@ -218,13 +226,12 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 ### Feature nova em projeto existente
 
 ```
-1. "Use o context-builder para mapear o módulo de [X]"
-2. "Use o researcher para investigar [tecnologia] — breaking changes, benchmarks"
-3. "Use o scout para validar [suposição]. Grave em scout-context.md"
-4. "Leia context.md, meta-prompt.md, research.md e scout-context.md.
-    Consolide tudo para o planner."
-5. "Use o planner para gerar um plano de implementação"
-6. "/review-plan leia plan.md"
+1. "Use o context-builder para mapear o módulo de [X]. Grave em docs/"
+2. "Use o researcher para investigar [tecnologia]. Grave em docs/research.md"
+3. "Use o scout para validar [suposição]. Grave em docs/scout.md"
+4. "Leia os arquivos em docs/ e consolide em docs/brief.md"
+5. "Use o planner para gerar um plano a partir de docs/brief.md"
+6. "/review-plan leia docs/plan.md"
 7. "Use o worker para implementar fase 1 do plano"
 8. "/review-start"
 9. [Repita 7-8 para cada fase do plano]
@@ -234,9 +241,9 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 
 ```
 1. "Use o scout para mapear o módulo [X]:
-    código duplicado, funções longas, acoplamento"
-2. "Use o planner para criar um plano de refatoração que minimize risco"
-3. "/review-plan leia plan.md"
+    código duplicado, funções longas, acoplamento. Grave em docs/"
+2. "Use o planner para criar um plano de refatoração"
+3. "/review-plan leia docs/plan.md"
 4. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
 5. Incorpore o feedback do oracle no plano
 6. "Use o worker para implementar fase 1"
