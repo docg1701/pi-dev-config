@@ -32,8 +32,12 @@ ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 # Copy models.json for custom model providers (copied, not symlinked)
 cp ~/.pi/agent/config/models.json ~/.pi/agent/models.json
 
-# Copy settings.json for Pi settings (copied, not symlinked)
+# Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
+# Variant A — all subagents use Kimi K2.6:
 cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+
+# Variant B — DeepSeek V4 Pro everywhere, except scout (flash) and reviewer (Kimi):
+# cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 ```
 
 ## Skills
@@ -95,6 +99,54 @@ Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
 
 Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
 
+## Settings Variants
+
+This repository provides **two** `settings.json` variants. They are identical except for the subagent model assignments.
+
+Pi looks for a single file at `~/.pi/agent/settings.json`. Copy the variant you want and **rename it to `settings.json`** in that directory.
+
+### Variant A: `settings.json` — Kimi K2.6 everywhere
+
+All eight built-in subagents use `opencode-go/kimi-k2.6`.
+
+| Subagent | Model |
+|----------|-------|
+| scout | `kimi-k2.6` |
+| planner | `kimi-k2.6` |
+| worker | `kimi-k2.6` |
+| reviewer | `kimi-k2.6` |
+| oracle | `kimi-k2.6` |
+| oracle-executor | `kimi-k2.6` |
+| context-builder | `kimi-k2.6` |
+| researcher | `kimi-k2.6` |
+
+```bash
+cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+```
+
+### Variant B: `settings-deepseek.json` — DeepSeek V4 Pro (with exceptions)
+
+Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
+- **scout** uses `deepseek-v4-flash` (faster/cheaper for exploration).
+- **reviewer** uses `kimi-k2.6` (fresh perspective from a different model for code review).
+
+| Subagent | Model |
+|----------|-------|
+| scout | `deepseek-v4-flash` ⚡ |
+| planner | `deepseek-v4-pro` |
+| worker | `deepseek-v4-pro` |
+| reviewer | `kimi-k2.6` 🔍 |
+| oracle | `deepseek-v4-pro` |
+| oracle-executor | `deepseek-v4-pro` |
+| context-builder | `deepseek-v4-pro` |
+| researcher | `deepseek-v4-pro` |
+
+```bash
+cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
+```
+
+> **Important:** The destination file must always be named `settings.json`. Pi does not read `settings-deepseek.json` directly.
+
 ## Custom Models
 
 Custom providers and models are configured via `models.json`. This repository includes:
@@ -126,8 +178,9 @@ Models appear in `/model` or `--list-models` after symlinking `models.json`.
 pi-dev-config/
 ├── AGENTS.md          # Global agent rules and conventions
 ├── models.json        # Custom model providers (OpenCode Go, Ollama, etc.)
-├── settings.json      # Pi settings: theme, default provider/model, packages, subagents
-├── README.md          # This file
+├── settings.json              # Variant A: subagents all use Kimi K2.6
+├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
+├── README.md                  # This file
 ```
 
 ## Notes
