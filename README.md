@@ -99,6 +99,51 @@ Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
 
 Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
 
+## Working Vibes (Star Trek)
+
+This repo includes a pre-generated Star Trek vibe file for [pi-powerline-footer](https://github.com/badlogic/pi-mono/tree/main/extensions/powerline-footer).
+
+When active, the "Working…" loading message is replaced with themed phrases like *"Engaging warp drive…"*, *"Scanning for lifeforms…"*, or *"Reversing polarity…"*.
+
+### Setup
+
+Both `settings.json` and `settings-deepseek.json` are already configured:
+
+```json
+{
+  "workingVibe": "star trek",
+  "workingVibeMode": "file",
+  "workingVibeModel": "opencode-go/deepseek-v4-flash"
+}
+```
+
+After copying a settings file, reload pi (`/reload`). To verify:
+
+```
+/vibe
+```
+
+Should show: `Vibe: star trek | Mode: file | Model: opencode-go/deepseek-v4-flash | File: 99 vibes`
+
+### File mode vs generate mode
+
+| Mode | How it works | Latency | Cost |
+|------|-------------|---------|------|
+| `file` | Reads from `vibes/star-trek.txt` (99 pre-generated phrases) | Instant | Zero |
+| `generate` | Calls the LLM on-demand for each message | ~1-3s | Per API call |
+
+This repo uses **file mode** — vibes are loaded once at startup and cycled through with seeded shuffle, avoiding repetition.
+
+### Multi-word theme bug
+
+The `/vibe generate "star trek" 200` command fails for themes with spaces due to whitespace-split argument parsing in the extension. Workarounds:
+
+- **Generate via settings.json:** Set `workingVibeMode` to `generate`, set `workingVibe` to `"star trek"`, and let on-demand generation populate the first few vibes.
+- **Manual file:** Write vibe phrases to `~/.pi/agent/vibes/<theme-slug>.txt` (one per line, ending in `...`), then switch to file mode.
+- **Generate from templates:** Use `/vibe generate <theme> [count]` (without `"` characters in the theme) to produce the file, then rename it to match your multi-word theme slug.
+
+This repo includes a working `vibes/star-trek.txt` so you don't need to work around the bug.
+
 ## Settings Variants
 
 This repository provides **two** `settings.json` variants. They are identical except for the subagent model assignments.
@@ -176,10 +221,12 @@ Models appear in `/model` or `--list-models` after symlinking `models.json`.
 
 ```
 pi-dev-config/
-├── AGENTS.md          # Global agent rules and conventions
-├── models.json        # Custom model providers (OpenCode Go, Ollama, etc.)
+├── AGENTS.md                  # Global agent rules and conventions
+├── models.json                # Custom model providers (OpenCode Go)
 ├── settings.json              # Variant A: subagents all use Kimi K2.6
 ├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
+├── vibes/
+│   └── star-trek.txt          # Pre-generated Star Trek loading messages (99 phrases)
 ├── README.md                  # This file
 ```
 
