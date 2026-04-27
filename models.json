@@ -5,6 +5,10 @@
       "api": "openai-completions",
       "apiKey": "OPENCODE_GO_API_KEY",
       "authHeader": true,
+      "compat": {
+        "thinkingFormat": "deepseek",
+        "requiresReasoningContentOnAssistantMessages": true
+      },
       "models": [
         {
           "id": "deepseek-v4-pro",
