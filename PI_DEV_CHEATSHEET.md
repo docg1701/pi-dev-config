@@ -36,7 +36,7 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 Fase 1: Contexto
   context-builder ──> context.md ──┐
   researcher ──────> research.md ──┼──> brief.md
-  scout ───────────> scout.md ────┘    (consolidação)
+  scout ───────────> scout.md ─────┘    (consolidação)
 
 Fase 2: Planejamento
   brief.md ──> planner ──> plan.md ──> /review-plan
