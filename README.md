@@ -101,7 +101,21 @@ Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanaga
 
 ## Working Vibes (Star Trek)
 
-This repo includes a pre-generated Star Trek vibe file for [pi-powerline-footer](https://github.com/badlogic/pi-mono/tree/main/extensions/powerline-footer).
+This repo includes **four** pre-generated vibe themes:
+
+| Theme | File | Phrases | Sabor |
+|-------|------|---------|-------|
+| `star trek` | `vibes/star-trek.txt` | 99 | Engaging warp drive, scanning for lifeforms… |
+| `klingon` | `vibes/klingon.txt` | 26 | Qapla'! bortaS bIr jablu'DI'… (com tradução) |
+| `standup` | `vibes/standup.txt` | 32 | Testing the mic… tough crowd today… |
+| `tiozao` | `vibes/tiozao.txt` | 43 | Aperta o play Juvenal… é pavê ou pacumê… |
+
+To switch themes:
+```
+/vibe klingon
+/vibe standup
+/vibe tiozao
+```
 
 When active, the "Working…" loading message is replaced with themed phrases like *"Engaging warp drive…"*, *"Scanning for lifeforms…"*, or *"Reversing polarity…"*.
 
@@ -143,6 +157,18 @@ The `/vibe generate "star trek" 200` command fails for themes with spaces due to
 - **Generate from templates:** Use `/vibe generate <theme> [count]` (without `"` characters in the theme) to produce the file, then rename it to match your multi-word theme slug.
 
 This repo includes a working `vibes/star-trek.txt` so you don't need to work around the bug.
+
+### Switching themes
+
+```
+/vibe klingon      # Qapla'! — Klingon with translations
+/vibe standup      # Tough crowd today…
+/vibe tiozao       # Aperta o play, Juvenal…
+/vibe star trek    # Back to Starfleet
+/vibe off          # Disable vibes
+```
+
+All four themes use file mode — instant, zero cost, no API calls.
 
 ## Settings Variants
 
@@ -226,7 +252,10 @@ pi-dev-config/
 ├── settings.json              # Variant A: subagents all use Kimi K2.6
 ├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
 ├── vibes/
-│   └── star-trek.txt          # Pre-generated Star Trek loading messages (99 phrases)
+│   ├── star-trek.txt          # Star Trek: 99 phrases
+│   ├── klingon.txt            # Klingon + translations: 26 phrases
+│   ├── standup.txt            # Standup comedy: 32 phrases
+│   └── tiozao.txt             # Tiozão jokes: 43 phrases
 ├── README.md                  # This file
 ```
 
