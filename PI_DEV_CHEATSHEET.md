@@ -96,6 +96,9 @@ Peça ao agente principal juntar tudo em `docs/brief.md`:
 
 > Output padrão: `plan.md`. O planner tem `defaultReads: context.md` — como
 > redirecionamos para `docs/`, use `reads=docs/brief.md` ou indique no prompt.
+>
+> **Planos grandes?** Peça ao planner para dividir em `plan-01.md`, `plan-02.md`,
+> ... `plan-N.md`. Revise cada um com `/review-plan`, implemente um por vez.
 
 **6. Revisão do plano**
 
