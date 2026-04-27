@@ -46,11 +46,9 @@ flowchart TD
     PL --> PLAN["plan.md"]
 
     PLAN --> RPL{{"/review-plan"}}
-    RPL -- "corrige e repete" --> RPL
     RPL -- "aprovado" --> WK["worker"]
 
     WK --> RST{{"/review-start"}}
-    RST -- "corrige e repete" --> RST
     RST -- "aprovado" --> FIM["pronto"]
 ```
 
