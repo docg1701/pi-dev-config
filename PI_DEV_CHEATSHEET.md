@@ -35,14 +35,14 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 ```
 Fase 1: Contexto
   context-builder ──> context.md ──┐
-  researcher ──────> research.md ──┼──> brief.md
-  scout ───────────> scout.md ─────┘    (consolidação)
+  researcher ──────> research.md ──┼──> brief.md (consolidação)
+  scout ───────────> scout.md ─────┘    
 
-Fase 2: Planejamento
-  brief.md ──> planner ──> plan.md ──> /review-plan
+Fase 2: Planejamento (um ou mais plan.md, pode numerar plan-01.md, plan-02.md etc. - planner pode fragmentar tarefas grandes)
+  brief.md ──> planner ──> plan.md ──> /review-plan ──> plan.md (aprovado)
 
-Fase 3: Execução
-  plan.md ──> worker ──> /review-start ──> pronto
+Fase 3: Execução (repetir para cada plan-N.md)
+  plan.md ──> worker ──> /review-start ──> outro plan.md? ──> repetir até último ──> pronto
 ```
 
 > `/review-plan` e `/review-start` são loops: corrigem e repetem até "No issues found".
