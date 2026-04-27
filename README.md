@@ -232,16 +232,22 @@ Custom providers and models are configured via `models.json`. This repository in
 
 ### Why a custom `models.json` is needed
 
-DeepSeek V4 models use a non-standard thinking/reasoning token format that differs from the default OpenAI-style API expectations. Without the correct `compat` settings, the API returns **HTTP 400** errors on every request.
+DeepSeek V4 models use a non-standard thinking/reasoning token format that differs from the default OpenAI-style API expectations. Without the correct `compat` settings, the API returns **HTTP 400** with the message:
+
+> The reasoning_content in the thinking mode must be passed back to the API
+
+This happens because DeepSeek requires that every `reasoning_content` block it sends in a response is echoed back verbatim in the next request's assistant message — without it, the API rejects the call.
 
 Two compatibility flags in `models.json` fix this:
 
 | Setting | Value | Why |
 |---------|-------|-----|
-| `thinkingFormat` | `"deepseek"` | Tells Pi to format reasoning tokens in DeepSeek's native format (`reasoning_content`) instead of the OpenAI default |
-| `requiresReasoningContentOnAssistantMessages` | `true` | DeepSeek's API rejects assistant messages that lack `reasoning_content` — this flag ensures every assistant message includes it |
+| `thinkingFormat` | `"deepseek"` | Tells Pi to parse and format reasoning tokens in DeepSeek's native `reasoning_content` field instead of the OpenAI default |
+| `requiresReasoningContentOnAssistantMessages` | `true` | Ensures every assistant message sent to the API includes the `reasoning_content` block it originally returned — without this, the API rejects the request with the 400 above |
 
 These settings live under `providers.opencode-go.compat` and apply to all models served through the OpenCode Go endpoint.
+
+See commit [`6a3e879`](https://github.com/docg1701/pi-dev-config/commit/6a3e879) for the original fix.
 
 Set your API key as an environment variable:
 
