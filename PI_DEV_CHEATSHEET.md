@@ -34,19 +34,21 @@ Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.
 
 ```mermaid
 flowchart TD
-    CB["🔍 context-builder"] --> BRIEF["docs/brief.md"]
-    RS["🌐 researcher"] --> BRIEF
-    SC["🕵️ scout"] --> BRIEF
+    CB["🔍 context-builder"] --> CTX["context.md<br>+ meta-prompt.md"]
+    RS["🌐 researcher"] --> RES["research.md"]
+    SC["🕵️ scout"] --> CTX2["context.md"]
 
-    BRIEF --> PL["📋 planner"]
-    PL --> PLAN["docs/plan.md"]
+    CTX --> PL["📋 planner"]
+    CTX2 --> PL
+    RES --> PL
+    PL --> PLAN["plan.md"]
 
     PLAN --> RPL{"/review-plan"}
     RPL -->|"✅ No issues"| WK["🔧 worker"]
-    RPL -->|"🔁 corrige"| PLAN
+    RPL -->|"🔁 Fixed N issues"| RPL
 
     WK --> RST{"/review-start"}
-    RST -->|"🔁 Fixed N issues"| WK
+    RST -->|"🔁 Fixed N issues"| RST
     RST -->|"✅ No issues"| MAIS{"Mais fases<br>no plano?"}
     MAIS -->|"sim, próxima fase"| WK
     MAIS -->|"não"| FIM["🏁 pronto"]
@@ -57,9 +59,10 @@ flowchart TD
 **1. Contexto (Brownfield)**
 
 ```
-"Use o context-builder para analisar os requisitos e a codebase.
- Gere context.md e meta-prompt.md em docs/"
+"Use o context-builder para analisar os requisitos e a codebase."
 ```
+
+> Gera `context.md` e `meta-prompt.md` no diretório atual por padrão.
 
 **2. Pesquisa (sempre que houver dependência externa)**
 
@@ -73,28 +76,34 @@ flowchart TD
 ```
 "Use o scout para inspecionar [módulo/fluxo específico] que o
  context-builder pode ter deixado passar. Valide [suposição X].
- Grave o resultado em docs/scout.md para não sobrescrever o context.md."
+ Grave em scout-context.md para não sobrescrever o context.md."
 ```
 
-**4. Brief (junte tudo)**
+> ⚠️ O scout também grava em `context.md` por padrão — sobrescreve o do context-builder.
+> Sempre redirecione o output.
 
-Peça ao agente principal consolidar os achados:
+**4. Consolide o contexto**
+
+Peça ao agente principal juntar tudo em um resumo para o planner:
 
 ```
-"Consolide o context.md, meta-prompt.md, research.md e o output do scout
- em um único docs/brief.md com os requisitos, restrições e decisões."
+"Leia context.md, meta-prompt.md, research.md e scout-context.md.
+ Consolide os requisitos, restrições e decisões em um resumo
+ para o planner usar como entrada."
 ```
 
 **5. Planejamento**
 
 ```
-"Use o planner para gerar um plano de implementação a partir de docs/brief.md."
+"Use o planner para gerar um plano de implementação."
 ```
+
+> Gera `plan.md` por padrão. O planner lê `context.md` automaticamente se presente.
 
 **6. Revisão do plano**
 
 ```
-"/review-plan leia docs/plan.md e compare com a codebase"
+"/review-plan leia plan.md e compare com a codebase"
 ```
 
 O review loop lê o plano contra a codebase, encontra inconsistências, corrige, repete até "No issues found."
@@ -204,17 +213,18 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 
 ---
 
-## Receitas Reais
+## Receitas
 
 ### Feature nova em projeto existente
 
 ```
-1. "Use o context-builder para mapear o módulo de [X] e gerar contexto em docs/"
+1. "Use o context-builder para mapear o módulo de [X]"
 2. "Use o researcher para investigar [tecnologia] — breaking changes, benchmarks"
-3. "Use o scout para validar [suposição específica]. Grave em docs/scout.md"
-4. "Consolide tudo em docs/brief.md"
-5. "Use o planner para gerar um plano a partir de docs/brief.md"
-6. "/review-plan leia docs/plan.md"
+3. "Use o scout para validar [suposição]. Grave em scout-context.md"
+4. "Leia context.md, meta-prompt.md, research.md e scout-context.md.
+    Consolide tudo para o planner."
+5. "Use o planner para gerar um plano de implementação"
+6. "/review-plan leia plan.md"
 7. "Use o worker para implementar fase 1 do plano"
 8. "/review-start"
 9. [Repita 7-8 para cada fase do plano]
@@ -226,7 +236,7 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 1. "Use o scout para mapear o módulo [X]:
     código duplicado, funções longas, acoplamento"
 2. "Use o planner para criar um plano de refatoração que minimize risco"
-3. "/review-plan leia docs/plan.md"
+3. "/review-plan leia plan.md"
 4. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
 5. Incorpore o feedback do oracle no plano
 6. "Use o worker para implementar fase 1"
@@ -265,7 +275,7 @@ Ou no teclado:
 
 ---
 
-## Anti-Padrões Reais
+## Anti-Padrões
 
 | ❌ | ✅ |
 |----|----|
@@ -287,7 +297,7 @@ Ou no teclado:
 |---------|--------|
 | `/review-start` | Inicia loop de revisão de código |
 | `/review-start foco X` | Revisão com instrução extra |
-| `/review-plan leia docs/plan.md` | Loop de revisão de plano (passe o caminho como foco) |
+| `/review-plan leia plan.md` | Loop de revisão de plano (passe o caminho como foco) |
 | `/review-exit` | Sai do loop |
 | `/review-max N` | Limita iterações |
 | `/review-fresh on/off` | Ativa/desativa fresh context |
