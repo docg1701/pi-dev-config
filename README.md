@@ -72,7 +72,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, and async support. | `pi install npm:pi-subagents` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
-| `pi-extension-manager` | `/extensions` command for local and community package management. | `pi install npm:pi-extension-manager` |
+| `pi-extension-manager` | `/extensions` command for local and community package management. Includes auto-update checker (off by default — enable with `/extensions auto-update daily`). | `pi install npm:pi-extension-manager` |
 | `pi-mcp-adapter` | Token-efficient MCP proxy. Lazy servers, cached metadata. | `pi install npm:pi-mcp-adapter` |
 | `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
@@ -129,6 +129,18 @@ pi-dev-config/
 ├── settings.json      # Pi settings: theme, default provider/model, packages, subagents
 ├── README.md          # This file
 ```
+
+## Notes
+
+### "auto-update off" na powerline
+
+É o status do `pi-extension-manager`. Significa que a verificação automática de atualizações de pacotes está desligada. Para ativar:
+
+```
+/extensions auto-update daily
+```
+
+Outros intervalos: `weekly`, `1h`, `6h`, `3d`, `2w`, `1mo`, ou `/extensions auto-update` para o wizard interativo.
 
 ## License
 
