@@ -2,6 +2,8 @@
 
 Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywhere with the same extensions, skills, and rules.
 
+![pi-dev-config screenshot](screenshot-pi-dev.png)
+
 ## Quick Start
 
 ```bash
