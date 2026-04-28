@@ -24,6 +24,7 @@ pi install npm:pi-smart-fetch
 pi install npm:pi-powerline-footer
 pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
+pi install npm:pi-ollama-cloud
 
 # Install skills
 npx skills add upstash/context7
@@ -83,6 +84,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `pi-powerline-footer` | Powerline-style status bar with git, context, tokens, vibes, and bash mode. | `pi install npm:pi-powerline-footer` |
 | `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
+| `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. No local Ollama server required. | `pi install npm:pi-ollama-cloud` |
 
 ## Themes
 
@@ -223,6 +225,8 @@ cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 
 ## Provider Setup
 
+### OpenCode Go
+
 Set your OpenCode Go API key as an environment variable:
 
 ```bash
@@ -230,6 +234,35 @@ export OPENCODE_GO_API_KEY="your-opencode-go-api-key"
 ```
 
 Pi.dev now ships with DeepSeek V4 Pro and Flash built into the `opencode-go` provider signature — no custom `models.json` needed.
+
+### Ollama Cloud
+
+[pi-ollama-cloud](https://github.com/fgrehm/pi-ollama-cloud) registers Ollama Cloud as a model provider with dynamically fetched models and built-in web search/fetch tools.
+
+**Setup:**
+
+```bash
+# 1. Get an API key at ollama.com and set it
+export OLLAMA_API_KEY="your-ollama-cloud-api-key"
+# Or add it to ~/.pi/agent/auth.json:
+# { "ollama-cloud": { "type": "api_key", "key": "your-key" } }
+
+# 2. Fetch the full model list (run after install and whenever models change)
+/ollama-cloud-refresh
+```
+
+On first launch (before `/ollama-cloud-refresh`), a small set of fallback models is used. After refresh, all tool-capable Ollama Cloud models become available under the `ollama-cloud` provider — switch with `/model` or `Ctrl+L`.
+
+Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires; refresh manually).
+
+**Tools added:**
+
+| Tool | Description |
+|------|-------------|
+| `ollama_web_search` | Web search via Ollama Cloud's search API |
+| `ollama_web_fetch` | Web page fetch and extraction via Ollama Cloud |
+
+Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
 
 ## Context & Rules
 
@@ -252,6 +285,8 @@ pi-dev-config/
 │   ├── tiozao.txt             # Tiozão jokes: 43 phrases
 │   └── bbs.txt                # BBS taglines 90s: 52 phrases
 ├── README.md                  # This file
+├── PI_DEV_CHEATSHEET.md       # Practical workflow guide (PT)
+├── PI_DEV_CHEATSHEET_EN.md    # Practical workflow guide (EN)
 ```
 
 ## Notes
