@@ -29,8 +29,8 @@ pi install npm:@leonardorick/pi-web-search
 npx skills add upstash/context7
 npx skills add 199-biotechnologies/claude-deep-research-skill
 
-# Symlink AGENTS.md for global context
-ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
+# Copy AGENTS.md for global context
+cp ~/dev/pi-dev-config/AGENTS.md ~/.pi/agent/AGENTS.md
 
 # Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
 # Variant A — all subagents use Kimi K2.6:
