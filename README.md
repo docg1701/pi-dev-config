@@ -32,9 +32,6 @@ npx skills add 199-biotechnologies/claude-deep-research-skill
 # Symlink AGENTS.md for global context
 ln -s ~/.pi/agent/config/AGENTS.md ~/.pi/agent/AGENTS.md
 
-# Copy models.json for custom model providers (copied, not symlinked)
-cp ~/.pi/agent/config/models.json ~/.pi/agent/models.json
-
 # Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
 # Variant A — all subagents use Kimi K2.6:
 cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
@@ -224,42 +221,15 @@ cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read `settings-deepseek.json` directly.
 
-## Custom Models
+## Provider Setup
 
-Custom providers and models are configured via `models.json`. This repository includes:
-
-- **OpenCode Go** — Low-cost subscription with reliable access to open coding models.
-  - `deepseek-v4-pro` — High-quality reasoning model
-  - `deepseek-v4-flash` — Fast reasoning model
-
-### Why a custom `models.json` is needed
-
-DeepSeek V4 models use a non-standard thinking/reasoning token format that differs from the default OpenAI-style API expectations. Without the correct `compat` settings, the API returns **HTTP 400** with the message:
-
-> The reasoning_content in the thinking mode must be passed back to the API
-
-This happens because DeepSeek requires that every `reasoning_content` block it sends in a response is echoed back verbatim in the next request's assistant message — without it, the API rejects the call.
-
-Two compatibility flags in `models.json` fix this:
-
-| Setting | Value | Why |
-|---------|-------|-----|
-| `thinkingFormat` | `"deepseek"` | Tells Pi to parse and format reasoning tokens in DeepSeek's native `reasoning_content` field instead of the OpenAI default |
-| `requiresReasoningContentOnAssistantMessages` | `true` | Ensures every assistant message sent to the API includes the `reasoning_content` block it originally returned — without this, the API rejects the request with the 400 above |
-
-These settings live under `providers.opencode-go.compat` and apply to all models served through the OpenCode Go endpoint.
-
-See commit [`6a3e879`](https://github.com/docg1701/pi-dev-config/commit/6a3e879) for the original fix.
-
-Set your API key as an environment variable:
+Set your OpenCode Go API key as an environment variable:
 
 ```bash
 export OPENCODE_GO_API_KEY="your-opencode-go-api-key"
 ```
 
-Or use any supported value resolution format (shell command, env var, literal) as documented in the [Pi models configuration docs](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/models.md).
-
-Models appear in `/model` or `--list-models` after symlinking `models.json`.
+Pi.dev now ships with DeepSeek V4 Pro and Flash built into the `opencode-go` provider signature — no custom `models.json` needed.
 
 ## Context & Rules
 
@@ -273,7 +243,6 @@ Models appear in `/model` or `--list-models` after symlinking `models.json`.
 ```
 pi-dev-config/
 ├── AGENTS.md                  # Global agent rules and conventions
-├── models.json                # Custom model providers (OpenCode Go)
 ├── settings.json              # Variant A: subagents all use Kimi K2.6
 ├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
 ├── vibes/
