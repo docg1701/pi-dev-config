@@ -23,6 +23,7 @@ pi install npm:pi-mermaid
 pi install npm:pi-smart-fetch
 pi install npm:pi-powerline-footer
 pi install npm:@eko24ive/pi-ask
+pi install npm:@leonardorick/pi-web-search
 
 # Install skills
 npx skills add upstash/context7
@@ -84,6 +85,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-powerline-footer` | Powerline-style status bar with git, context, tokens, vibes, and bash mode. | `pi install npm:pi-powerline-footer` |
 | `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
+| `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
 
 ## Themes
 
