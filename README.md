@@ -31,8 +31,8 @@ pi install npm:pi-alert
 npx skills add upstash/context7
 npx skills add 199-biotechnologies/claude-deep-research-skill
 
-# Copy AGENTS.md for global context
-cp ~/dev/pi-dev-config/AGENTS.md ~/.pi/agent/AGENTS.md
+# Copy APPEND_SYSTEM.md to extend the agent's system prompt
+cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
 # Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
 # Variant A — all subagents use Kimi K2.6:
@@ -302,16 +302,20 @@ When no terminal-native transport is available, pi-alert falls back to the OS:
 
 ## Context & Rules
 
-`AGENTS.md` defines the project-level context loaded by Pi at startup. Place it in:
+Pi loads two kinds of instruction files at startup:
 
-- `~/.pi/agent/AGENTS.md` (global)
-- Any project root (local)
+| File | Scope | Purpose |
+|------|-------|---------|
+| `APPEND_SYSTEM.md` | Global (`~/.pi/agent/`) | Extends the **system prompt** — behavioral rules and conventions that apply to every agent session (code style, testing discipline, logging, etc.). Appended without replacing the native prompt. |
+| `AGENTS.md` | Per-project | Project-level **context** — stack, conventions, build commands, and local rules. Pi concatenates all `AGENTS.md` found from `cwd` up through parent directories plus `~/.pi/agent/`. |
+
+This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rules. Copy it once to your global config. For project-specific instructions, create `AGENTS.md` at the project root — no example is included here because it should be customized per project (tech stack, build commands, team conventions, etc.).
 
 ## Structure
 
 ```
 pi-dev-config/
-├── AGENTS.md                  # Global agent rules and conventions
+├── APPEND_SYSTEM.md           # Global system-prompt rules and conventions
 ├── settings.json              # Variant A: subagents all use Kimi K2.6
 ├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
 ├── vibes/
