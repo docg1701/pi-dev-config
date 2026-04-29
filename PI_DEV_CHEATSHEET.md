@@ -9,6 +9,7 @@
 ```bash
 pi install npm:pi-subagents
 pi install npm:pi-review-loop
+pi install npm:pi-alert
 ```
 
 Pronto. Não precisa criar agentes, escrever config, nem decorar comandos.

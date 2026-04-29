@@ -25,6 +25,7 @@ pi install npm:pi-powerline-footer
 pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
+pi install npm:pi-alert
 
 # Install skills
 npx skills add upstash/context7
@@ -85,6 +86,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. No local Ollama server required. | `pi install npm:pi-ollama-cloud` |
+| `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback (`osascript`, `notify-send`, PowerShell balloon, terminal bell). Shows activity summary with elapsed time. | `pi install npm:pi-alert` |
 
 ## Themes
 
@@ -263,6 +265,40 @@ Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires
 | `ollama_web_fetch` | Web page fetch and extraction via Ollama Cloud |
 
 Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
+
+## Notifications
+
+[pi-alert](https://github.com/maxpetretta/pi-alert) sends a system notification when the agent finishes its turn. Notifications fire automatically after every prompt — no configuration needed.
+
+**Notification body** shows an activity summary with elapsed time, prioritizing the most useful signal from the completed run:
+1. Updated files
+2. Other tool calls
+3. Read files
+4. Generic completion fallback
+
+**Title** uses the project root directory name (e.g. `pi — pi-dev-config`).
+
+### Delivery
+
+Terminal-native notifications when running in a supported terminal:
+
+| Terminal | Protocol |
+|----------|----------|
+| Ghostty | OSC 777 |
+| iTerm2 | OSC 9 |
+| WezTerm | OSC 777 |
+| Kitty | OSC 99 |
+| rxvt-unicode | OSC 777 |
+| tmux | Passthrough to outer terminal |
+
+When no terminal-native transport is available, pi-alert falls back to the OS:
+
+| OS | Fallback |
+|----|----------|
+| macOS | `osascript` with native notification + `Glass` sound |
+| Linux | `notify-send` (install `libnotify-bin` if missing) |
+| Windows | PowerShell `NotifyIcon` balloon notification |
+| Final resort | Terminal bell (`BEL`) |
 
 ## Context & Rules
 
