@@ -30,6 +30,7 @@ pi install npm:pi-alert
 # Install skills
 npx skills add upstash/context7
 npx skills add 199-biotechnologies/claude-deep-research-skill
+npx skills add streamlit/agent-skills
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -54,6 +55,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `find-docs` | Library docs via Context7 CLI. Prefer over web search. | `npx skills add upstash/context7` |
 | `deep-research` | 8-phase citation-backed research. Quick/standard/deep/ultradeep. | `npx skills add 199-biotechnologies/claude-deep-research-skill` |
 | `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add find-skills` |
+| `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add streamlit/agent-skills` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
 ### nicobailon Extensions
