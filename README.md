@@ -35,10 +35,13 @@ npx skills add 199-biotechnologies/claude-deep-research-skill
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
 # Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
-# Variant A — all subagents use Kimi K2.6:
+# Variant A — ollama-cloud / DeepSeek V4 Pro (scout=flash, reviewer=Kimi):
 cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
-# Variant B — DeepSeek V4 Pro everywhere, except scout (flash) and reviewer (Kimi):
+# Variant B — opencode-go / Kimi K2.6 everywhere:
+# cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
+
+# Variant C — opencode-go / DeepSeek V4 Pro (scout=flash, reviewer=Kimi):
 # cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 ```
 
@@ -127,15 +130,17 @@ When active, the "Working…" loading message is replaced with themed phrases li
 
 ### Setup
 
-Both `settings.json` and `settings-deepseek.json` are already configured:
+All three settings variants are pre-configured with vibes. The active variant (`settings.json`) uses `ollama-cloud`:
 
 ```json
 {
   "workingVibe": "startrek",
   "workingVibeMode": "file",
-  "workingVibeModel": "opencode-go/deepseek-v4-flash"
+  "workingVibeModel": "ollama-cloud/deepseek-v4-flash"
 }
 ```
+
+The opencode-go variants (`settings-opencode-go.json`, `settings-deepseek.json`) use `opencode-go/deepseek-v4-flash`.
 
 After copying a settings file, reload pi (`/reload`). To verify:
 
@@ -143,7 +148,7 @@ After copying a settings file, reload pi (`/reload`). To verify:
 /vibe
 ```
 
-Should show: `Vibe: startrek | Mode: file | Model: opencode-go/deepseek-v4-flash | File: 99 vibes`
+Should show: `Vibe: startrek | Mode: file | Model: ollama-cloud/deepseek-v4-flash | File: 99 vibes`
 
 ### File mode vs generate mode
 
@@ -179,11 +184,32 @@ All four themes use file mode — instant, zero cost, no API calls.
 
 ## Settings Variants
 
-This repository provides **two** `settings.json` variants. They are identical except for the subagent model assignments.
+This repository provides **three** `settings.json` variants — one for `ollama-cloud` and two for `opencode-go`.
 
 Pi looks for a single file at `~/.pi/agent/settings.json`. Copy the variant you want and **rename it to `settings.json`** in that directory.
 
-### Variant A: `settings.json` — Kimi K2.6 everywhere
+### Variant A: `settings.json` — Ollama Cloud (DeepSeek V4 Pro)
+
+Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/deepseek-v4-pro`, with two exceptions:
+- **scout** uses `deepseek-v4-flash` ⚡ (faster/cheaper for exploration).
+- **reviewer** uses `kimi-k2.6` 🔍 (fresh perspective from a different model for code review).
+
+| Subagent | Model |
+|----------|-------|
+| scout | `deepseek-v4-flash` ⚡ |
+| planner | `deepseek-v4-pro` |
+| worker | `deepseek-v4-pro` |
+| reviewer | `kimi-k2.6` 🔍 |
+| oracle | `deepseek-v4-pro` |
+| delegate | `deepseek-v4-pro` |
+| context-builder | `deepseek-v4-pro` |
+| researcher | `deepseek-v4-pro` |
+
+```bash
+cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+```
+
+### Variant B: `settings-opencode-go.json` — OpenCode Go / Kimi K2.6 everywhere
 
 All eight built-in subagents use `opencode-go/kimi-k2.6`.
 
@@ -199,10 +225,10 @@ All eight built-in subagents use `opencode-go/kimi-k2.6`.
 | researcher | `kimi-k2.6` |
 
 ```bash
-cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
 ```
 
-### Variant B: `settings-deepseek.json` — DeepSeek V4 Pro (with exceptions)
+### Variant C: `settings-deepseek.json` — OpenCode Go / DeepSeek V4 Pro (with exceptions)
 
 Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
 - **scout** uses `deepseek-v4-flash` (faster/cheaper for exploration).
@@ -223,7 +249,7 @@ Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
 cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 ```
 
-> **Important:** The destination file must always be named `settings.json`. Pi does not read `settings-deepseek.json` directly.
+> **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
 ## Provider Setup
 
@@ -316,8 +342,9 @@ This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rule
 ```
 pi-dev-config/
 ├── APPEND_SYSTEM.md           # Global system-prompt rules and conventions
-├── settings.json              # Variant A: subagents all use Kimi K2.6
-├── settings-deepseek.json     # Variant B: subagents use DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
+├── settings.json              # Variant A: ollama-cloud / DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
+├── settings-opencode-go.json  # Variant B: opencode-go / Kimi K2.6 everywhere
+├── settings-deepseek.json     # Variant C: opencode-go / DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
 ├── vibes/
 │   ├── startrek.txt           # Startrek: 99 phrases
 │   ├── klingon.txt            # Klingon + translations: 26 phrases

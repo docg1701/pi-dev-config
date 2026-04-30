@@ -20,28 +20,32 @@
   "theme": "brogrammer",
   "powerline": "default",
   "transport": "sse",
-  "defaultProvider": "ollama-cloud",
+  "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "high",
   "quietStartup": true,
   "enabledModels": [
-    "ollama-cloud/deepseek-v4-pro",
-    "ollama-cloud/deepseek-v4-flash",
-    "ollama-cloud/kimi-k2.6"
+    "opencode-go/kimi-k2.6",
+    "opencode-go/qwen3.6-plus",
+    "opencode-go/glm-5.1",
+    "opencode-go/mimo-v2.5-pro",
+    "opencode-go/minimax-m2.7",
+    "opencode-go/deepseek-v4-pro",
+    "opencode-go/deepseek-v4-flash"
   ],
   "workingVibe": "startrek",
   "workingVibeMode": "file",
-  "workingVibeModel": "ollama-cloud/deepseek-v4-flash",
+  "workingVibeModel": "opencode-go/deepseek-v4-flash",
   "subagents": {
     "agentOverrides": {
-      "scout": { "model": "ollama-cloud/deepseek-v4-flash" },
-      "planner": { "model": "ollama-cloud/deepseek-v4-pro" },
-      "worker": { "model": "ollama-cloud/deepseek-v4-pro" },
-      "reviewer": { "model": "ollama-cloud/kimi-k2.6" },
-      "oracle": { "model": "ollama-cloud/deepseek-v4-pro" },
-      "context-builder": { "model": "ollama-cloud/deepseek-v4-pro" },
-      "researcher": { "model": "ollama-cloud/deepseek-v4-pro" },
-      "delegate": { "model": "ollama-cloud/deepseek-v4-pro" }
+      "scout": { "model": "opencode-go/kimi-k2.6" },
+      "planner": { "model": "opencode-go/kimi-k2.6" },
+      "worker": { "model": "opencode-go/kimi-k2.6" },
+      "reviewer": { "model": "opencode-go/kimi-k2.6" },
+      "oracle": { "model": "opencode-go/kimi-k2.6" },
+      "context-builder": { "model": "opencode-go/kimi-k2.6" },
+      "researcher": { "model": "opencode-go/kimi-k2.6" },
+      "delegate": { "model": "opencode-go/kimi-k2.6" }
     }
   }
 }
