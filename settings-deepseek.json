@@ -16,7 +16,6 @@
     "npm:@leonardorick/pi-web-search",
     "npm:pi-ollama-cloud"
   ],
-  "lastChangelogVersion": "0.70.2",
   "theme": "brogrammer",
   "powerline": "default",
   "transport": "sse",

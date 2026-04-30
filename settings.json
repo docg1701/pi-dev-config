@@ -14,9 +14,9 @@
     "npm:pi-annotate",
     "npm:@eko24ive/pi-ask",
     "npm:@leonardorick/pi-web-search",
-    "npm:pi-ollama-cloud"
+    "npm:pi-ollama-cloud",
+    "npm:pi-alert"
   ],
-  "lastChangelogVersion": "0.70.2",
   "theme": "brogrammer",
   "powerline": "default",
   "transport": "sse",
