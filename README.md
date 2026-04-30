@@ -28,10 +28,11 @@ pi install npm:pi-ollama-cloud
 pi install npm:pi-alert
 
 # Install skills
-npx skills add upstash/context7
-npx skills add 199-biotechnologies/claude-deep-research-skill
-npx skills add streamlit/agent-skills
-npx skills add aj-geddes/useful-ai-prompts/ansible-automation
+npx skills add https://github.com/upstash/context7 --skill find-docs
+npx skills add https://github.com/199-biotechnologies/claude-deep-research-skill --skill deep-research
+npx skills add https://github.com/vercel-labs/skills --skill find-skills
+npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit
+npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -53,11 +54,11 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 | Name | Description | Install |
 |------|-------------|---------|
-| `find-docs` | Library docs via Context7 CLI. Prefer over web search. | `npx skills add upstash/context7` |
-| `deep-research` | 8-phase citation-backed research. Quick/standard/deep/ultradeep. | `npx skills add 199-biotechnologies/claude-deep-research-skill` |
-| `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add find-skills` |
-| `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add streamlit/agent-skills` |
-| `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. Deploy apps, patch/configure servers. | `npx skills add aj-geddes/useful-ai-prompts/ansible-automation` |
+| `find-docs` | Library docs via Context7 CLI. Prefer over web search. | `npx skills add https://github.com/upstash/context7 --skill find-docs` |
+| `deep-research` | 8-phase citation-backed research. Quick/standard/deep/ultradeep. | `npx skills add https://github.com/199-biotechnologies/claude-deep-research-skill --skill deep-research` |
+| `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add https://github.com/vercel-labs/skills --skill find-skills` |
+| `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit` |
+| `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. Deploy apps, patch/configure servers. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
 ### nicobailon Extensions
