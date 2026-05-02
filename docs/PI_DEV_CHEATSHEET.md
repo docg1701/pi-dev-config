@@ -8,7 +8,6 @@
 
 ```bash
 pi install npm:pi-subagents
-pi install npm:pi-review-loop
 pi install npm:pi-alert
 ```
 
@@ -40,14 +39,15 @@ Fase 1: Contexto
   scout ───────────> scout.md ─────┘    
 
 Fase 2: Planejamento (plan.md ou plan-01.md, plan-02.md ... plan-N.md)
-  brief.md ──> planner ──> plan.md ──> /review-plan ──> plan.md (aprovado)
+  brief.md ──> planner ──> plan.md ──> reviewer ──> plan.md (aprovado)
 
 Fase 3: Execução (repetir para cada plan-N.md)
-  plan.md ──> worker ──> /review-start ──> outro plan.md? ──> repetir até último ──> pronto
+  plan.md ──> worker ──> reviewer ──> outro plan.md? ──> repetir até último ──> pronto
 ```
 
-> `/review-plan` e `/review-start` são loops: corrigem e repetem até "No issues found".
-> Arquivos em `docs/` por convenção. Oracle (opcional) entre planner e /review-plan.
+> O `reviewer` revisa e corrige até "No issues found". Para múltiplas passadas,
+> use uma chain: `/chain reviewer -> reviewer -> reviewer`.
+> Arquivos em `docs/` por convenção. Oracle (opcional) entre planner e reviewer.
 
 ### Passo a passo
 
@@ -104,10 +104,11 @@ Peça ao agente principal juntar tudo em `docs/brief.md`:
 **6. Revisão do plano**
 
 ```
-"/review-plan leia docs/plan.md e compare com a codebase"
+"Use o reviewer para revisar docs/plan.md contra a codebase.
+ Encontre inconsistências e corrija."
 ```
 
-O review loop lê o plano contra a codebase, encontra inconsistências, corrige, repete até "No issues found."
+O reviewer lê o plano contra a codebase, encontra inconsistências, corrige.
 
 Se o plano envolver decisões arriscadas, intercale o oracle:
 
@@ -125,50 +126,62 @@ Se o plano envolver decisões arriscadas, intercale o oracle:
 **8. Revisão de código**
 
 ```
-"/review-start"
+"Use o reviewer para revisar o código implementado."
 ```
 
-O loop revisa, corrige, repete até "No issues found." Para foco específico:
+O reviewer revisa e corrige. Para foco específico:
 
 ```
-"/review-start foco tratamento de erros e edge cases"
+"Use o reviewer para revisar o código. Foco: tratamento de erros e edge cases."
 ```
 
-**9. Repita worker → review até esgotar todas as fases do plano.**
+**9. Repita worker → reviewer até esgotar todas as fases do plano.**
 
-> O worker implementa uma fase por vez. Cada fase passa pelo `/review-start`.
+> O worker implementa uma fase por vez. Cada fase passa pelo reviewer.
 > Quando "No issues found", o worker avança para a próxima fase do plano
-> (já aprovado pelo `/review-plan`). O ciclo se repete até a última fase.
+> (já aprovado pelo reviewer). O ciclo se repete até a última fase.
 
 ---
 
-## O Review Loop Explicado
+## Revisão com o Agent Reviewer
 
-É simples: o agente revisa o próprio trabalho em loop até não encontrar mais nada.
+O agente `reviewer` revisa código contra o plano, testa edge cases e corrige problemas.
+
+**Revisão única:** chame o reviewer uma vez para uma passada de revisão.
 
 ```
-/review-start              → revisa código
-/review-plan               → revisa plano/especificação
-/review-start foco X    → revisa com instrução extra
-/review-fresh on           → cada iteração vê o código com "olhos frescos"
-/review-exit               → sai manualmente
-/review-max 5              → limita a 5 iterações
-/review-status             → mostra iteração atual
+"Use o reviewer para revisar o código implementado. Compare com o plano."
 ```
 
-**Por que funciona:** O Geoffrey Huntley documentou o "Ralph Wiggum Loop" — agentes cometem erros diferentes a cada passada. A primeira revisão pega uns bugs, a segunda pega outros, a terceira mais ainda. Sair só quando genuinamente não há mais nada.
+**Múltiplas revisões:** crie uma chain com N passos de reviewer. Cada iteração é
+independente (fresh context por padrão em subagentes).
 
-**Fresh context (`/review-fresh on`):** Remove iterações anteriores do contexto. Cada passada é realmente independente. Use em revisões críticas.
+```
+/chain reviewer -> reviewer -> reviewer
+```
 
-**Configuração recomendada** (`~/.pi/agent/settings.json`):
+Ou em linguagem natural:
+
+```
+"Use uma chain com 3 reviewer agents para revisar o código em sequência.
+ Cada um deve revisar, corrigir e passar para o próximo."
+```
+
+**Por que funciona:** O Geoffrey Huntley documentou o "Ralph Wiggum Loop" — agentes
+cometem erros diferentes a cada passada. A primeira revisão pega uns bugs, a segunda
+pega outros, a terceira mais ainda. Sair só quando genuinamente não há mais nada.
+
+**Chain com modelos diferentes:** para revisões mais rigorosas, intercale modelos
+diferentes na chain:
 
 ```json
+// Exemplo: chain no settings.json ou prompt template
 {
-  "reviewerLoop": {
-    "maxIterations": 5,
-    "autoTrigger": false,
-    "freshContext": true
-  }
+  "chain": [
+    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.6" },
+    { "agent": "reviewer", "model": "ollama-cloud/deepseek-v4-pro" },
+    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.6" }
+  ]
 }
 ```
 
@@ -224,9 +237,9 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 3. "Use o scout para validar [suposição]. Grave em docs/scout.md"
 4. "Leia os arquivos em docs/ e consolide em docs/brief.md"
 5. "Use o planner para gerar um plano a partir de docs/brief.md"
-6. "/review-plan leia docs/plan.md"
+6. "Use o reviewer para revisar docs/plan.md contra a codebase"
 7. "Use o worker para implementar fase 1 do plano"
-8. "/review-start"
+8. "Use o reviewer para revisar o código implementado"
 9. [Repita 7-8 para cada fase do plano]
 ```
 
@@ -236,11 +249,11 @@ O oracle responde com: decisões herdadas, diagnóstico, drift detectado, recome
 1. "Use o scout para mapear o módulo [X]:
     código duplicado, funções longas, acoplamento. Grave em docs/"
 2. "Use o planner para criar um plano de refatoração"
-3. "/review-plan leia docs/plan.md"
+3. "Use o reviewer para revisar docs/plan.md contra a codebase"
 4. "Use o oracle para revisar o plano. O que pode quebrar em produção?"
 5. Incorpore o feedback do oracle no plano
 6. "Use o worker para implementar fase 1"
-7. "/review-start foco regressões"
+7. "Use o reviewer para revisar o código. Foco: regressões."
 8. [Repita 6-7 para cada fase. Rode os testes entre fases.]
 ```
 
@@ -282,11 +295,9 @@ Ou no teclado:
 | "Cria uma API de tasks" (vago demais) | Descreva entidades, endpoints, restrições. Deixe o planner detalhar. |
 | "Refatora tudo" (escopo infinito) | "Refatore o módulo X: extraia funções >20 linhas, remova duplicação com Y" |
 | "Arruma o bug" (sem stack trace) | Descreva o sintoma, cole o erro, indique o arquivo suspeito |
-| Pular `/review-plan` | Plano não revisado = bugs de arquitetura que custam caro depois |
-| Pular `/review-start` | Código não revisado = edge cases e erros bobos que passam |
+| Pular revisão com reviewer | Código não revisado = edge cases e erros bobos que passam |
 | Implementar tudo de uma vez | Uma fase por vez. Worker → review → worker. |
 | Confiar cegamente no plano | Use oracle para decisões de arquitetura e direção |
-| `/review-fresh off` em código crítico | Ative fresh context para revisões realmente independentes |
 | Pedir "implemente X" sem contexto | Contexto gera plano melhor. Plano melhor gera código melhor. |
 
 ---
@@ -295,13 +306,6 @@ Ou no teclado:
 
 | Comando | Efeito |
 |---------|--------|
-| `/review-start` | Inicia loop de revisão de código |
-| `/review-start foco X` | Revisão com instrução extra |
-| `/review-plan leia docs/plan.md` | Loop de revisão de plano (passe o caminho como foco) |
-| `/review-exit` | Sai do loop |
-| `/review-max N` | Limita iterações |
-| `/review-fresh on/off` | Ativa/desativa fresh context |
-| `/review-status` | Estado atual do loop |
 | `/run <agente>` | Lança um agente específico |
 | `/chain a -> b -> c` | Pipeline sequencial |
 | `/parallel a -> b` | Execução paralela |

@@ -11,7 +11,7 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 git clone git@github.com:docg1701/pi-dev-config.git ~/.pi/agent/config
 
 # Install extensions
-pi install npm:pi-review-loop
+pi install npm:pi-subagents
 pi install npm:pi-annotate
 pi install npm:pi-interview
 pi install npm:pi-prompt-template-model
@@ -65,10 +65,6 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 | Name | Description | Install |
 |------|-------------|---------|
-| `pi-review-loop` | Automated code review loop. Repeatedly prompts the agent to review until no issues remain. | `pi install npm:pi-review-loop` |
-| `pi-annotate` | Visual annotation for AI. Click elements, add comments, capture screenshots and selectors. | `pi install npm:pi-annotate` |
-| `pi-interview` | Interactive form tool to gather structured user responses with keyboard nav, themes, and image support. | `pi install npm:pi-interview` |
-| `pi-prompt-template-model` | Add model/skill/thinking frontmatter to prompt templates for automatic model switching via slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
 
 ### Official Repositories
@@ -80,9 +76,6 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 | Name | Description | Install |
 |------|-------------|---------|
-| `pi-review-loop` | Automated code review loop with smart exit detection and fresh context mode. | `pi install npm:pi-review-loop` |
-| `pi-annotate` | Visual annotation for AI with element picker, inline note cards, and screenshots. | `pi install npm:pi-annotate` |
-| `pi-interview` | Interactive form tool for structured user responses with themes and image support. | `pi install npm:pi-interview` |
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, and async support. | `pi install npm:pi-subagents` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
