@@ -26,6 +26,7 @@ pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
 pi install npm:pi-alert
+pi install npm:pi-rtk-optimizer
 
 # Install skills
 npx skills add https://github.com/upstash/context7 --skill find-docs
@@ -74,6 +75,11 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 ## Extensions
 
+> **Prerequisite for pi-rtk-optimizer:** Install the [rtk CLI](https://github.com/rtk-ai/rtk) first:
+> ```bash
+> cargo install rtk
+> ```
+
 | Name | Description | Install |
 |------|-------------|---------|
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, and async support. | `pi install npm:pi-subagents` |
@@ -88,6 +94,58 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. No local Ollama server required. | `pi install npm:pi-ollama-cloud` |
 | `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback (`osascript`, `notify-send`, PowerShell balloon, terminal bell). Shows activity summary with elapsed time. | `pi install npm:pi-alert` |
+| `pi-rtk-optimizer` | Token-optimized command rewriting and output compaction. Rewrites bash commands to `rtk` equivalents, compacts noisy tool output (ANSI stripping, test/build aggregation, git/grep grouping, smart truncation). Requires the [rtk CLI](https://github.com/rtk-ai/rtk). | `pi install npm:pi-rtk-optimizer` |
+
+## RTK Optimizer
+
+[pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) automatically rewrites bash commands through the [rtk CLI](https://github.com/rtk-ai/rtk) proxy and compacts tool output to save context tokens.
+
+### Setup
+
+```bash
+# 1. Install the rtk CLI (Rust)
+cargo install rtk
+
+# 2. Install the pi extension
+pi install npm:pi-rtk-optimizer
+
+# 3. Reload pi
+# /reload
+```
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rtk` | Open interactive settings modal |
+| `/rtk show` | Display current configuration and runtime status |
+| `/rtk verify` | Check if `rtk` binary is available to pi |
+| `/rtk stats` | Show output compaction metrics for current session |
+| `/rtk reset` | Reset all settings to defaults |
+
+### Configuration
+
+Settings are stored at `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`. Defaults:
+
+```json
+{
+  "enabled": true,
+  "mode": "rewrite",
+  "guardWhenRtkMissing": true,
+  "showRewriteNotifications": true,
+  "outputCompaction": {
+    "enabled": true,
+    "truncate": { "enabled": true, "maxChars": 12000 },
+    "aggregateTestOutput": true,
+    "filterBuildOutput": true,
+    "compactGitOutput": true,
+    "aggregateLinterOutput": true,
+    "groupSearchOutput": true
+  }
+}
+```
+
+Use `/rtk` in the pi TUI to change settings interactively.
 
 ## Themes
 

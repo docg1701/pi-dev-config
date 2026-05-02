@@ -14,7 +14,8 @@
     "npm:@eko24ive/pi-ask",
     "npm:@leonardorick/pi-web-search",
     "npm:pi-ollama-cloud",
-    "npm:pi-alert"
+    "npm:pi-alert",
+    "npm:pi-rtk-optimizer"
   ],
   "theme": "brogrammer",
   "powerline": "default",
