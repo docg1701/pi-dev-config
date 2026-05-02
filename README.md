@@ -147,6 +147,27 @@ Settings are stored at `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`. De
 
 Use `/rtk` in the pi TUI to change settings interactively.
 
+### Troubleshooting
+
+#### `rtk ls` retorna `(empty)` e confunde o modelo
+
+**Problema:** Bug conhecido do `rtk` (issue [#1418](https://github.com/rtk-ai/rtk/issues/1418)) — `rtk ls` sempre retorna `(empty)` independente do conteúdo do diretório. Quando o `pi-rtk-optimizer` reescreve `ls` → `rtk ls`, o modelo recebe saída vazia e conclui que o diretório está vazio.
+
+**Solução:** Excluir `ls` da reescrita automática via configuração do `rtk`:
+
+```toml
+# ~/.config/rtk/config.toml
+[hooks]
+exclude_commands = ["ls"]
+```
+
+Isso faz `rtk rewrite "ls ..."` retornar exit code 1, e o `pi-rtk-optimizer` mantém o comando original sem reescrever. O `git status` e demais comandos continuam otimizados normalmente.
+
+**Alternativas:**
+- Mudar para modo `suggest` (`/rtk` → `mode: suggest`) — só notifica, não reescreve
+- Usar `rtk proxy ls` em vez de `rtk ls` para bypass da compactação
+- Prefixar com `RTK_DISABLED=1` para bypass pontual
+
 ## Themes
 
 | Name | Description | Install |
