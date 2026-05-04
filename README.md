@@ -39,14 +39,11 @@ npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-au
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
 # Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
-# Variant A — ollama-cloud / DeepSeek V4 Pro (scout=flash, reviewer=Kimi):
-cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+# ollama-cloud provider:
+cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/settings.json
 
-# Variant B — opencode-go / Kimi K2.6 everywhere:
+# opencode-go provider:
 # cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
-
-# Variant C — opencode-go / DeepSeek V4 Pro (scout=flash, reviewer=Kimi):
-# cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
 ```
 
 ## Skills
@@ -207,7 +204,7 @@ When active, the "Working…" loading message is replaced with themed phrases li
 
 ### Setup
 
-All three settings variants are pre-configured with vibes. The active variant (`settings.json`) uses `ollama-cloud`:
+Both settings variants are pre-configured with vibes:
 
 ```json
 {
@@ -217,7 +214,7 @@ All three settings variants are pre-configured with vibes. The active variant (`
 }
 ```
 
-The opencode-go variants (`settings-opencode-go.json`, `settings-deepseek.json`) use `opencode-go/deepseek-v4-flash`.
+The opencode-go variant (`settings-opencode-go.json`) uses `opencode-go/deepseek-v4-flash` for vibe generation.
 
 After copying a settings file, reload pi (`/reload`). To verify:
 
@@ -261,11 +258,11 @@ All four themes use file mode — instant, zero cost, no API calls.
 
 ## Settings Variants
 
-This repository provides **three** `settings.json` variants — one for `ollama-cloud` and two for `opencode-go`.
+This repository provides **two** symmetric `settings.json` variants — identical in theme, thinking level, packages, and subagent models; only the provider differs.
 
 Pi looks for a single file at `~/.pi/agent/settings.json`. Copy the variant you want and **rename it to `settings.json`** in that directory.
 
-### Variant A: `settings.json` — Ollama Cloud (DeepSeek V4 Pro)
+### Variant A: `settings-ollama-cloud.json` — Ollama Cloud
 
 Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/deepseek-v4-pro`, with two exceptions:
 - **scout** uses `deepseek-v4-flash` ⚡ (faster/cheaper for exploration).
@@ -283,33 +280,12 @@ Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/deepseek-v4-pro`,
 | researcher | `deepseek-v4-pro` |
 
 ```bash
-cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
+cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/settings.json
 ```
 
-### Variant B: `settings-opencode-go.json` — OpenCode Go / Kimi K2.6 everywhere
+### Variant B: `settings-opencode-go.json` — OpenCode Go
 
-All eight built-in subagents use `opencode-go/kimi-k2.6`.
-
-| Subagent | Model |
-|----------|-------|
-| scout | `kimi-k2.6` |
-| planner | `kimi-k2.6` |
-| worker | `kimi-k2.6` |
-| reviewer | `kimi-k2.6` |
-| oracle | `kimi-k2.6` |
-| delegate | `kimi-k2.6` |
-| context-builder | `kimi-k2.6` |
-| researcher | `kimi-k2.6` |
-
-```bash
-cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
-```
-
-### Variant C: `settings-deepseek.json` — OpenCode Go / DeepSeek V4 Pro (with exceptions)
-
-Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
-- **scout** uses `deepseek-v4-flash` (faster/cheaper for exploration).
-- **reviewer** uses `kimi-k2.6` (fresh perspective from a different model for code review).
+Same subagent model assignments, but uses `opencode-go` provider:
 
 | Subagent | Model |
 |----------|-------|
@@ -323,7 +299,7 @@ Most subagents use `opencode-go/deepseek-v4-pro`. Two exceptions:
 | researcher | `deepseek-v4-pro` |
 
 ```bash
-cp ~/.pi/agent/config/settings-deepseek.json ~/.pi/agent/settings.json
+cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
 ```
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
@@ -435,9 +411,8 @@ This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rule
 ```
 pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
-├── settings.json                  # Variant A: ollama-cloud / DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
-├── settings-opencode-go.json      # Variant B: opencode-go / Kimi K2.6 everywhere
-├── settings-deepseek.json         # Variant C: opencode-go / DeepSeek V4 Pro (scout=flash, reviewer=Kimi)
+├── settings-ollama-cloud.json     # Variant A: ollama-cloud provider
+├── settings-opencode-go.json      # Variant B: opencode-go provider
 ├── assets/                        # Static assets (images, etc.)
 ├── docs/
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
