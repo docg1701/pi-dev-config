@@ -47,6 +47,9 @@ ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
 
 # Or activate opencode-go:
 # ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json
+
+# Install the provider switcher extension (optional, enables /provider command)
+cp ~/.pi/agent/config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
 ```
 
 ## Skills
@@ -278,15 +281,18 @@ ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
 
 ### Switching providers
 
-```bash
-# Switch to opencode-go:
-ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json
+With the `pi-provider-switcher` extension installed, use `/provider` inside pi:
 
-# Switch back to ollama-cloud:
-ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
+```
+/provider opencode-go    # Switch + auto-reload
+/provider ollama-cloud   # Switch back + auto-reload
 ```
 
-After switching, `/reload` in pi.
+Manual fallback (without the extension):
+
+```bash
+ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json  # + /reload
+```
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
@@ -435,6 +441,8 @@ pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
 ├── settings-ollama-cloud.json     # Variant A: ollama-cloud provider
 ├── settings-opencode-go.json      # Variant B: opencode-go provider
+├── extensions/
+│   └── pi-provider-switcher.ts   # /provider command to switch + auto-reload
 ├── assets/                        # Static assets (images, etc.)
 ├── docs/
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
