@@ -8,7 +8,7 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 
 ```bash
 # Clone into ~/.pi/agent/ or any project
-git clone git@github.com:docg1701/pi-dev-config.git ~/.pi/agent/config
+git clone git@github.com:docg1701/pi-dev-config.git ~/dev/pi-dev-config
 
 # Install extensions
 pi install npm:pi-subagents
@@ -39,10 +39,10 @@ npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-au
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
 # Copy the provider switcher extension
-cp ~/.pi/agent/config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
+cp ~/dev/pi-dev-config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
 
 # Install settings and activate a provider (run inside pi after /reload):
-# /provider install ~/.pi/agent/config
+# /provider install ~/dev/pi-dev-config
 # /provider ollama-cloud
 ```
 
@@ -266,13 +266,13 @@ Pi looks for a single file at `~/.pi/agent/settings.json`. The recommended appro
 
 ```bash
 # Copy the extension once, then let it handle the rest:
-cp ~/.pi/agent/config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
+cp ~/dev/pi-dev-config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
 ```
 
 After `/reload`, run:
 
 ```
-/provider install ~/.pi/agent/config      # Copies both settings-*.json to ~/.pi/agent/
+/provider install ~/dev/pi-dev-config      # Copies both settings-*.json to ~/.pi/agent/
 /provider ollama-cloud                     # Activates ollama-cloud
 ```
 
@@ -378,7 +378,7 @@ A versão publicada do `pi-ollama-cloud` pode não expor corretamente os níveis
 
 ```bash
 cd ~/.nvm/versions/node/$(node -v | cut -d'v' -f2)/lib/node_modules/pi-ollama-cloud
-patch -p0 < ~/.pi/agent/config/docs/ollama-cloud-thinking-fix.diff
+patch -p0 < ~/dev/pi-dev-config/docs/ollama-cloud-thinking-fix.diff
 ```
 
 Depois faça `/ollama-cloud-refresh` e `/reload` no pi. O patch mapeia:
