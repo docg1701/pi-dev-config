@@ -38,12 +38,15 @@ npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-au
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
-# Copy ONE of the settings variants to ~/.pi/agent/settings.json (see "Settings Variants" below)
-# ollama-cloud provider:
-cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/settings.json
+# Copy both settings variants to ~/.pi/agent/ and symlink the active one
+cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/
+cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/
 
-# opencode-go provider:
-# cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
+# Activate ollama-cloud:
+ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
+
+# Or activate opencode-go:
+# ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json
 ```
 
 ## Skills
@@ -260,7 +263,32 @@ All four themes use file mode — instant, zero cost, no API calls.
 
 This repository provides **two** symmetric `settings.json` variants — identical in theme, thinking level, packages, and subagent models; only the provider differs.
 
-Pi looks for a single file at `~/.pi/agent/settings.json`. Copy the variant you want and **rename it to `settings.json`** in that directory.
+Pi looks for a single file at `~/.pi/agent/settings.json`. The recommended approach is to keep both variant files in `~/.pi/agent/` and use a symlink to select the active one.
+
+### Setup
+
+```bash
+# Copy both variants to ~/.pi/agent/
+cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/
+cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/
+
+# Activate ollama-cloud:
+ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
+```
+
+### Switching providers
+
+```bash
+# Switch to opencode-go:
+ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json
+
+# Switch back to ollama-cloud:
+ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
+```
+
+After switching, `/reload` in pi.
+
+> **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
 ### Variant A: `settings-ollama-cloud.json` — Ollama Cloud
 
@@ -279,9 +307,6 @@ Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/deepseek-v4-pro`,
 | context-builder | `deepseek-v4-pro` |
 | researcher | `deepseek-v4-pro` |
 
-```bash
-cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/settings.json
-```
 
 ### Variant B: `settings-opencode-go.json` — OpenCode Go
 
@@ -298,9 +323,6 @@ Same subagent model assignments, but uses `opencode-go` provider:
 | context-builder | `deepseek-v4-pro` |
 | researcher | `deepseek-v4-pro` |
 
-```bash
-cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/settings.json
-```
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
