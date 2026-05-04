@@ -154,7 +154,11 @@ export default function (pi: ExtensionAPI) {
       // --- /provider install [path] ---
       if (raw.toLowerCase().startsWith("install")) {
         const rest = raw.slice("install".length).trim();
-        const sourceDir = rest || findConfigRepo(ctx.cwd) || "";
+        let sourceDir = rest || findConfigRepo(ctx.cwd) || "";
+        // Expand ~ to home directory (Node's fs doesn't resolve ~)
+        if (sourceDir.startsWith("~")) {
+          sourceDir = path.join(HOME, sourceDir.slice(sourceDir[1] === "/" ? 2 : 1));
+        }
 
         if (!sourceDir) {
           ctx.ui.notify(
