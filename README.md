@@ -370,22 +370,6 @@ Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires
 
 Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
 
-#### DeepSeek V4 thinking levels fix
-
-A versão publicada do `pi-ollama-cloud` pode não expor corretamente os níveis de thinking para modelos da família DeepSeek V4 (`deepseek4`). Sem o fix, todos os níveis (minimal/low/medium/high/xhigh) aparecem disponíveis, mas o provider só suporta `high` e `xhigh`.
-
-**Aplicar o patch:**
-
-```bash
-cd ~/.nvm/versions/node/$(node -v | cut -d'v' -f2)/lib/node_modules/pi-ollama-cloud
-patch -p0 < ~/dev/pi-dev-config/docs/ollama-cloud-thinking-fix.diff
-```
-
-Depois faça `/ollama-cloud-refresh` e `/reload` no pi. O patch mapeia:
-- `minimal`, `low`, `medium` → ocultos
-- `high` → `"high"`
-- `xhigh` → `"max"`
-
 ## Notifications
 
 [pi-alert](https://github.com/maxpetretta/pi-alert) sends a system notification when the agent finishes its turn. Notifications fire automatically after every prompt — no configuration needed.
@@ -445,7 +429,6 @@ pi-dev-config/
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
 │   ├── PI_DEV_CHEATSHEET.md             # Practical workflow guide (PT)
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
-│   ├── ollama-cloud-thinking-fix.diff   # Patch for DeepSeek V4 thinking levels in pi-ollama-cloud
 │   ├── screenshot-pi-dev.png            # Screenshot for README
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
 │   └── streamlit_extras_guide.md        # streamlit-extras complete reference guide
