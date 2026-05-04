@@ -38,18 +38,12 @@ npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-au
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
-# Copy both settings variants to ~/.pi/agent/ and symlink the active one
-cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/
-cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/
-
-# Activate ollama-cloud:
-ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
-
-# Or activate opencode-go:
-# ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json
-
-# Install the provider switcher extension (optional, enables /provider command)
+# Copy the provider switcher extension
 cp ~/.pi/agent/config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
+
+# Install settings and activate a provider (run inside pi after /reload):
+# /provider install ~/.pi/agent/config
+# /provider ollama-cloud
 ```
 
 ## Skills
@@ -271,12 +265,15 @@ Pi looks for a single file at `~/.pi/agent/settings.json`. The recommended appro
 ### Setup
 
 ```bash
-# Copy both variants to ~/.pi/agent/
-cp ~/.pi/agent/config/settings-ollama-cloud.json ~/.pi/agent/
-cp ~/.pi/agent/config/settings-opencode-go.json ~/.pi/agent/
+# Copy the extension once, then let it handle the rest:
+cp ~/.pi/agent/config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
+```
 
-# Activate ollama-cloud:
-ln -sf ~/.pi/agent/settings-ollama-cloud.json ~/.pi/agent/settings.json
+After `/reload`, run:
+
+```
+/provider install ~/.pi/agent/config      # Copies both settings-*.json to ~/.pi/agent/
+/provider ollama-cloud                     # Activates ollama-cloud
 ```
 
 ### Switching providers
