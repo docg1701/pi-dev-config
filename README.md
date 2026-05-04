@@ -77,7 +77,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 > **Prerequisite for pi-rtk-optimizer:** Install the [rtk CLI](https://github.com/rtk-ai/rtk) first:
 > ```bash
-> cargo install rtk
+> cargo install --git https://github.com/rtk-ai/rtk --locked
 > ```
 
 | Name | Description | Install |
@@ -104,7 +104,7 @@ cp ~/.pi/agent/config/settings.json ~/.pi/agent/settings.json
 
 ```bash
 # 1. Install the rtk CLI (Rust)
-cargo install rtk
+cargo install --git https://github.com/rtk-ai/rtk --locked
 
 # 2. Install the pi extension
 pi install npm:pi-rtk-optimizer
