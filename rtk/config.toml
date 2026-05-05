@@ -1,0 +1,7 @@
+[hooks]
+# Comandos que o RTK NÃO deve reescrever.
+# Motivos:
+#   ls  — bug upstream: rtk ls sempre retorna "(empty)" (issue #1418)
+#   grep, rg — bug upstream: rtk grep não mostra o conteúdo da linha matched,
+#              só retorna "linha:coluna:" vazio, quebrando a saída pro modelo.
+exclude_commands = ["ls", "grep", "rg"]

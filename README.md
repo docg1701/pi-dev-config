@@ -106,7 +106,11 @@ cargo install --git https://github.com/rtk-ai/rtk --locked
 # 2. Install the pi extension
 pi install npm:pi-rtk-optimizer
 
-# 3. Reload pi
+# 3. Copy the RTK exclusion config (prevents known bugs with ls, grep, rg rewrites)
+mkdir -p ~/.config/rtk
+cp ~/dev/pi-dev-config/rtk/config.toml ~/.config/rtk/config.toml
+
+# 4. Reload pi
 # /reload
 ```
 
@@ -164,6 +168,30 @@ Isso faz `rtk rewrite "ls ..."` retornar exit code 1, e o `pi-rtk-optimizer` man
 - Mudar para modo `suggest` (`/rtk` → `mode: suggest`) — só notifica, não reescreve
 - Usar `rtk proxy ls` em vez de `rtk ls` para bypass da compactação
 - Prefixar com `RTK_DISABLED=1` para bypass pontual
+
+#### `rtk grep` retorna `linha:coluna:` sem o conteúdo matched
+
+**Problema:** Bug do `rtk` v0.38.0 — `rtk grep` mostra o número da linha e coluna mas **omite o texto da linha** após os `:`. Exemplo:
+
+```
+# grep nativo:
+4:class TestSomething:
+
+# rtk grep (quebrado):
+4:0:
+```
+
+Sem o conteúdo da linha, o modelo perde contexto essencial (nomes de classes, funções, valores).
+
+**Solução:** Excluir `grep` e `rg` junto com `ls` no `exclude_commands` do RTK:
+
+```toml
+# ~/.config/rtk/config.toml
+[hooks]
+exclude_commands = ["ls", "grep", "rg"]
+```
+
+O arquivo `rtk/config.toml` neste repositório já contém essa configuração pronta para copiar.
 
 ## Themes
 
@@ -432,6 +460,8 @@ pi-dev-config/
 │   ├── screenshot-pi-dev.png            # Screenshot for README
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
 │   └── streamlit_extras_guide.md        # streamlit-extras complete reference guide
+├── rtk/
+│   └── config.toml               # RTK exclude list: ls, grep, rg (bypass known bugs)
 ├── vibes/
 │   ├── startrek.txt               # Startrek: 99 phrases
 │   ├── klingon.txt                # Klingon + translations: 26 phrases
