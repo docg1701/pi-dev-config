@@ -35,28 +35,36 @@
   "subagents": {
     "agentOverrides": {
       "scout": {
-        "model": "opencode-go/deepseek-v4-flash"
+        "model": "opencode-go/deepseek-v4-flash",
+        "thinking": "xhigh"
       },
       "planner": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "worker": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "reviewer": {
-        "model": "opencode-go/kimi-k2.6"
+        "model": "opencode-go/kimi-k2.6",
+        "thinking": "high"
       },
       "oracle": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "context-builder": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "researcher": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "delegate": {
-        "model": "opencode-go/deepseek-v4-pro"
+        "model": "opencode-go/deepseek-v4-pro",
+        "thinking": "xhigh"
       }
     }
   }
