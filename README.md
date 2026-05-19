@@ -432,6 +432,32 @@ When no terminal-native transport is available, pi-alert falls back to the OS:
 | Windows | PowerShell `NotifyIcon` balloon notification |
 | Final resort | Terminal bell (`BEL`) |
 
+## Ghostty
+
+Configuração do terminal Ghostty para desenvolvimento com pi.
+
+### Arquivos
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `ghostty/config.ghostty` | Tema GitHub Dark, JetBrains Mono 12px, cursor barra piscante, padding 8x4, shell integration |
+| `ghostty/SSH_NERD_FONT.md` | Guia para ícones Nerd Font funcionarem via SSH (Ghostty → VPS) |
+
+### SSH Nerd Font
+
+Para o `pi-powerline-footer` mostrar ícones corretamente ao conectar em VPS via SSH:
+
+1. **Local** — a config já inclui `ssh-env` no `shell-integration-features`
+2. **VPS** — adicionar `TERM_PROGRAM TERM_PROGRAM_VERSION` no `AcceptEnv` do sshd (ver `ghostty/SSH_NERD_FONT.md`)
+
+### Copiar para o sistema
+
+```bash
+cp ~/dev/pi-dev-config/ghostty/config.ghostty ~/.config/ghostty/config.ghostty
+```
+
+Reinicie o Ghostty completamente após copiar.
+
 ## Context & Rules
 
 Pi loads two kinds of instruction files at startup:
@@ -462,6 +488,9 @@ pi-dev-config/
 │   └── streamlit_extras_guide.md        # streamlit-extras complete reference guide
 ├── rtk/
 │   └── config.toml               # RTK exclude list: ls, grep, rg (bypass known bugs)
+├── ghostty/
+│   ├── config.ghostty             # Tema GitHub Dark, JetBrains Mono, shell integration
+│   └── SSH_NERD_FONT.md           # Guia de Nerd Fonts via SSH
 ├── vibes/
 │   ├── startrek.txt               # Startrek: 99 phrases
 │   ├── klingon.txt                # Klingon + translations: 26 phrases

@@ -1,0 +1,56 @@
+# =============================================================================
+# Ghostty Configuration
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+theme = "GitHub Dark"
+
+# ---------------------------------------------------------------------------
+# Font
+# ---------------------------------------------------------------------------
+font-family = JetBrains Mono
+font-size = 12
+
+# Ligatures (calt + liga are on by default in JetBrains Mono, explicit for clarity)
+font-feature = calt
+font-feature = liga
+
+# ---------------------------------------------------------------------------
+# Window
+# ---------------------------------------------------------------------------
+window-padding-x = 8
+window-padding-y = 4
+
+# Initial window size (columns x rows)
+window-width = 100
+window-height = 32
+
+# Always start in home directory
+working-directory = home
+window-inherit-working-directory = false
+
+# ---------------------------------------------------------------------------
+# Cursor
+# ---------------------------------------------------------------------------
+cursor-style = bar
+cursor-style-blink = true
+
+# ---------------------------------------------------------------------------
+# Mouse
+# ---------------------------------------------------------------------------
+mouse-hide-while-typing = true
+
+
+# ---------------------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------------------
+clipboard-read = ask
+clipboard-write = allow
+copy-on-select = clipboard
+confirm-close-surface = false
+quick-terminal-position = top
+
+# Shell integration features
+shell-integration-features = cursor, path, title, ssh-terminfo, ssh-env, sudo
