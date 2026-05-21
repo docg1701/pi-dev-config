@@ -323,20 +323,21 @@ ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json  # + /rel
 
 ### Variant A: `settings-ollama-cloud.json` — Ollama Cloud
 
-Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/deepseek-v4-pro`, with two exceptions:
-- **scout** uses `deepseek-v4-flash` ⚡ (faster/cheaper for exploration).
-- **reviewer** uses `kimi-k2.6` 🔍 (fresh perspective from a different model for code review).
+Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/kimi-k2.6` with `thinking: high`, with one exception:
+- **scout** uses `deepseek-v4-flash` with `thinking: xhigh` ⚡ (faster/cheaper for exploration).
 
 | Subagent | Model |
 |----------|-------|
 | scout | `deepseek-v4-flash` ⚡ |
-| planner | `deepseek-v4-pro` |
-| worker | `deepseek-v4-pro` |
-| reviewer | `kimi-k2.6` 🔍 |
-| oracle | `deepseek-v4-pro` |
-| delegate | `deepseek-v4-pro` |
-| context-builder | `deepseek-v4-pro` |
-| researcher | `deepseek-v4-pro` |
+| planner | `kimi-k2.6` |
+| worker | `kimi-k2.6` |
+| reviewer | `kimi-k2.6` |
+| oracle | `kimi-k2.6` |
+| delegate | `kimi-k2.6` |
+| context-builder | `kimi-k2.6` |
+| researcher | `kimi-k2.6` |
+
+> **Thinking rule:** `deepseek` models → `xhigh`; `kimi` models → `high`.
 
 
 ### Variant B: `settings-opencode-go.json` — OpenCode Go
@@ -346,13 +347,15 @@ Same subagent model assignments, but uses `opencode-go` provider:
 | Subagent | Model |
 |----------|-------|
 | scout | `deepseek-v4-flash` ⚡ |
-| planner | `deepseek-v4-pro` |
-| worker | `deepseek-v4-pro` |
-| reviewer | `kimi-k2.6` 🔍 |
-| oracle | `deepseek-v4-pro` |
-| delegate | `deepseek-v4-pro` |
-| context-builder | `deepseek-v4-pro` |
-| researcher | `deepseek-v4-pro` |
+| planner | `kimi-k2.6` |
+| worker | `kimi-k2.6` |
+| reviewer | `kimi-k2.6` |
+| oracle | `kimi-k2.6` |
+| delegate | `kimi-k2.6` |
+| context-builder | `kimi-k2.6` |
+| researcher | `kimi-k2.6` |
+
+> **Thinking rule:** `deepseek` models → `xhigh`; `kimi` models → `high`.
 
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
