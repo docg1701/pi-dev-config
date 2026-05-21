@@ -40,11 +40,11 @@
       },
       "planner": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       },
       "worker": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       },
       "reviewer": {
         "model": "ollama-cloud/kimi-k2.6",
@@ -52,19 +52,19 @@
       },
       "oracle": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       },
       "context-builder": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       },
       "researcher": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       },
       "delegate": {
         "model": "ollama-cloud/kimi-k2.6",
-        "thinking": "xhigh"
+        "thinking": "high"
       }
     }
   }
