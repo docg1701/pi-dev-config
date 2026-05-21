@@ -5,7 +5,7 @@
     "npm:pi-extension-manager",
     "npm:pi-mcp-adapter",
     "npm:pi-smart-fetch",
-    "npm:pi-bar",
+    "npm:pi-glance",
     "npm:@victor-software-house/pi-curated-themes",
     "npm:pi-interview",
     "npm:pi-subagents",

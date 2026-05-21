@@ -21,7 +21,7 @@ pi install npm:pi-extension-manager
 pi install npm:pi-mcp-adapter
 pi install npm:pi-mermaid
 pi install npm:pi-smart-fetch
-pi install npm:pi-bar
+pi install npm:pi-glance
 pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
@@ -86,7 +86,7 @@ cp ~/dev/pi-dev-config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions
 | `pi-mcp-adapter` | Token-efficient MCP proxy. Lazy servers, cached metadata. | `pi install npm:pi-mcp-adapter` |
 | `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
-| `pi-bar` | Configurable status line with git, context, tokens, model vibes, and more. | `pi install npm:pi-bar` |
+| `pi-glance` | Calm input surface with rounded multiline editor and inline status (model · context · tokens · cost · git). 10 built-in themes. | `pi install npm:pi-glance` |
 | `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. No local Ollama server required. | `pi install npm:pi-ollama-cloud` |
@@ -448,7 +448,7 @@ Configuração do terminal Ghostty para desenvolvimento com pi.
 
 ### SSH Nerd Font
 
-Para o `pi-bar` mostrar ícones corretamente ao conectar em VPS via SSH:
+Para o status line mostrar ícones corretamente ao conectar em VPS via SSH:
 
 1. **Local** — a config já inclui `ssh-env` no `shell-integration-features`
 2. **VPS** — adicionar `TERM_PROGRAM TERM_PROGRAM_VERSION` no `AcceptEnv` do sshd (ver `ghostty/SSH_NERD_FONT.md`)
