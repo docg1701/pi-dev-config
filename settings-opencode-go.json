@@ -25,45 +25,45 @@
   "defaultThinkingLevel": "xhigh",
   "quietStartup": true,
   "enabledModels": [
-    "opencode-go/deepseek-v4-pro",
-    "opencode-go/deepseek-v4-flash",
-    "opencode-go/kimi-k2.6"
+    "deepseek-v4-pro",
+    "deepseek-v4-flash",
+    "kimi-k2.6"
   ],
   "workingVibe": "startrek",
   "workingVibeMode": "file",
-  "workingVibeModel": "opencode-go/deepseek-v4-flash",
+  "workingVibeModel": "deepseek-v4-flash",
   "subagents": {
     "agentOverrides": {
       "scout": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "deepseek-v4-flash",
         "thinking": "xhigh"
       },
       "planner": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       },
       "worker": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       },
       "reviewer": {
-        "model": "opencode-go/kimi-k2.6",
+        "model": "kimi-k2.6",
         "thinking": "high"
       },
       "oracle": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       },
       "context-builder": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       },
       "researcher": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       },
       "delegate": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "deepseek-v4-pro",
         "thinking": "high"
       }
     }
