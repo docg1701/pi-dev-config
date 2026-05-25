@@ -1,7 +1,22 @@
 [hooks]
 # Comandos que o RTK NÃO deve reescrever.
-# Motivos:
-#   ls  — bug upstream: rtk ls sempre retorna "(empty)" (issue #1418)
-#   grep, rg — bug upstream: rtk grep não mostra o conteúdo da linha matched,
-#              só retorna "linha:coluna:" vazio, quebrando a saída pro modelo.
-exclude_commands = ["ls", "grep", "rg"]
+# Cada exclusão tem um bug upstream documentado que causa perda de dados ou falha.
+#
+#   ls    — bug: rtk ls sempre retorna "(empty)" (issues #1418, #1566)
+#            → perda total de informação: diretório com arquivos aparece vazio
+#   grep  — bug: rtk grep omite o texto da linha matched, só mostra "linha:coluna:"
+#   rg    — bug: mesmo que grep; ripgrep perde o conteúdo das linhas
+#   find  — bug: não suporta predicados compostos como -not, -exec, -delete (issue #664)
+#            → erro em tempo de execução: "rtk find does not support compound predicates"
+#   cat   — bug: cat com múltiplos arquivos reescreve para rtk read (que só aceita 1 arquivo)
+#            → erro ou fallback silencioso para /usr/bin/read (issue #989)
+#            também: flags incompatíveis como -v, -A, -e, -t, -s (commit 2fce6bf)
+#   head  — bug: head -N com múltiplos arquivos gera rtk read inválido (issue #1362)
+#            → /usr/bin/read interpreta nome de arquivo como variável: "not a valid identifier"
+#   tail  — bug: tail -N (forma curta) produz rtk read -N inválido; deveria ser -n N (issue #1108)
+#            → erro de argumento inválido no rtk
+#   curl  — bug: filtro curl do RTK converte JSON para schema (tipos em vez de valores)
+#            → quebra qualquer uso que precise dos dados JSON reais (issue #219)
+#   npx   — bug: RTK prefixa algo que quebra completamente comandos npx (discussion #1557)
+#            → erro "Unknown command" mesmo com comandos válidos
+exclude_commands = ["ls", "grep", "rg", "find", "cat", "head", "tail", "curl", "npx"]
