@@ -38,12 +38,8 @@ npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-au
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
-# Copy the provider switcher extension
-cp ~/dev/pi-dev-config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
-
-# Install settings and activate a provider (run inside pi after /reload):
-# /provider install ~/dev/pi-dev-config
-# /provider ollama-cloud
+# Copy settings
+cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 ```
 
 ## Skills
@@ -232,19 +228,17 @@ When active, the "Working…" loading message is replaced with themed phrases li
 
 ### Setup
 
-Both settings variants are pre-configured with vibes:
+The `settings.json` is pre-configured with vibes:
 
 ```json
 {
   "workingVibe": "startrek",
   "workingVibeMode": "file",
-  "workingVibeModel": "ollama-cloud/deepseek-v4-flash"
+  "workingVibeModel": "deepseek-v4-flash"
 }
 ```
 
-The opencode-go variant (`settings-opencode-go.json`) uses `opencode-go/deepseek-v4-flash` for vibe generation.
-
-After copying a settings file, reload pi (`/reload`). To verify:
+After copying `settings.json` to `~/.pi/agent/`, reload pi (`/reload`). To verify:
 
 ```
 /vibe
@@ -284,93 +278,36 @@ This repo includes a pre-generated `vibes/startrek.txt` so you don't need to wor
 
 All four themes use file mode — instant, zero cost, no API calls.
 
-## Settings Variants
+## Settings
 
-This repository provides **two** symmetric `settings.json` variants — identical in theme, thinking level, packages, and subagent models; only the provider differs.
-
-Pi looks for a single file at `~/.pi/agent/settings.json`. The recommended approach is to keep both variant files in `~/.pi/agent/` and use a symlink to select the active one.
+Pi looks for a single file at `~/.pi/agent/settings.json`. This repository provides a pre-configured `settings.json` using the **Ollama Cloud** provider.
 
 ### Setup
 
 ```bash
-# Copy the extension once, then let it handle the rest:
-cp ~/dev/pi-dev-config/extensions/pi-provider-switcher.ts ~/.pi/agent/extensions/
+cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 ```
 
-After `/reload`, run:
-
-```
-/provider install ~/dev/pi-dev-config      # Copies both settings-*.json to ~/.pi/agent/
-/provider ollama-cloud                     # Activates ollama-cloud
-```
-
-### Switching providers
-
-With the `pi-provider-switcher` extension installed, use `/provider` inside pi:
-
-```
-/provider opencode-go    # Switch + auto-reload
-/provider ollama-cloud   # Switch back + auto-reload
-```
-
-Manual fallback (without the extension):
-
-```bash
-ln -sf ~/.pi/agent/settings-opencode-go.json ~/.pi/agent/settings.json  # + /reload
-```
+After copying, reload pi (`/reload`).
 
 > **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
-### Variant A: `settings-ollama-cloud.json` — Ollama Cloud
+### Subagent models
 
-Uses `ollama-cloud` provider. Most subagents use `ollama-cloud/kimi-k2.6` with `thinking: high`, with one exception:
-- **scout** uses `deepseek-v4-flash` with `thinking: xhigh` ⚡ (faster/cheaper for exploration).
-
-| Subagent | Model |
-|----------|-------|
-| scout | `deepseek-v4-flash` ⚡ |
-| planner | `kimi-k2.6` |
-| worker | `kimi-k2.6` |
-| reviewer | `kimi-k2.6` |
-| oracle | `kimi-k2.6` |
-| delegate | `kimi-k2.6` |
-| context-builder | `kimi-k2.6` |
-| researcher | `kimi-k2.6` |
+| Subagent | Model | Thinking |
+|----------|-------|----------|
+| scout | `deepseek-v4-flash` ⚡ | `xhigh` |
+| planner | `deepseek-v4-pro` | `xhigh` |
+| worker | `deepseek-v4-pro` | `xhigh` |
+| reviewer | `kimi-k2.6` | `high` |
+| oracle | `deepseek-v4-pro` | `xhigh` |
+| delegate | `deepseek-v4-pro` | `xhigh` |
+| context-builder | `deepseek-v4-pro` | `xhigh` |
+| researcher | `deepseek-v4-pro` | `xhigh` |
 
 > **Thinking rule:** `deepseek` models → `xhigh`; `kimi` models → `high`.
-
-
-### Variant B: `settings-opencode-go.json` — OpenCode Go
-
-Same subagent model assignments, but uses `opencode-go` provider:
-
-| Subagent | Model |
-|----------|-------|
-| scout | `deepseek-v4-flash` ⚡ |
-| planner | `kimi-k2.6` |
-| worker | `kimi-k2.6` |
-| reviewer | `kimi-k2.6` |
-| oracle | `kimi-k2.6` |
-| delegate | `kimi-k2.6` |
-| context-builder | `kimi-k2.6` |
-| researcher | `kimi-k2.6` |
-
-> **Thinking rule:** `deepseek` models → `xhigh`; `kimi` models → `high`.
-
-
-> **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
 
 ## Provider Setup
-
-### OpenCode Go
-
-Set your OpenCode Go API key as an environment variable:
-
-```bash
-export OPENCODE_GO_API_KEY="your-opencode-go-api-key"
-```
-
-Pi.dev now ships with DeepSeek V4 Pro and Flash built into the `opencode-go` provider signature — no custom `models.json` needed.
 
 ### Ollama Cloud
 
@@ -477,10 +414,7 @@ This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rule
 ```
 pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
-├── settings-ollama-cloud.json     # Variant A: ollama-cloud provider
-├── settings-opencode-go.json      # Variant B: opencode-go provider
-├── extensions/
-│   └── pi-provider-switcher.ts   # /provider command to switch + auto-reload
+├── settings.json                  # Pre-configured pi settings (Ollama Cloud provider)
 ├── assets/                        # Static assets (images, etc.)
 ├── docs/
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)

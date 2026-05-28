@@ -40,11 +40,11 @@
       },
       "planner": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       },
       "worker": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       },
       "reviewer": {
         "model": "kimi-k2.6",
@@ -52,19 +52,19 @@
       },
       "oracle": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       },
       "context-builder": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       },
       "researcher": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       },
       "delegate": {
         "model": "deepseek-v4-pro",
-        "thinking": "high"
+        "thinking": "xhigh"
       }
     }
   }
