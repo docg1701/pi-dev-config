@@ -463,6 +463,17 @@ Pi loads two kinds of instruction files at startup:
 
 This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rules. Copy it once to your global config. For project-specific instructions, create `AGENTS.md` at the project root — no example is included here because it should be customized per project (tech stack, build commands, team conventions, etc.).
 
+### AGENTS.md Best Practices
+
+See `docs/research/AGENTS.md-analysis-20260529.md` for a comprehensive research report (14 sources, 6 core areas). Key takeaways:
+
+- **6 core areas** every AGENTS.md should cover: Commands, Testing, Project Structure, Code Style, Git Workflow, Boundaries
+- **Commands at the top** with exact flags, copy-pasteable — highest-ROI section
+- **Boundaries with 3 levels** (✅ Always / ⚠️ Ask first / 🚫 Never) — single most effective constraint pattern
+- **Code examples over descriptions** — one real snippet beats three paragraphs
+- **≤150-180 linhas** é o sweet spot — cada linha extra consome tokens do context window
+- **Sem changelog ou documentação humana** — AGENTS.md é runtime instruction set, README.md é pra humanos
+
 ## Structure
 
 ```
@@ -476,7 +487,9 @@ pi-dev-config/
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
 │   ├── screenshot-pi-dev.png            # Screenshot for README
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
-│   └── streamlit_extras_guide.md        # streamlit-extras complete reference guide
+│   ├── streamlit_extras_guide.md        # streamlit-extras complete reference guide
+│   └── research/
+│       └── AGENTS.md-analysis-20260529.md  # AGENTS.md industry standard research (14 sources)
 ├── rtk/
 │   └── config.toml               # RTK exclude list: ls, grep, rg (bypass known bugs)
 ├── ghostty/
