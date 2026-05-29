@@ -34,6 +34,7 @@ npx skills add https://github.com/199-biotechnologies/claude-deep-research-skill
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit
 npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation
+npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -53,7 +54,58 @@ cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 | `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add https://github.com/vercel-labs/skills --skill find-skills` |
 | `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit` |
 | `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. Deploy apps, patch/configure servers. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
+| `product-marketing` | Create/update product marketing context document (`.agents/product-marketing.md`). Foundation for all other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
+
+### Marketing Skills
+
+All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/marketingskills). Install the full suite with `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing`.
+
+| Name | Description |
+|------|-------------|
+| `product-marketing` | Create `.agents/product-marketing.md` for foundational positioning and messaging context. Use first before other marketing skills. |
+| `marketing-ideas` | 139 proven marketing ideas for SaaS. Inspiration and growth tactics. |
+| `content-strategy` | Plan content strategy, topic clusters, editorial calendar, and content pillars. |
+| `copywriting` | Write or improve marketing copy for homepages, landing pages, pricing, and product pages. |
+| `copy-editing` | Edit, review, and tighten existing marketing copy. |
+| `seo-audit` | Technical and on-page SEO audits. diagnose ranking issues. |
+| `programmatic-seo` | Create SEO-driven pages at scale using templates and data. |
+| `ai-seo` | Optimize content for AI search engines and LLM citations. |
+| `schema` | Add, fix, or optimize schema markup and structured data. |
+| `site-architecture` | Plan and restructure page hierarchy, navigation, URL structure, and internal linking. |
+| `analytics` | Set up, improve, or audit analytics tracking and measurement (GA4, GTM, Mixpanel, Segment). |
+| `ab-testing` | Plan, design, and implement A/B tests and growth experimentation programs. |
+| `cro` | Conversion rate optimization for landing pages, forms, and marketing pages. |
+| `signup` | Optimize signup, registration, and trial activation flows. |
+| `onboarding` | Optimize post-signup onboarding, user activation, and time-to-value. |
+| `paywalls` | Create and optimize in-app paywalls, upgrade screens, and upsell modals. |
+| `churn-prevention` | Build cancellation flows, save offers, dunning, and retention strategies. |
+| `pricing` | Pricing decisions, packaging, and monetization strategy. |
+| `ads` | Paid advertising campaigns (Google Ads, Meta, LinkedIn, Twitter/X). |
+| `ad-creative` | Generate and iterate ad copy, headlines, and creative variations at scale. |
+| `social` | Social media content creation, scheduling, and optimization (LinkedIn, Twitter/X, Instagram, TikTok). |
+| `video` | Create and produce video content with AI tools and programmatic frameworks. |
+| `image` | Create, generate, edit, or optimize marketing images and brand assets. |
+| `emails` | Email sequences, drip campaigns, lifecycle email programs, and nurture flows. |
+| `cold-email` | B2B cold emails and follow-up sequences that get replies. |
+| `sms` | SMS/MMS marketing flows, abandoned cart texts, and promotional sends. |
+| `popups` | Popups, modals, overlays, slide-ins, and banners for conversion. |
+| `lead-magnets` | Create and optimize lead magnets for email capture and lead generation. |
+| `free-tools` | Plan and build free tools for lead generation, SEO value, and brand awareness. |
+| `launch` | Product launch, feature announcement, and go-to-market strategy. |
+| `directory-submissions` | Submit product to startup/SaaS/AI directories for backlinks and discovery. |
+| `referrals` | Create and optimize referral, affiliate, and word-of-mouth programs. |
+| `co-marketing` | Find co-marketing partners and plan joint campaigns. |
+| `community-marketing` | Build and leverage online communities for product growth and brand loyalty. |
+| `competitor-profiling` | Research, profile, and analyze competitors from their URLs. |
+| `competitors` | Create competitor comparison and alternative pages for SEO and sales enablement. |
+| `prospecting` | Find, qualify, and build lists of B2B prospects. |
+| `sales-enablement` | Create sales collateral, pitch decks, one-pagers, objection handling, and demo scripts. |
+| `revops` | Revenue operations, lead lifecycle management, and marketing-to-sales handoff. |
+| `customer-research` | Conduct, analyze, and synthesize customer research, interviews, and surveys. |
+| `aso` | Audit and optimize App Store and Google Play listings. |
+| `marketing-psychology` | Apply psychological principles and behavioral science to marketing. |
+| `launch` | Product launch, feature announcement, and release strategy. |
 
 ### nicobailon Extensions
 
