@@ -390,6 +390,8 @@ Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires
 
 Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
 
+> **Recomendação:** Dê `/ollama-webtools off` para desligar o `ollama_web_search` e o `ollama_web_fetch`. Eles são inferiores ao `web_search` do DuckDuckGo (`@leonardorick/pi-web-search`) e ao `web_fetch` com TLS fingerprinting (`pi-smart-fetch`) — o Ollama tende a preferir as próprias tools quando estão disponíveis, mesmo que os resultados sejam piores. Com `/ollama-webtools off`, o modelo usa automaticamente as tools superiores.
+
 ## Notifications
 
 [pi-alert](https://github.com/maxpetretta/pi-alert) sends a system notification when the agent finishes its turn. Notifications fire automatically after every prompt — no configuration needed.
