@@ -35,6 +35,7 @@ npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit
 npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation
 npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing
+npx skills add https://github.com/obra/superpowers --skill systematic-debugging
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -55,6 +56,7 @@ cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 | `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit` |
 | `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. Deploy apps, patch/configure servers. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
 | `product-marketing` | Create/update product marketing context document (`.agents/product-marketing.md`). Foundation for all other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
+| `systematic-debugging` | 4-phase root cause debugging. Find root cause before attempting fixes. Includes root-cause-tracing, defense-in-depth, condition-based-waiting. | `npx skills add https://github.com/obra/superpowers --skill systematic-debugging` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
 ### Marketing Skills
