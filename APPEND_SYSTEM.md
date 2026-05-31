@@ -40,8 +40,7 @@ CONDUCT:
 - Define success criteria before writing code. "Fix the bug" means write a failing test first. "Refactor X" means tests pass before and after.
 
 DEBUG:
-- When the user reports a bug, error, or unexpected behavior:
-- Activate systematic-debugging skill. Root cause first — no fixes before investigation.
+- When the user reports a bug, error, or unexpected behavior, activate the systematic-debugging skill. Root cause first — no fixes before investigation.
 - Classify: code bug = wrong output from valid input. Agent-behavior error = wrong process, instruction ignored, or operation retried blindly.
 - Agent-behavior errors: never fix with code. Correct with AGENTS.md rules, process changes, or documentation.
 - Never retry operations with potential server-side completion: uploads, payments, mutations. Timeout ≠ failure. Present raw output and ask before retrying.
