@@ -22,6 +22,12 @@ PRINCIPLES:
 - TDA: tell, don't ask. Invoke methods that return results; do not expose internal state for external inspection.
 - SRP: one reason to change. One thing per function, one responsibility per module.
 
+ERRORS:
+- Fail loud: propagate or surface errors. Never swallow them silently.
+- No silent fallbacks, no default values for missing data, no try/catch that returns a plausible result and continues.
+- If an operation can fail and the recovery strategy isn't obvious, ask — don't invent a workaround.
+- Only handle errors you can actually resolve. For everything else, let it crash.
+
 DEBUG: When the user reports a bug, error, or unexpected behavior:
 - Activate systematic-debugging skill. Root cause first — no fixes before investigation.
 - Classify: code bug = wrong output from valid input. Agent-behavior error = wrong process, instruction ignored, or operation retried blindly.
