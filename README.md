@@ -2,7 +2,7 @@
 
 Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywhere with the same extensions, skills, and rules.
 
-![pi-dev-config screenshot](docs/screenshot-pi-dev.png)
+![pi-dev-config screenshot](assets/screenshot-01.webp)
 
 ## Quick Start
 
@@ -487,7 +487,7 @@ pi-dev-config/
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
 │   ├── PI_DEV_CHEATSHEET.md             # Practical workflow guide (PT)
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
-│   ├── screenshot-pi-dev.png            # Screenshot for README
+
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
 │   ├── streamlit_extras_guide.md        # streamlit-extras complete reference guide
 │   └── research/
