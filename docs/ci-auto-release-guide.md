@@ -283,6 +283,42 @@ compara o lockfile com o `pyproject.toml` e falha se estiverem dessincronizados.
 Para corrigir localmente, execute `uv lock` e commite o `uv.lock` atualizado junto
 com o bump de versão.
 
+### 9. `__version__` hardcoded em `__init__.py` e testes quebra todo bump
+
+**Problema**: muitos projetos mantêm `__version__ = "X.Y.Z"` hardcoded no
+`__init__.py`, além do `version` no `pyproject.toml`. Testes que importam
+`from pacote import __version__` e fazem `assert __version__ == "1.2.3"` quebram
+a cada bump de versão. O CI que roda após o bump detecta a inconsistência e falha.
+
+**Solução**: eliminar a dupla fonte de verdade. Usar `importlib.metadata.version()`
+no `__init__.py` e nos testes verificar apenas que `__version__` é uma string não-vazia
+(ou comparar com `importlib.metadata.version("nome-do-pacote")`).
+
+```python
+# src/pacote/__init__.py
+from importlib.metadata import version
+
+__version__ = version("nome-do-pacote")
+```
+
+```python
+# tests/test_scaffold.py
+def test_version() -> None:
+    assert isinstance(__version__, str)
+    assert len(__version__) > 0
+```
+
+Se o CLI usa `click.version_option(package_name="...")`, o teste de flag deve
+usar `__version__` em vez de string hardcoded:
+
+```python
+def test_version_flag(self) -> None:
+    runner = click.testing.CliRunner()
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert __version__ in result.output  # nunca "1.2.3"
+```
+
 ## Variantes
 
 ### Projeto sem `uv.lock`
