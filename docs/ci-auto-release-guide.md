@@ -59,6 +59,7 @@ jobs:
             **/pyproject.toml
             **/uv.lock
 
+      - run: uv lock --check
       - run: uv run --frozen pytest -v
 
   release:
@@ -264,6 +265,23 @@ remove linhas iniciadas com ele. `## What's new` é removido.
 
 **Solução**: usar `gh release create --notes-file` com o arquivo já completo
 (anotação + changelog categorizado), eliminando a ambiguidade.
+
+### 8. `uv.lock` fica dessincronizado após bump de versão
+
+**Problema**: ao alterar `version` no `pyproject.toml`, o `uv.lock` mantém a versão
+anterior internamente. O `uv run --frozen` não detecta essa inconsistência — ele só
+impede que o lockfile seja modificado, não valida que ele está em sync com o
+`pyproject.toml`.
+
+**Solução**: adicionar `uv lock --check` antes dos testes no CI. Esse comando
+compara o lockfile com o `pyproject.toml` e falha se estiverem dessincronizados.
+
+```yaml
+- run: uv lock --check
+```
+
+Para corrigir localmente, execute `uv lock` e commite o `uv.lock` atualizado junto
+com o bump de versão.
 
 ## Variantes
 
