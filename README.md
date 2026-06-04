@@ -189,12 +189,26 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 
 | Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
 |-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | yes | yes | 524k | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
-| `nemotron-3-ultra` | 550B | no | yes | 262k | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
-| `deepseek-v4-pro` | 1.6T | no | yes | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
+| `minimax-m3` | undisclosed | yes | yes | 512K | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
+| `nemotron-3-ultra` | 550B | no | yes | 256K | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
+| `deepseek-v4-pro` | undisclosed | no | yes | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
 | `deepseek-v4-flash` | 158B | no | yes | 1M | low (2/4) | Scout (fast, cheap) |
-| `kimi-k2.6` | 1.042T | yes | yes | 262k | high (3/4) | Vision-capable 1T-class option |
-| `glm-5.1` | 756B | no | yes | 202k | high (3/4) | Alternative training distribution |
+| `kimi-k2.6` | 1.04T | yes | yes | 256K | high (3/4) | Vision-capable 1T-class option |
+| `glm-5.1` | 756B | no | yes | 198K | high (3/4) | Alternative training distribution |
+
+> **⚠️ Context window may expand without notice.** Two models in this catalog are
+> currently capped below the vendor's advertised limit by the Ollama Cloud provider:
+>
+> | Model | Ollama Cloud (current) | Vendor (advertised) | Source |
+> |---|---|---|---|
+> | `minimax-m3` | 512K | 1M (guaranteed minimum per the vendor) | [MiniMax docs](https://www.minimax.io/models/text/m3) |
+> | `nemotron-3-ultra` | 256K | 1M | [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b) |
+>
+> When Ollama Cloud raises these limits, re-run `/ollama-cloud-refresh` in pi and
+> update the `Context` column in this table to match the live value reported in
+> `~/.pi/agent/cache/ollama-cloud-models.json`. If a model stops being available
+> entirely, re-validate the subagent mappings in
+> [Subagent models](#subagent-models) against whatever replaces it.
 
 ### Subagent models
 
