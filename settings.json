@@ -46,7 +46,7 @@
         "thinking": "high"
       },
       "worker": {
-        "model": "nemotron-3-ultra",
+        "model": "minimax-m3",
         "thinking": "high"
       },
       "reviewer": {
@@ -62,7 +62,7 @@
         "thinking": "xhigh"
       },
       "researcher": {
-        "model": "nemotron-3-ultra",
+        "model": "minimax-m3",
         "thinking": "high"
       },
       "delegate": {
