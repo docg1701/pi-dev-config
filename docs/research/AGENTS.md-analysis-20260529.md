@@ -1,4 +1,4 @@
-# Research Report: AGENTS.md do short2reel vs. Padrão da Indústria
+# Research Report: short2reel AGENTS.md vs. Industry Standard
 
 **Research Mode:** Standard | **Total Sources:** 14 | **Generated:** 2026-05-29
 
@@ -6,22 +6,22 @@
 
 ## Executive Summary
 
-O AGENTS.md do short2reel foi comparado contra o padrão da indústria estabelecido
-pela Agentic AI Foundation (AAIF/Linux Foundation), adotado por mais de 60.000
-repositórios open-source. A análise identificou 7 gaps estruturais. O arquivo
-original (~200 linhas) foi reescrito para 180 linhas cobrindo todas as 6 áreas
-core do padrão.
+The short2reel AGENTS.md was compared against the industry standard established
+by the Agentic AI Foundation (AAIF/Linux Foundation), adopted by more than 60,000
+open-source repositories. The analysis identified 7 structural gaps. The original
+file (~200 lines) was rewritten to 180 lines covering all 6 core areas
+of the standard.
 
 **Key findings:**
-- AGENTS.md bem estruturado reduz runtime do agente em 28.6% e tokens em 16.6%
+- A well-structured AGENTS.md reduces agent runtime by 28.6% and tokens by 16.6%
   (Lulla et al., arxiv 2601.20404, Jan 2026)
-- Projetos com AGENTS.md detalhado têm 35-55% menos bugs gerados por agentes
+- Projects with a detailed AGENTS.md have 35-55% fewer agent-generated bugs
   (Atlan, 2026)
-- O arquivo original não cobria 3 das 6 áreas core: Boundaries, Testing, Code Examples
-- 44% do arquivo original (~85 linhas) era material redundante ou changelog
+- The original file did not cover 3 of the 6 core areas: Boundaries, Testing, Code Examples
+- 44% of the original file (~85 lines) was redundant material or changelog
 
-**Primary Recommendation:** O arquivo foi reescrito. Manter iteração contínua:
-quando o agente errar um padrão repetidamente, adicionar essa regra.
+**Primary Recommendation:** The file was rewritten. Keep iterating: when
+the agent repeatedly fails a pattern, add that rule.
 
 ---
 
@@ -29,122 +29,121 @@ quando o agente errar um padrão repetidamente, adicionar essa regra.
 
 ### Research Question
 
-Como o AGENTS.md do projeto short2reel se compara ao padrão da indústria para
-arquivos AGENTS.md e quais melhorias específicas são necessárias?
+How does the short2reel project's AGENTS.md compare to the industry standard for
+AGENTS.md files, and what specific improvements are needed?
 
 ### Scope & Methodology
 
-Investigou-se: especificação oficial (agents.md, AAIF), análises empíricas
-(GitHub Blog, 2.500+ repos), papers acadêmicos (arxiv 2601.20404), guias
-técnicos de referência (Atlan, BuildBetter, Context Studios, Addy Osmani,
-The Prompt Shelf), e documentação oficial de ferramentas (OpenAI Codex,
+Investigated: official specification (agents.md, AAIF), empirical analyses
+(GitHub Blog, 2,500+ repos), academic papers (arxiv 2601.20404), technical
+reference guides (Atlan, BuildBetter, Context Studios, Addy Osmani,
+The Prompt Shelf), and official tool documentation (OpenAI Codex,
 Claude Code).
 
-Foram consultadas 14 fontes, cobrindo o período de agosto/2025 (surgimento
-do padrão) a maio/2026. Cada dimensão do padrão foi triangulada em 3+ fontes
-independentes.
+14 sources were consulted, covering August 2025 (emergence of the standard) to
+May 2026. Each standard dimension was triangulated against 3+ independent sources.
 
 ### Key Assumptions
 
-- O AGENTS.md do short2reel é o único arquivo de instrução para agentes no repo
-- O projeto é pequeno (~1.500 linhas Python) — recomendações de monorepo não se aplicam
-- O agente primário é Claude Code (conforme AGENTS.md do projeto referencia pi)
-- As 6 áreas core do GitHub Blog são o gold standard para avaliação
+- The short2reel AGENTS.md is the only agent instruction file in the repo
+- The project is small (~1,500 lines of Python) — monorepo recommendations do not apply
+- The primary agent is Claude Code (as referenced in the project's AGENTS.md via pi)
+- The 6 core areas from the GitHub Blog are the gold standard for evaluation
 
 ---
 
-## Finding 1: O Padrão da Indústria Converge em 6 Áreas Core
+## Finding 1: The Industry Standard Converges on 6 Core Areas
 
-Todas as fontes primárias convergem nas mesmas 6 áreas que um AGENTS.md deve cobrir.
-O GitHub Blog [2] derivou estas áreas da análise de 2.500+ repositórios. Addy Osmani [4]
-as replicou como checklist. O'Reilly [11], Context Studios [7], BuildBetter [8] e
-Atlan [6] todos referenciam e validam a mesma estrutura:
+All primary sources converge on the same 6 areas an AGENTS.md should cover.
+The GitHub Blog [2] derived these areas from analysis of 2,500+ repositories. Addy Osmani [4]
+replicated them as a checklist. O'Reilly [11], Context Studios [7], BuildBetter [8] and
+Atlan [6] all reference and validate the same structure:
 
-1. **Commands** — comandos executáveis com flags exatos, não só nomes de ferramentas
-2. **Testing** — framework, localização, nomenclatura, comando com flags
-3. **Project Structure** — mapa de diretórios com responsabilidades
-4. **Code Style** — exemplos de código, não parágrafos descritivos
+1. **Commands** — executable commands with exact flags, not just tool names
+2. **Testing** — framework, location, naming, command with flags
+3. **Project Structure** — directory map with responsibilities
+4. **Code Style** — code examples, not descriptive paragraphs
 5. **Git Workflow** — branching, commits, PR conventions
-6. **Boundaries** — três níveis: Always / Ask first / Never
+6. **Boundaries** — three levels: Always / Ask first / Never
 
 **Sources:** [2], [4], [6], [7], [8], [11]
 
 ---
 
-## Finding 2: Boundaries de Três Níveis É o Padrão Mais Eficaz
+## Finding 2: Three-Level Boundaries Is the Most Effective Pattern
 
-O GitHub Blog [2] identifica o padrão ✅ Always / ⚠️ Ask first / 🚫 Never como
-a constraint mais eficaz após analisar 2.500+ repositórios. A Atlan [6] chama de
-"the most battle-tested pattern from production AGENTS.md files". O BuildBetter [8]
-reforça: "DO NOT use X prevents an entire class of agent mistakes."
+The GitHub Blog [2] identifies the pattern ✅ Always / ⚠️ Ask first / 🚫 Never as
+the most effective constraint after analyzing 2,500+ repositories. Atlan [6] calls it
+"the most battle-tested pattern from production AGENTS.md files". BuildBetter [8]
+reinforces: "DO NOT use X prevents an entire class of agent mistakes."
 
-O AGENTS.md original do short2reel não tinha seção Boundaries. Regras existiam
-espalhadas ("No further CLI surface expansion without explicit human approval",
-"Never guess or trust memory") mas sem estrutura consolidada. A versão reescrita
-adicionou a seção com 4 regras Always, 4 Ask first, 4 Never.
+The original short2reel AGENTS.md had no Boundaries section. Rules were scattered
+("No further CLI surface expansion without explicit human approval",
+"Never guess or trust memory") without a consolidated structure. The rewritten version
+added the section with 4 Always rules, 4 Ask first, 4 Never.
 
 **Sources:** [2], [6], [8]
 
 ---
 
-## Finding 3: Exemplos de Código Superam Descrições Abstratas
+## Finding 3: Code Examples Beat Abstract Descriptions
 
 "One real code snippet showing your style beats three paragraphs describing it" [2].
 O'Reilly [11]: "Show, don't tell." Addy Osmani [4]: "A code example communicates
 style more effectively than a paragraph of description."
 
-O AGENTS.md original listava regras abstratas ("English only", "stdlib first",
-"anti-bloat") mas não mostrava nenhum exemplo de como escrever código no projeto.
-A versão reescrita inclui um par good vs bad da função `extract_video_id()` com
-comentários explicando cada diferença.
+The original AGENTS.md listed abstract rules ("English only", "stdlib first",
+"anti-bloat") but showed no example of how to write code in the project. The
+rewritten version includes a good vs bad pair of the `extract_video_id()` function
+with comments explaining each difference.
 
 **Sources:** [2], [4], [11]
 
 ---
 
-## Finding 4: Comandos Precisam Estar no Topo, Consolidados, com Flags
+## Finding 4: Commands Must Be at the Top, Consolidated, with Flags
 
 "Put executable commands at the beginning — with flags and options, not just
 tool names" [2]. "Commands is the single highest-ROI section of any AGENTS.md
 file" [6]. "Setup Commands is the highest-leverage section" [8].
 
-No original, comandos estavam em "Entry points" (linha ~65), "Rules" e
-"Thumbnail generation". A versão reescrita consolidou todos em `## Commands`
-logo após o overview, com flags exatos em bloco de código bash.
+In the original, commands were scattered across "Entry points" (~line 65), "Rules",
+and "Thumbnail generation". The rewritten version consolidated everything into
+`## Commands` right after the overview, with exact flags in a bash code block.
 
 **Sources:** [2], [6], [8]
 
 ---
 
-## Finding 5: Tabelas de Key Functions Eram Redundantes (44% do Arquivo)
+## Finding 5: Key Functions Tables Were Redundant (44% of the File)
 
-O original dedicava ~85 linhas (44% do total) a 5 tabelas com 37 funções
-duplicando assinaturas que já existem no código-fonte. Se uma função muda
-e a tabela não é atualizada, o agente recebe instrução errada.
+The original devoted ~85 lines (44% of the total) to 5 tables with 37 functions,
+duplicating signatures that already exist in the source code. If a function changes
+and the table isn't updated, the agent receives wrong instructions.
 
-O BuildBetter [8] alerta: "Stale guidance produces stale code." A versão
-reescrita reduziu para 1 tabela com 5 orchestrators (funções de entrada de
-cada módulo), economizando ~77 linhas e eliminando o risco de drift.
+BuildBetter [8] warns: "Stale guidance produces stale code." The rewritten version
+reduced this to 1 table with 5 orchestrators (entry-point functions of each module),
+saving ~77 lines and eliminating drift risk.
 
 **Sources:** [8]
 
 ---
 
-## Finding 6: Seção de Changelog (v2.4.0 Scope) Não É Instrução Operacional
+## Finding 6: Changelog Section (v2.4.0 Scope) Is Not Operational Instruction
 
-A seção documentava o que mudou em uma versão específica. Isso é changelog,
-não instrução para agente. O agente precisa do estado atual, não do histórico.
-Addy Osmani [4] recomenda ≤150 linhas; cada linha de ruído consome tokens do
-context window que poderiam carregar instruções úteis.
+The section documented what changed in a specific version. That is a changelog,
+not agent instruction. The agent needs the current state, not the history.
+Addy Osmani [4] recommends ≤150 lines; every line of noise consumes context window
+tokens that could carry useful instructions.
 
 **Sources:** [4]
 
 ---
 
-## Finding 7: Post-upload Workflow Era 4 Vezes Repetitivo
+## Finding 7: Post-upload Workflow Was 4x Repetitive
 
-Quatro plataformas com workflows idênticos (upload → marcar published → date)
-ocupavam ~20 linhas. A versão reescrita condensa em 4 linhas.
+Four platforms with identical workflows (upload → mark published → date) took
+~20 lines. The rewritten version condenses to 4 lines.
 
 ---
 
@@ -152,52 +151,51 @@ ocupavam ~20 linhas. A versão reescrita condensa em 4 linhas.
 
 ### Patterns Identified
 
-**Pattern 1: Documentação humana vs. instrução operacional.** O original
-misturava os dois propósitos: changelog (para humanos), key functions (para
-humanos), mas também entry points e regras (para agentes). A separação clara
-— AGENTS.md é runtime instruction set, README.md é documentação humana —
-elimina ruído do context window do agente.
+**Pattern 1: Human documentation vs. operational instruction.** The original
+mixed the two purposes: changelog (for humans), key functions (for humans),
+but also entry points and rules (for agents). The clear separation —
+AGENTS.md is a runtime instruction set, README.md is human documentation —
+removes noise from the agent's context window.
 
-**Pattern 2: Especificidade é o diferencial.** "Python 3.11+" bate "Python".
-"uv run pytest -v" bate "run tests". "🚫 Never commit conta-*.yaml" bate
-"don't commit secrets". Cada fonte consultada converge nisto.
+**Pattern 2: Specificity is the differentiator.** "Python 3.11+" beats "Python".
+"uv run pytest -v" beats "run tests". "🚫 Never commit conta-*.yaml" beats
+"don't commit secrets". Every consulted source converges on this.
 
 ### Novel Insights
 
-O arquivo reescrito com 180 linhas entrega mais valor operacional que o
-original de ~200 linhas porque cada linha sobrevivente foi otimizada para
-consumo por máquina (comandos copy-pasteáveis, code examples, boundaries
-acionáveis), não para leitura humana.
+The rewritten 180-line file delivers more operational value than the original
+~200-line file because every surviving line was optimized for machine consumption
+(copy-pasteable commands, code examples, actionable boundaries), not human reading.
 
 ---
 
 ## Limitations & Caveats
 
-- O estudo de Lulla et al. [3] usou apenas OpenAI Codex (GPT-5.2-codex);
-  ganhos podem variar com Claude Code ou outros agentes
-- A análise de 2.500+ repos do GitHub Blog [2] é observacional, não experimental
-- O short2reel é um projeto pequeno (~1.500 linhas Python); recomendações de
-  monorepo (nested AGENTS.md) não se aplicam
-- A recomendação de ≤150 linhas vem de [4] e [6]; [8] sugere 200-500.
-  Para este projeto, 180 é adequado
+- The Lulla et al. study [3] used only OpenAI Codex (GPT-5.2-codex);
+  gains may vary with Claude Code or other agents
+- The GitHub Blog's analysis of 2,500+ repos [2] is observational, not experimental
+- short2reel is a small project (~1,500 lines of Python); monorepo recommendations
+  (nested AGENTS.md) do not apply
+- The ≤150 lines recommendation comes from [4] and [6]; [8] suggests 200-500.
+  For this project, 180 is adequate
 
 ---
 
 ## Recommendations
 
 ### Immediate Actions (done)
-1. ✅ Adicionar seção Boundaries (✅/⚠️/🚫)
-2. ✅ Criar seção Testing dedicada
-3. ✅ Consolidar comandos no topo
-4. ✅ Adicionar code examples (good vs bad)
-5. ✅ Reduzir tabelas para orchestrators only
-6. ✅ Remover changelog v2.4.0
-7. ✅ Condensar post-upload workflow
+1. ✅ Add Boundaries section (✅/⚠️/🚫)
+2. ✅ Create dedicated Testing section
+3. ✅ Consolidate commands at the top
+4. ✅ Add code examples (good vs bad)
+5. ✅ Reduce tables to orchestrators only
+6. ✅ Remove changelog v2.4.0
+7. ✅ Condense post-upload workflow
 
 ### Ongoing
-8. Tratar AGENTS.md como código — atualizar no mesmo PR que muda convenções
-9. Iterar baseado em comportamento do agente — quando errar padrão repetidamente,
-   adicionar regra específica
+8. Treat AGENTS.md as code — update in the same PR that changes conventions
+9. Iterate based on agent behavior — when it fails a pattern repeatedly,
+   add a specific rule
 
 ---
 
@@ -252,34 +250,30 @@ https://claudelab.net/en/articles/claude-code/claude-md-agents-md-complete-guide
 
 ### Research Process
 
-- **Phase 1 (SCOPE):** Decomposição da pergunta em 10 dimensões de avaliação
-- **Phase 2 (PLAN):** Identificação de fontes primárias (especificação, estudos
-  empíricos, papers) e secundárias (guias, documentação de ferramentas)
-- **Phase 3 (RETRIEVE):** 6 buscas paralelas + 6 web_fetch em profundidade,
-  totalizando 14 fontes distintas
-- **Phase 4 (TRIANGULATE):** Cross-reference de cada dimensão em 3+ fontes
-  independentes; claims contestadas foram marcadas
-- **Phase 5 (SYNTHESIZE):** Identificação de padrões cross-source, geração
-  de insights além do material fonte
-- **Phase 8 (PACKAGE):** Relatório Markdown com bibliografia completa
+- **Phase 1 (SCOPE):** Decomposed the question into 10 evaluation dimensions
+- **Phase 2 (PLAN):** Identified primary sources (specification, empirical studies, papers) and secondary (guides, tool documentation)
+- **Phase 3 (RETRIEVE):** 6 parallel searches + 6 in-depth web_fetches, totaling 14 distinct sources
+- **Phase 4 (TRIANGULATE):** Cross-referenced each dimension against 3+ independent sources; contested claims were flagged
+- **Phase 5 (SYNTHESIZE):** Identified cross-source patterns, generated insights beyond the source material
+- **Phase 8 (PACKAGE):** Markdown report with full bibliography
 
 ### Sources Consulted
 
 **Total Sources:** 14
 
 **Source Types:**
-- Especificação oficial: 2
-- Paper acadêmico: 1
-- Estudo empírico (indústria): 1
-- Guias técnicos: 6
-- Documentação de ferramentas: 3
-- Referências: 1
+- Official specification: 2
+- Academic paper: 1
+- Industry empirical study: 1
+- Technical guides: 6
+- Tool documentation: 3
+- References: 1
 
-**Temporal Coverage:** 2025-08 a 2026-05
+**Temporal Coverage:** 2025-08 to 2026-05
 
 ### Verification Approach
 
-- Todas as dimensões do padrão verificadas em 3+ fontes independentes
-- Gaps no AGENTS.md original confirmados por evidência direta do arquivo
-- Contradições entre fontes (ex: tamanho ideal 150 vs 500 linhas) documentadas
-  como caveats
+- All standard dimensions verified against 3+ independent sources
+- Gaps in the original AGENTS.md confirmed by direct evidence from the file
+- Contradictions between sources (e.g. ideal size 150 vs 500 lines) documented
+  as caveats

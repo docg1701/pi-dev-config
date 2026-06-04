@@ -1,44 +1,44 @@
 # SSH Nerd Font Setup (Ghostty → VPS)
 
-Para os ícones do pi-powerline-footer funcionarem via SSH com Ghostty.
+For the pi-powerline-footer icons to render correctly over SSH with Ghostty.
 
-## Pré-requisito
+## Prerequisites
 
-O terminal local (Ghostty) precisa ter uma Nerd Font configurada como `font-family`.
+The local terminal (Ghostty) must have a Nerd Font configured as `font-family`.
 
-## 1. Máquina local (Ghostty)
+## 1. Local machine (Ghostty)
 
-Adiciona `ssh-env` no `shell-integration-features` do config do Ghostty:
+Add `ssh-env` to `shell-integration-features` in your Ghostty config:
 
-**Arquivo:** `~/.config/ghostty/config` (ou `config.ghostty`)
+**File:** `~/.config/ghostty/config` (or `config.ghostty`)
 
 ```ini
 shell-integration-features = cursor, path, title, ssh-env, ssh-terminfo, sudo
 ```
 
-Reinicia o Ghostty completamente (fecha todas as janelas).
+Restart Ghostty completely (close all windows).
 
-## 2. VPS (servidor SSH)
+## 2. VPS (SSH server)
 
-Adiciona `TERM_PROGRAM TERM_PROGRAM_VERSION` no `AcceptEnv` do sshd:
+Add `TERM_PROGRAM TERM_PROGRAM_VERSION` to the sshd `AcceptEnv`:
 
 ```bash
 sudo sed -i 's/^AcceptEnv LANG LC_\* COLORTERM NO_COLOR$/AcceptEnv LANG LC_* COLORTERM NO_COLOR TERM_PROGRAM TERM_PROGRAM_VERSION/' /etc/ssh/sshd_config && sudo systemctl restart ssh
 ```
 
-(O nome do serviço pode ser `ssh` ou `sshd` — confere com `systemctl list-units | grep -i ssh`)
+(The service name may be `ssh` or `sshd` — check with `systemctl list-units | grep -i ssh`.)
 
-## 3. Verificar
+## 3. Verify
 
-Reconecta o SSH e confirma:
+Reconnect via SSH and confirm:
 
 ```bash
-echo "TERM_PROGRAM=$TERM_PROGRAM"   # Deve mostrar "ghostty"
-echo "COLORTERM=$COLORTERM"         # Deve mostrar "truecolor"
+echo "TERM_PROGRAM=$TERM_PROGRAM"   # Should show "ghostty"
+echo "COLORTERM=$COLORTERM"         # Should show "truecolor"
 ```
 
-## Como funciona
+## How it works
 
-- Ghostty local wrappa o comando `ssh` com `SendEnv TERM_PROGRAM TERM_PROGRAM_VERSION`
-- Servidor SSH aceita essas variáveis via `AcceptEnv`
-- pi-powerline-footer detecta `TERM_PROGRAM=ghostty` → ativa Nerd Fonts
+- Local Ghostty wraps the `ssh` command with `SendEnv TERM_PROGRAM TERM_PROGRAM_VERSION`.
+- The SSH server accepts those variables via `AcceptEnv`.
+- pi-powerline-footer detects `TERM_PROGRAM=ghostty` → enables Nerd Fonts.

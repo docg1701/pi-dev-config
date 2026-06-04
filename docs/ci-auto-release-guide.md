@@ -1,35 +1,35 @@
-# CI + Auto-Release a partir de Tags
+# CI + Auto-Release from Tags
 
-Guia prático para implementar CI (testes automatizados) e geração automática de
-GitHub Releases a partir da criação de tags semver, com changelog categorizado.
+Practical guide for implementing CI (automated tests) and automatic GitHub Releases
+generation from semver tags, with categorized changelog.
 
-## Requisitos
+## Requirements
 
-- Python 3.11+ com `uv` como package manager
-- Testes com `pytest`
+- Python 3.11+ with `uv` as package manager
+- Tests with `pytest`
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `ci:`, etc.)
-- Tags semver anotadas (`git tag -a vX.Y.Z -F arquivo.txt`)
+- Annotated semver tags (`git tag -a vX.Y.Z -F file.txt`)
 
-## Arquitetura
+## Architecture
 
-Um único workflow file (`ci.yml`) com dois gatilhos e dois jobs:
+A single workflow file (`ci.yml`) with two triggers and two jobs:
 
 ```
-push/PR em main ──► job: test (matrix 3.11 + 3.13)
-                         │
-push tag v*.*.* ──► job: test (mesma matrix)
-                         │
-                         └── se passar ──► job: release
-                                              │
-                                              ├── git fetch --tags
-                                              ├── lê anotação da tag → título
-                                              ├── git log categorizado → corpo
-                                              └── gh release create
+push/PR to main ──► job: test (matrix 3.11 + 3.13)
+                          │
+push tag v*.*.* ──► job: test (same matrix)
+                          │
+                          └── if pass ──► job: release
+                                                │
+                                                ├── git fetch --tags
+                                                ├── read tag annotation → title
+                                                ├── categorized git log → body
+                                                └── gh release create
 ```
 
-A release **nunca** é criada se os testes falharem (gate via `needs: test`).
+The release is **never** created if tests fail (gate via `needs: test`).
 
-## Workflow completo
+## Complete workflow
 
 ```yaml
 # .github/workflows/ci.yml
@@ -126,179 +126,179 @@ jobs:
             --notes-file "$NOTES"
 ```
 
-## Como usar
+## How to use
 
-### 1. Criar a tag
+### 1. Create the tag
 
-A anotação da tag (arquivo passado com `-F`) define o subtítulo do release.
-**Importante**: não use `#` no início das linhas — o Git trata como comentário
-e remove via `git stripspace`.
+The tag annotation (file passed with `-F`) defines the release subtitle.
+**Important**: do not start lines with `#` — Git treats them as comments
+and strips them via `git stripspace`.
 
 ```bash
 cat > /tmp/release-notes.txt << 'EOF'
-Nova feature X com correções Y e Z
+New feature X with fixes Y and Z
 EOF
 
 git tag -a v2.4.2 -F /tmp/release-notes.txt
 git push origin v2.4.2
 ```
 
-Resultado:
+Result:
 
-- Título: `v2.4.2: Nova feature X com correções Y e Z`
-- Corpo: changelog categorizado gerado automaticamente a partir dos commits
+- Title: `v2.4.2: New feature X with fixes Y and Z`
+- Body: categorized changelog auto-generated from commits
 
-### 2. O que acontece
+### 2. What happens
 
-1. O push da tag dispara o workflow
-2. `job: test` roda pytest em Python 3.11 e 3.13
-3. Se ambos passarem, `job: release` executa:
-   - `git fetch --tags --force` para garantir que a tag anotada está disponível localmente
-   - Lê a anotação da tag → primeira linha vira subtítulo do título
-   - `git log` entre a tag anterior e a atual, agrupado por tipo de commit
-   - `sed` remove o prefixo (`fix:` → nada, `feat(scope):` → nada)
-   - Cria o release via `gh release create`
+1. The tag push triggers the workflow
+2. `job: test` runs pytest on Python 3.11 and 3.13
+3. If both pass, `job: release` runs:
+   - `git fetch --tags --force` to ensure the annotated tag is locally available
+   - Reads the tag annotation → first line becomes the title subtitle
+   - `git log` between previous and current tag, grouped by commit type
+   - `sed` removes the prefix (`fix:` → empty, `feat(scope):` → empty)
+   - Creates the release via `gh release create`
 
-### 3. Mapeamento de conventional commits → categorias
+### 3. Conventional commit → category mapping
 
-| Prefixo | Categoria |
+| Prefix | Category |
 |---|---|
 | `feat:` | `### Added` |
 | `fix:` | `### Fixed` |
 | `chore:`, `docs:`, `ci:`, `refactor:`, `style:`, `test:`, `perf:`, `revert:`, `build:` | `### Changed` |
 
-Categorias sem commits são omitidas (não aparece `### Added` vazio).
+Categories with no commits are omitted (no empty `### Added` section).
 
-## Permissões necessárias
+## Required permissions
 
-O workflow precisa de `contents: write` **apenas no job `release`**.
-O token padrão `${{ github.token }}` é suficiente — não requer PAT nem secrets
-adicionais.
+The workflow needs `contents: write` **only in the `release` job**.
+The default token `${{ github.token }}` is enough — no PAT or additional secrets
+required.
 
 ```yaml
 permissions:
   contents: write
 ```
 
-## Segurança
+## Security
 
-| Mecanismo | O que protege |
+| Mechanism | What it protects |
 |---|---|
-| `needs: test` | Release só existe se testes passarem |
-| `if: startsWith(github.ref, 'refs/tags/v')` | Só dispara em tag, nunca em branch |
-| `github.ref_name` | Nome da tag vem do evento push, não de input |
-| `permissions: contents: write` | Escopo mínimo, só escreve release |
-| `secrets.GITHUB_TOKEN` | Efêmero, expira com o job |
+| `needs: test` | Release only exists if tests pass |
+| `if: startsWith(github.ref, 'refs/tags/v')` | Only fires on tag, never on branch |
+| `github.ref_name` | Tag name comes from the push event, not from input |
+| `permissions: contents: write` | Minimal scope, only writes release |
+| `secrets.GITHUB_TOKEN` | Ephemeral, expires with the job |
 
-## Dependências
+## Dependencies
 
-| Ferramenta | Versão | Uso |
+| Tool | Version | Use |
 |---|---|---|
-| `actions/checkout` | v5 | Clone do repositório |
-| `astral-sh/setup-uv` | v8.1.0 | Instala uv + Python |
-| `gh` CLI | pré-instalado no runner | Criação do release |
+| `actions/checkout` | v5 | Repository clone |
+| `astral-sh/setup-uv` | v8.1.0 | Installs uv + Python |
+| `gh` CLI | pre-installed on runner | Release creation |
 
-> **Nota**: `astral-sh/setup-uv` usa tags imutáveis (`v8.1.0`), não tags móveis
-> (`v8`). Sempre use a versão exata.
+> **Note**: `astral-sh/setup-uv` uses immutable tags (`v8.1.0`), not floating tags
+> (`v8`). Always pin the exact version.
 
-## Pitfalls encontrados e como evitar
+## Pitfalls found and how to avoid them
 
-### 1. `generate-notes` da API do GitHub não categoriza sem PRs
+### 1. `generate-notes` from GitHub API does not categorize without PRs
 
-**Problema**: `gh api .../releases/generate-notes` só produz `### Added`/`### Fixed`/`### Changed`
-quando há Pull Requests mergeados. Com commits diretos na `main`, retorna apenas um link
-de comparação.
+**Problem**: `gh api .../releases/generate-notes` only produces `### Added`/`### Fixed`/`### Changed`
+when there are merged Pull Requests. With direct commits to `main`, it returns only a comparison
+link.
 
-**Solução**: gerar o changelog nós mesmos com `git log --grep` categorizando por
+**Solution**: generate the changelog ourselves with `git log --grep` categorized by
 conventional commit type.
 
-### 2. Race condition: tag não está disponível na API imediatamente
+### 2. Race condition: tag not available in API immediately
 
-**Problema**: após o push, a API `git/ref/tags/...` pode retornar 404 por alguns segundos.
+**Problem**: after the push, the `git/ref/tags/...` API can return 404 for a few seconds.
 
-**Solução**: usar `git fetch --tags --force` (local, sem API) para acessar a anotação
-da tag. Zero latência, zero race condition.
+**Solution**: use `git fetch --tags --force` (local, no API) to access the tag
+annotation. Zero latency, zero race condition.
 
-### 3. `git tag -l` não encontra tags anotadas no runner
+### 3. `git tag -l` does not find annotated tags on the runner
 
-**Problema**: `actions/checkout` com `fetch-depth: 0` nem sempre baixa os objetos de
-tag anotada (apenas os commits).
+**Problem**: `actions/checkout` with `fetch-depth: 0` does not always pull annotated tag
+objects (only the commits).
 
-**Solução**: `git fetch --tags --force` executado explicitamente antes de `git tag -l`.
+**Solution**: `git fetch --tags --force` executed explicitly before `git tag -l`.
 
-### 4. `body_path` substitui o corpo, não faz append
+### 4. `body_path` replaces the body, does not append
 
-**Problema**: no `softprops/action-gh-release`, `body_path` **substitui** o corpo
-inteiro. `body` com heredoc **prepende** ao `generate_release_notes`.
+**Problem**: in `softprops/action-gh-release`, `body_path` **replaces** the entire body.
+`body` with a heredoc **prepends** to `generate_release_notes`.
 
-**Solução**: gerar o arquivo de notas completo nós mesmos e usar `gh release create --notes-file`,
-que aceita o conteúdo final sem ambiguity.
+**Solution**: generate the full notes file ourselves and use `gh release create --notes-file`,
+which accepts the final content with no ambiguity.
 
-### 5. Prefixo `fix:` não é removido com sed mal escapado
+### 5. `fix:` prefix is not removed with badly escaped sed
 
-**Problema**: `eval` + variáveis com sed aninhado em YAML block scalar causam
-escapamento incorreto de backslashes.
+**Problem**: `eval` + nested sed variables in YAML block scalars cause incorrect
+backslash escaping.
 
-**Solução**: definir uma `strip()` function em bash com sed inline, sem `eval`, sem
-variáveis intermediárias. O padrão correto para ERE é:
+**Solution**: define a `strip()` function in bash with inline sed, no `eval`, no
+intermediate variables. The correct ERE pattern is:
 
 ```bash
 strip() { sed -E 's/^- [a-z]+(\([^)]*\))?: /- /'; }
 ```
 
-- `\(` e `\)` em ERE: escapam parênteses literais (scope opcional)
-- `?`: torna o grupo do scope opcional
-- Sem `\\` duplo (que o YAML interpretaria diferente)
+- `\(` and `\)` in ERE: escape literal parentheses (optional scope)
+- `?`: makes the scope group optional
+- No doubled `\\` (which YAML would interpret differently)
 
-### 6. `git stripspace` remove linhas com `#`
+### 6. `git stripspace` removes lines starting with `#`
 
-**Problema**: `git tag -a` aplica `git stripspace` que trata `#` como comentário e
-remove linhas iniciadas com ele. `## What's new` é removido.
+**Problem**: `git tag -a` applies `git stripspace`, which treats `#` as a comment and
+removes lines starting with it. `## What's new` gets removed.
 
-**Solução**: não use `#` no início das linhas da anotação. Use `What's new` ou
-`Release notes` sem cerquilha.
+**Solution**: do not start annotation lines with `#`. Use `What's new` or
+`Release notes` without a hash.
 
-### 7. `body_path` + `generate_release_notes` não combinam
+### 7. `body_path` + `generate_release_notes` do not combine
 
-**Problema**: a doc do `softprops/action-gh-release` diz que `body` faz prepend ao
-`generate_release_notes`, mas `body_path` não tem o mesmo comportamento.
+**Problem**: the `softprops/action-gh-release` docs say `body` prepends to
+`generate_release_notes`, but `body_path` does not have the same behavior.
 
-**Solução**: usar `gh release create --notes-file` com o arquivo já completo
-(anotação + changelog categorizado), eliminando a ambiguidade.
+**Solution**: use `gh release create --notes-file` with the already complete file
+(annotation + categorized changelog), removing the ambiguity.
 
-### 8. `uv.lock` fica dessincronizado após bump de versão
+### 8. `uv.lock` desyncs after a version bump
 
-**Problema**: ao alterar `version` no `pyproject.toml`, o `uv.lock` mantém a versão
-anterior internamente. O `uv run --frozen` não detecta essa inconsistência — ele só
-impede que o lockfile seja modificado, não valida que ele está em sync com o
-`pyproject.toml`.
+**Problem**: when changing `version` in `pyproject.toml`, `uv.lock` keeps the previous
+version internally. `uv run --frozen` does not detect this inconsistency — it only
+prevents the lockfile from being modified, it does not validate that it is in sync
+with `pyproject.toml`.
 
-**Solução**: adicionar `uv lock --check` antes dos testes no CI. Esse comando
-compara o lockfile com o `pyproject.toml` e falha se estiverem dessincronizados.
+**Solution**: add `uv lock --check` before tests in CI. This command compares the
+lockfile with `pyproject.toml` and fails if they are out of sync.
 
 ```yaml
 - run: uv lock --check
 ```
 
-Para corrigir localmente, execute `uv lock` e commite o `uv.lock` atualizado junto
-com o bump de versão.
+To fix locally, run `uv lock` and commit the updated `uv.lock` together with the
+version bump.
 
-### 9. `__version__` hardcoded em `__init__.py` e testes quebra todo bump
+### 9. Hardcoded `__version__` in `__init__.py` and tests breaks every bump
 
-**Problema**: muitos projetos mantêm `__version__ = "X.Y.Z"` hardcoded no
-`__init__.py`, além do `version` no `pyproject.toml`. Testes que importam
-`from pacote import __version__` e fazem `assert __version__ == "1.2.3"` quebram
-a cada bump de versão. O CI que roda após o bump detecta a inconsistência e falha.
+**Problem**: many projects keep `__version__ = "X.Y.Z"` hardcoded in
+`__init__.py`, in addition to `version` in `pyproject.toml`. Tests that import
+`from package import __version__` and do `assert __version__ == "1.2.3"` break
+on every version bump. The CI that runs after the bump detects the inconsistency and fails.
 
-**Solução**: eliminar a dupla fonte de verdade. Usar `importlib.metadata.version()`
-no `__init__.py` e nos testes verificar apenas que `__version__` é uma string não-vazia
-(ou comparar com `importlib.metadata.version("nome-do-pacote")`).
+**Solution**: eliminate the double source of truth. Use `importlib.metadata.version()`
+in `__init__.py`, and in tests verify only that `__version__` is a non-empty string
+(or compare with `importlib.metadata.version("package-name")`).
 
 ```python
-# src/pacote/__init__.py
+# src/package/__init__.py
 from importlib.metadata import version
 
-__version__ = version("nome-do-pacote")
+__version__ = version("package-name")
 ```
 
 ```python
@@ -308,35 +308,35 @@ def test_version() -> None:
     assert len(__version__) > 0
 ```
 
-Se o CLI usa `click.version_option(package_name="...")`, o teste de flag deve
-usar `__version__` em vez de string hardcoded:
+If the CLI uses `click.version_option(package_name="...")`, the flag test must
+use `__version__` instead of a hardcoded string:
 
 ```python
 def test_version_flag(self) -> None:
     runner = click.testing.CliRunner()
     result = runner.invoke(cli, ["--version"])
     assert result.exit_code == 0
-    assert __version__ in result.output  # nunca "1.2.3"
+    assert __version__ in result.output  # never "1.2.3"
 ```
 
-## Variantes
+## Variants
 
-### Projeto sem `uv.lock`
+### Project without `uv.lock`
 
-Se o projeto não tem lockfile, substitua:
+If the project has no lockfile, replace:
 
 ```yaml
 - run: uv run --frozen pytest -v
 ```
 
-Por:
+With:
 
 ```yaml
 - run: uv sync --group dev
 - run: uv run pytest -v
 ```
 
-### Projeto sem `uv`
+### Project without `uv`
 
 Use `actions/setup-python`:
 
@@ -348,17 +348,17 @@ Use `actions/setup-python`:
 - run: pytest -v
 ```
 
-### Tag sem anotação (lightweight)
+### Tag without annotation (lightweight)
 
-Se a tag for criada sem `-a` (lightweight), `git tag -l --format='%(contents)'`
-retorna vazio. O fallback usa o número da versão puro como título:
+If the tag is created without `-a` (lightweight), `git tag -l --format='%(contents)'`
+returns empty. The fallback uses the bare version number as title:
 
 ```
 v2.5.0
 ```
 
-Em vez de:
+Instead of:
 
 ```
-v2.5.0: Minha descrição aqui
+v2.5.0: My description here
 ```

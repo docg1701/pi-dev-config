@@ -6,17 +6,33 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 
 [![CI](https://github.com/docg1701/pi-dev-config/actions/workflows/ci.yml/badge.svg)](https://github.com/docg1701/pi-dev-config/actions/workflows/ci.yml)
 
+## Contents
+
+- [Quick Start](#quick-start)
+- [Skills](#skills)
+- [Extensions](#extensions)
+- [Themes](#themes)
+- [Settings & Models](#settings--models)
+- [Provider Setup](#provider-setup)
+- [RTK Optimizer](#rtk-optimizer)
+- [Working Vibes](#working-vibes)
+- [Notifications](#notifications)
+- [Ghostty](#ghostty)
+- [Context & Rules](#context--rules)
+- [CI & Validation](#ci--validation)
+- [Repository Structure](#repository-structure)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+
 ## Quick Start
 
 ```bash
-# Clone into ~/.pi/agent/ or any project
+# Clone
 git clone git@github.com:docg1701/pi-dev-config.git ~/dev/pi-dev-config
 
 # Install extensions
 pi install npm:pi-subagents
 pi install npm:pi-prompt-template-model
-pi install npm:pi-annotate
-pi install npm:pi-interview
 pi install npm:pi-agent-browser-native
 pi install npm:pi-extension-manager
 pi install npm:pi-mcp-adapter
@@ -28,6 +44,7 @@ pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
 pi install npm:pi-alert
 pi install npm:pi-rtk-optimizer
+pi install npm:pi-working-vibe
 pi install npm:@victor-software-house/pi-curated-themes
 
 # Install skills
@@ -42,43 +59,49 @@ npx skills add https://github.com/obra/superpowers --skill systematic-debugging
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
 
+# Copy custom vibe files
+cp ~/dev/pi-dev-config/vibes/*.txt ~/.pi/agent/vibes/
+
 # Copy settings
 cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
+
+# Reload pi
+# /reload
 ```
 
 ## Skills
 
-### Skills.sh Registry
+### Skills.sh registry
 
 | Name | Description | Install |
 |------|-------------|---------|
 | `find-docs` | Library docs via Context7 CLI. Prefer over web search. | `npx skills add https://github.com/upstash/context7 --skill find-docs` |
 | `deep-research` | 8-phase citation-backed research. Quick/standard/deep/ultradeep. | `npx skills add https://github.com/199-biotechnologies/claude-deep-research-skill --skill deep-research` |
 | `find-skills` | Discover and install skills from the open skills ecosystem. | `npx skills add https://github.com/vercel-labs/skills --skill find-skills` |
-| `developing-with-streamlit` | Routing skill oficial do Streamlit: criação, edição, debug, estilização, performance, temas, deploy e componentes customizados. | `npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit` |
-| `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. Deploy apps, patch/configure servers. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
-| `product-marketing` | Create/update product marketing context document (`.agents/product-marketing.md`). Foundation for all other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
-| `systematic-debugging` | 4-phase root cause debugging. Find root cause before attempting fixes. Includes root-cause-tracing, defense-in-depth, condition-based-waiting. | `npx skills add https://github.com/obra/superpowers --skill systematic-debugging` |
+| `developing-with-streamlit` | Official Streamlit routing skill: creation, editing, debug, styling, performance, themes, deploy, and custom components. | `npx skills add https://github.com/streamlit/agent-skills --skill developing-with-streamlit` |
+| `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
+| `product-marketing` | Create `.agents/product-marketing.md` (foundational positioning/messaging). Use first before other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
+| `systematic-debugging` | 4-phase root-cause debugging. Includes root-cause-tracing, defense-in-depth, condition-based-waiting. | `npx skills add https://github.com/obra/superpowers --skill systematic-debugging` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
-### Marketing Skills
+### Marketing suite
 
 All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/marketingskills). Install the full suite with `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing`.
 
 | Name | Description |
 |------|-------------|
-| `product-marketing` | Create `.agents/product-marketing.md` for foundational positioning and messaging context. Use first before other marketing skills. |
-| `marketing-ideas` | 139 proven marketing ideas for SaaS. Inspiration and growth tactics. |
+| `product-marketing` | Foundational positioning and messaging context. Use first. |
+| `marketing-ideas` | 139 proven marketing ideas for SaaS. |
 | `content-strategy` | Plan content strategy, topic clusters, editorial calendar, and content pillars. |
 | `copywriting` | Write or improve marketing copy for homepages, landing pages, pricing, and product pages. |
 | `copy-editing` | Edit, review, and tighten existing marketing copy. |
-| `seo-audit` | Technical and on-page SEO audits. diagnose ranking issues. |
+| `seo-audit` | Technical and on-page SEO audits; diagnose ranking issues. |
 | `programmatic-seo` | Create SEO-driven pages at scale using templates and data. |
 | `ai-seo` | Optimize content for AI search engines and LLM citations. |
 | `schema` | Add, fix, or optimize schema markup and structured data. |
 | `site-architecture` | Plan and restructure page hierarchy, navigation, URL structure, and internal linking. |
-| `analytics` | Set up, improve, or audit analytics tracking and measurement (GA4, GTM, Mixpanel, Segment). |
-| `ab-testing` | Plan, design, and implement A/B tests and growth experimentation programs. |
+| `analytics` | Set up, improve, or audit analytics tracking (GA4, GTM, Mixpanel, Segment). |
+| `ab-testing` | Plan, design, and implement A/B tests and growth experiments. |
 | `cro` | Conversion rate optimization for landing pages, forms, and marketing pages. |
 | `signup` | Optimize signup, registration, and trial activation flows. |
 | `onboarding` | Optimize post-signup onboarding, user activation, and time-to-value. |
@@ -87,7 +110,7 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `pricing` | Pricing decisions, packaging, and monetization strategy. |
 | `ads` | Paid advertising campaigns (Google Ads, Meta, LinkedIn, Twitter/X). |
 | `ad-creative` | Generate and iterate ad copy, headlines, and creative variations at scale. |
-| `social` | Social media content creation, scheduling, and optimization (LinkedIn, Twitter/X, Instagram, TikTok). |
+| `social` | Social media content creation, scheduling, and optimization. |
 | `video` | Create and produce video content with AI tools and programmatic frameworks. |
 | `image` | Create, generate, edit, or optimize marketing images and brand assets. |
 | `emails` | Email sequences, drip campaigns, lifecycle email programs, and nurture flows. |
@@ -110,23 +133,14 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `marketing-psychology` | Apply psychological principles and behavioral science to marketing. |
 | `launch` | Product launch, feature announcement, and release strategy. |
 
-### nicobailon Extensions
+### Other official registries
 
-| Name | Description | Install |
-|------|-------------|---------|
-| `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
-
-### Official Repositories
-
-- [Anthropic Skills](https://github.com/anthropics/skills) — Document processing, web dev.
-- [Pi Skills](https://github.com/badlogic/pi-skills) — Web search, browser automation, Google APIs, transcription.
+- [Anthropic Skills](https://github.com/anthropics/skills) — document processing, web dev.
+- [Pi Skills](https://github.com/badlogic/pi-skills) — web search, browser automation, Google APIs, transcription.
 
 ## Extensions
 
-> **Prerequisite for pi-rtk-optimizer:** Install the [rtk CLI](https://github.com/rtk-ai/rtk) first:
-> ```bash
-> cargo install --git https://github.com/rtk-ai/rtk --locked
-> ```
+> **Prerequisite for `pi-rtk-optimizer`:** install the [rtk CLI](https://github.com/rtk-ai/rtk) first — `cargo install --git https://github.com/rtk-ai/rtk --locked`.
 
 | Name | Description | Install |
 |------|-------------|---------|
@@ -138,11 +152,101 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-glance` | Calm input surface with rounded multiline editor and inline status (model · context · tokens · cost · git). 10 built-in themes. | `pi install npm:pi-glance` |
-| `@eko24ive/pi-ask` | Ask tool that cares about your answers. Structured questions, single/multi/preview mode, option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
-| `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Essential companion to `pi-smart-fetch` for retrieving current information beyond the model's knowledge cutoff. | `pi install npm:@leonardorick/pi-web-search` |
-| `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. No local Ollama server required. | `pi install npm:pi-ollama-cloud` |
-| `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback (`osascript`, `notify-send`, PowerShell balloon, terminal bell). Shows activity summary with elapsed time. | `pi install npm:pi-alert` |
-| `pi-rtk-optimizer` | Token-optimized command rewriting and output compaction. Rewrites bash commands to `rtk` equivalents, compacts noisy tool output (ANSI stripping, test/build aggregation, git/grep grouping, smart truncation). Requires the [rtk CLI](https://github.com/rtk-ai/rtk). | `pi install npm:pi-rtk-optimizer` |
+| `@eko24ive/pi-ask` | Ask tool with structured questions (single/multi/preview), option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
+| `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Companion to `pi-smart-fetch`. | `pi install npm:@leonardorick/pi-web-search` |
+| `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
+| `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback. | `pi install npm:pi-alert` |
+| `pi-rtk-optimizer` | Token-optimized command rewriting through `rtk` proxy and output compaction. Requires the [rtk CLI](https://github.com/rtk-ai/rtk). | `pi install npm:pi-rtk-optimizer` |
+
+## Themes
+
+| Name | Description | Install |
+|------|-------------|---------|
+| `@victor-software-house/pi-curated-themes` | 65 curated dark terminal themes adapted from iTerm2-Color-Schemes to pi's 51-token model. Semantic variants with guaranteed hue separation. | `pi install npm:@victor-software-house/pi-curated-themes` |
+
+Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
+
+```json
+{
+  "theme": "catppuccin-mocha"
+}
+```
+
+Available themes include `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
+
+## Settings & Models
+
+Pi looks for a single file at `~/.pi/agent/settings.json`. The destination file must always be named `settings.json` — pi does not read any other filename directly.
+
+```bash
+cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
+# /reload
+```
+
+### Model catalog
+
+This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-ollama-cloud`](https://github.com/fgrehm/pi-ollama-cloud). Capabilities below come from the live Ollama Cloud `/api/show` endpoint — run `/ollama-cloud-refresh` to refresh them locally.
+
+| Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
+|-------|--------|--------|----------|---------|--------------------|------|
+| `minimax-m3` | undisclosed | yes | yes | 524k | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
+| `nemotron-3-ultra` | 550B | no | yes | 262k | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
+| `deepseek-v4-pro` | 1.6T | no | yes | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
+| `deepseek-v4-flash` | 158B | no | yes | 1M | low (2/4) | Scout (fast, cheap) |
+| `kimi-k2.6` | 1.042T | yes | yes | 262k | high (3/4) | Vision-capable 1T-class option |
+| `glm-5.1` | 756B | no | yes | 202k | high (3/4) | Alternative training distribution |
+
+### Subagent models
+
+| Subagent | Model | Thinking |
+|----------|-------|----------|
+| scout | `deepseek-v4-flash` (fast) | `xhigh` |
+| planner | `minimax-m3` | `high` |
+| worker | `minimax-m3` | `high` |
+| reviewer | `minimax-m3` | `high` |
+| oracle | `deepseek-v4-pro` | `xhigh` |
+| context-builder | `deepseek-v4-pro` | `xhigh` |
+| researcher | `minimax-m3` | `high` |
+| delegate | `minimax-m3` | `high` |
+
+### Thinking rules
+
+Per family, sourced from each creator's official docs:
+
+- **`deepseek*` → `xhigh`.** The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
+- **`minimax*`, `nemotron*`, `kimi*`, `glm*` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), kimi-k2.6, and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota. The `reviewer` subagent sits at `high` for this reason.
+- The default orchestrator (`minimax-m3`) sits at `high` via `defaultThinkingLevel`.
+
+## Provider Setup
+
+### Ollama Cloud
+
+[pi-ollama-cloud](https://github.com/fgrehm/pi-ollama-cloud) registers Ollama Cloud as a model provider with dynamically fetched models and built-in web search/fetch tools.
+
+**Setup:**
+
+```bash
+# 1. Get an API key at ollama.com and set it
+export OLLAMA_API_KEY="your-ollama-cloud-api-key"
+# Or add it to ~/.pi/agent/auth.json:
+# { "ollama-cloud": { "type": "api_key", "key": "your-key" } }
+
+# 2. Fetch the full model list (run after install and whenever models change)
+/ollama-cloud-refresh
+```
+
+On first launch (before `/ollama-cloud-refresh`), a small set of fallback models is used. After refresh, all tool-capable Ollama Cloud models become available under the `ollama-cloud` provider — switch with `/model` or `Ctrl+L`. Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires; refresh manually).
+
+**Tools added:**
+
+| Tool | Description |
+|------|-------------|
+| `ollama_web_search` | Web search via Ollama Cloud's search API |
+| `ollama_web_fetch` | Web page fetch and extraction via Ollama Cloud |
+
+Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
+
+> **Recommendation:** run `/ollama-webtools off` to disable `ollama_web_search` and `ollama_web_fetch`. They are inferior to DuckDuckGo's `web_search` and TLS-fingerprinted `web_fetch` — Ollama tends to prefer its own tools when available, even when the results are worse. With `/ollama-webtools off`, the model falls back to the higher-quality tools automatically.
 
 ## RTK Optimizer
 
@@ -199,229 +303,102 @@ Settings are stored at `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`. De
 
 Use `/rtk` in the pi TUI to change settings interactively.
 
-### Troubleshooting
-
-#### `rtk ls` retorna `(empty)` e confunde o modelo
-
-**Problema:** Bug conhecido do `rtk` (issue [#1418](https://github.com/rtk-ai/rtk/issues/1418)) — `rtk ls` sempre retorna `(empty)` independente do conteúdo do diretório. Quando o `pi-rtk-optimizer` reescreve `ls` → `rtk ls`, o modelo recebe saída vazia e conclui que o diretório está vazio.
-
-**Solução:** Excluir `ls` da reescrita automática via configuração do `rtk`:
-
-```toml
-# ~/.config/rtk/config.toml
-[hooks]
-exclude_commands = ["ls"]
-```
-
-Isso faz `rtk rewrite "ls ..."` retornar exit code 1, e o `pi-rtk-optimizer` mantém o comando original sem reescrever. O `git status` e demais comandos continuam otimizados normalmente.
-
-**Alternativas:**
-- Mudar para modo `suggest` (`/rtk` → `mode: suggest`) — só notifica, não reescreve
-- Usar `rtk proxy ls` em vez de `rtk ls` para bypass da compactação
-- Prefixar com `RTK_DISABLED=1` para bypass pontual
-
-#### `rtk grep` retorna `linha:coluna:` sem o conteúdo matched
-
-**Problema:** Bug do `rtk` v0.38.0 — `rtk grep` mostra o número da linha e coluna mas **omite o texto da linha** após os `:`. Exemplo:
-
-```
-# grep nativo:
-4:class TestSomething:
-
-# rtk grep (quebrado):
-4:0:
-```
-
-Sem o conteúdo da linha, o modelo perde contexto essencial (nomes de classes, funções, valores).
-
-**Solução:** Excluir `grep` e `rg` junto com `ls` no `exclude_commands` do RTK:
-
-```toml
-# ~/.config/rtk/config.toml
-[hooks]
-exclude_commands = ["ls", "grep", "rg"]
-```
-
-O arquivo `rtk/config.toml` neste repositório já contém essa configuração pronta para copiar.
-
-## Themes
-
-| Name | Description | Install |
-|------|-------------|---------|
-| `@victor-software-house/pi-curated-themes` | 65 curated dark terminal themes adapted from iTerm2-Color-Schemes to pi's 51-token model. Semantic variants with guaranteed hue separation. | `pi install npm:@victor-software-house/pi-curated-themes` |
-
-Select a theme in `/settings`, or set it in `~/.pi/agent/settings.json`:
-
-```json
-{
-  "theme": "catppuccin-mocha"
-}
-```
-
-Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanagawa-wave`, `everforest-dark-hard`, `lovelace`, `mellow`, `vesper`, and 57 others. See the [full curated list](https://github.com/victor-software-house/pi-curated-themes).
-
 ## Working Vibes
 
-This repo includes **five** pre-generated vibe themes:
+[pi-working-vibe](https://github.com/Davidcreador/pi-working-vibe) replaces pi's default `Working…` message with themed flavor text that rotates while the agent thinks, and auto-switches per tool (`bash`, `read`, `edit`, `write`, `grep`, `find`, `ls`, `web_search`, `web_fetch`, `todo`).
 
-| Theme | File | Phrases | Sabor |
-|-------|------|---------|-------|
-| `startrek` | `vibes/startrek.txt` | 99 | Engaging warp drive, scanning for lifeforms… |
-| `klingon` | `vibes/klingon.txt` | 26 | Qapla'! bortaS bIr jablu'DI'… (com tradução) |
-| `standup` | `vibes/standup.txt` | 32 | Testing the mic… tough crowd today… |
-| `tiozao` | `vibes/tiozao.txt` | 43 | Aperta o play Juvenal… é pavê ou pacumê… |
-| `bbs` | `vibes/bbs.txt` | 52 | NO CARRIER… l33t skillz… RTFM… |
+This repo includes **four** custom vibe files:
 
-To switch themes:
-```
-/vibe klingon
-/vibe standup
-/vibe tiozao
-```
-
-When active, the "Working…" loading message is replaced with themed phrases like *"Engaging warp drive…"*, *"Scanning for lifeforms…"*, or *"Reversing polarity…"*.
+| Theme | File | Phrases | Flavor |
+|-------|------|---------|--------|
+| `startrek` | `vibes/startrek.txt` | 99 | Engaging warp drive, scanning for lifeforms... |
+| `klingon` | `vibes/klingon.txt` | 26 | Qapla'! bortaS bIr jablu'DI'... (with translation) |
+| `dadjokes` | `vibes/dadjokes.txt` | 200+ | Hi Hungry, I'm Dad... Surely you can't be serious... |
+| `bbs` | `vibes/bbs.txt` | 52 | NO CARRIER... l33t skillz... RTFM... |
 
 ### Setup
 
-The `settings.json` is pre-configured with vibes:
+```bash
+# 1. Install the extension
+pi install npm:pi-working-vibe
 
-```json
-{
-  "workingVibe": "startrek",
-  "workingVibeMode": "file",
-  "workingVibeModel": "deepseek-v4-flash"
-}
+# 2. Copy custom vibe files to your global config
+cp ~/dev/pi-dev-config/vibes/*.txt ~/.pi/agent/vibes/
+
+# 3. Copy settings
+cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
+
+# 4. Reload pi
+# /reload
 ```
 
-After copying `settings.json` to `~/.pi/agent/`, reload pi (`/reload`). To verify:
+`settings.json` is pre-configured with `workingVibe: true` and `workingVibeName: "startrek"`. Bundled themes from the extension (`mafia`, `hacker`, `pirate`, `zen`) remain available — switch with `/vibe vibe:<name>`.
+
+### Vibe file format
+
+Vibe files are plain text. One phrase per line, terminating in `...`. `#` for comments. Optional `[section]` headers split lines into pools:
 
 ```
-/vibe
+# startrek.txt
+Engaging warp drive...
+Scanning for lifeforms...
+
+[tool:bash]
+Diverting power to shields...
+
+[tool:read]
+Extending sensor pallets...
 ```
 
-Should show: `Vibe: startrek | Mode: file | Model: ollama-cloud/deepseek-v4-flash | File: 99 vibes`
+Pools fall back to `[default]` when the active tool has no dedicated section. Files without headers become one big default pool (backward compatible).
 
-### File mode vs generate mode
+### Commands
 
-| Mode | How it works | Latency | Cost |
-|------|-------------|---------|------|
-| `file` | Reads from `vibes/startrek.txt` (99 pre-generated phrases) | Instant | Zero |
-| `generate` | Calls the LLM on-demand for each message | ~1-3s | Per API call |
-
-This repo uses **file mode** — vibes are loaded once at startup and cycled through with seeded shuffle, avoiding repetition.
-
-### Multi-word theme bug
-
-The `/vibe generate "star trek"` command (with spaces) fails due to whitespace-split argument parsing in the extension. Single-word themes like `startrek` avoid this. Workarounds:
-
-- **Use single-word slugs:** Rename the theme to a single word (e.g. `startrek` instead of `star trek`), then `/vibe generate startrek 200` works normally.
-- **Manual file:** Write vibe phrases to `~/.pi/agent/vibes/<theme-slug>.txt` (one per line, ending in `...`), then switch to file mode.
-- **Generate from templates:** Use `/vibe generate <theme> [count]` (without `"` characters in the theme) to produce the file, then rename it to match your multi-word theme slug.
-
-This repo includes a pre-generated `vibes/startrek.txt` so you don't need to work around the bug.
+| Command | Effect |
+|---------|--------|
+| `/vibe` | Toggle master switch |
+| `/vibe on` / `/vibe off` | Enable / disable |
+| `/vibe list` | List installed vibes (user + bundled) |
+| `/vibe info` | Show active settings + line counts |
+| `/vibe pools` | List sections in the active vibe |
+| `/vibe preview` | Pick a sample line from the active pool |
+| `/vibe reload` | Re-read settings + vibe file from disk |
+| `/vibe vibe:<name>` | Switch active vibe |
+| `/vibe indicator:<preset>` | `default` \| `dots` \| `line` \| `pulse` \| `braille` \| `arrow` \| `custom` |
+| `/vibe color:<token>` | Theme color for spinner (e.g. `accent`, `primary`, `dim`) |
+| `/vibe rotate:<ms>` | Message rotation interval (`0` = static) |
+| `/vibe interval:<ms>` | Spinner frame interval |
 
 ### Switching themes
 
 ```
-/vibe klingon      # Qapla'! — Klingon with translations
-/vibe standup      # Tough crowd today…
-/vibe tiozao       # Aperta o play, Juvenal…
-/vibe bbs          # NO CARRIER…
-/vibe startrek     # Back to Starfleet
-/vibe off          # Disable vibes
+/vibe vibe:startrek     # Back to Starfleet
+/vibe vibe:klingon      # Qapla'! — Klingon with translations
+/vibe vibe:dadjokes     # Hi Hungry, I'm Dad...
+/vibe vibe:bbs          # NO CARRIER...
+/vibe vibe:mafia        # Bundled with the extension
+/vibe off               # Disable vibes
 ```
 
-All five themes use file mode — instant, zero cost, no API calls.
+User files in `~/.pi/agent/vibes/` override bundled files of the same name, so you can fork `startrek.txt` without losing package updates.
 
-## Settings
+### Settings reference
 
-Pi looks for a single file at `~/.pi/agent/settings.json`. This repository provides a pre-configured `settings.json` using the **Ollama Cloud** provider.
-
-### Setup
-
-```bash
-cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
-```
-
-After copying, reload pi (`/reload`).
-
-> **Important:** The destination file must always be named `settings.json`. Pi does not read any other filename directly.
-
-### Model catalog
-
-This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-ollama-cloud`](https://github.com/fgrehm/pi-ollama-cloud). Capabilities below come from the live Ollama Cloud `/api/show` endpoint — run `/ollama-cloud-refresh` to refresh them locally.
-
-| Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
-|-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | ✅ | ✅ | 524k | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
-| `nemotron-3-ultra` | 550B | ❌ | ✅ | 262k | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
-| `deepseek-v4-pro` | 1.6T | ❌ | ✅ | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
-| `deepseek-v4-flash` | 158B | ❌ | ✅ | 1M | low (2/4) | Scout (fast, cheap) |
-| `kimi-k2.6` | 1.042T | ✅ | ✅ | 262k | high (3/4) | Vision-capable 1T-class option |
-| `glm-5.1` | 756B | ❌ | ✅ | 202k | high (3/4) | Alternative training distribution |
-
-### Subagent models
-
-| Subagent | Model | Thinking |
-|----------|-------|----------|
-| scout | `deepseek-v4-flash` ⚡ | `xhigh` |
-| planner | `minimax-m3` | `high` |
-| worker | `minimax-m3` | `high` |
-| reviewer | `minimax-m3` | `high` |
-| oracle | `deepseek-v4-pro` | `xhigh` |
-| delegate | `minimax-m3` | `high` |
-| context-builder | `deepseek-v4-pro` | `xhigh` |
-| researcher | `minimax-m3` | `high` |
-
-> **Thinking rule (per family, sourced from each creator's official docs):**
-> - `deepseek*` → `xhigh`. The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
-> - `minimax*`, `nemotron*`, `kimi*`, `glm*` → `high`. The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), kimi-k2.6, and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The pi-ollama-cloud extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota. The `reviewer` subagent sits at `high` for this reason.
-> - The default orchestrator (`minimax-m3`) sits at `high` via `defaultThinkingLevel`.
-
-## Provider Setup
-
-### Ollama Cloud
-
-[pi-ollama-cloud](https://github.com/fgrehm/pi-ollama-cloud) registers Ollama Cloud as a model provider with dynamically fetched models and built-in web search/fetch tools.
-
-**Setup:**
-
-```bash
-# 1. Get an API key at ollama.com and set it
-export OLLAMA_API_KEY="your-ollama-cloud-api-key"
-# Or add it to ~/.pi/agent/auth.json:
-# { "ollama-cloud": { "type": "api_key", "key": "your-key" } }
-
-# 2. Fetch the full model list (run after install and whenever models change)
-/ollama-cloud-refresh
-```
-
-On first launch (before `/ollama-cloud-refresh`), a small set of fallback models is used. After refresh, all tool-capable Ollama Cloud models become available under the `ollama-cloud` provider — switch with `/model` or `Ctrl+L`.
-
-Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires; refresh manually).
-
-**Tools added:**
-
-| Tool | Description |
-|------|-------------|
-| `ollama_web_search` | Web search via Ollama Cloud's search API |
-| `ollama_web_fetch` | Web page fetch and extraction via Ollama Cloud |
-
-Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
-
-> **Recomendação:** Dê `/ollama-webtools off` para desligar o `ollama_web_search` e o `ollama_web_fetch`. Eles são inferiores ao `web_search` do DuckDuckGo (`@leonardorick/pi-web-search`) e ao `web_fetch` com TLS fingerprinting (`pi-smart-fetch`) — o Ollama tende a preferir as próprias tools quando estão disponíveis, mesmo que os resultados sejam piores. Com `/ollama-webtools off`, o modelo usa automaticamente as tools superiores.
+| Key | Type | Default | Effect |
+|-----|------|---------|--------|
+| `workingVibe` | boolean | `true` | Master switch |
+| `workingVibeName` | string | `"mafia"` | Vibe file name (no `.txt`) |
+| `workingVibeRotateMs` | number | `3500` | Rotation interval; `0` = static. Floor 750ms |
+| `workingIndicator` | enum | `"default"` | Spinner preset |
+| `workingIndicatorColor` | string | `"accent"` | Theme color token |
+| `workingIndicatorFrames` | string[] | `[]` | Custom frames (when `workingIndicator: "custom"`) |
+| `workingIndicatorIntervalMs` | number | `90` | Spinner frame interval. Floor 40ms |
 
 ## Notifications
 
 [pi-alert](https://github.com/maxpetretta/pi-alert) sends a system notification when the agent finishes its turn. Notifications fire automatically after every prompt — no configuration needed.
 
-**Notification body** shows an activity summary with elapsed time, prioritizing the most useful signal from the completed run:
-1. Updated files
-2. Other tool calls
-3. Read files
-4. Generic completion fallback
-
-**Title** uses the project root directory name (e.g. `pi — pi-dev-config`).
+**Notification body** shows an activity summary with elapsed time, prioritizing the most useful signal from the completed run: updated files → other tool calls → read files → generic completion fallback. **Title** uses the project root directory name (e.g. `pi — pi-dev-config`).
 
 ### Delivery
 
@@ -445,13 +422,51 @@ When no terminal-native transport is available, pi-alert falls back to the OS:
 | Windows | PowerShell `NotifyIcon` balloon notification |
 | Final resort | Terminal bell (`BEL`) |
 
+## Ghostty
+
+Terminal configuration for development with pi.
+
+| File | Description |
+|---------|-----------|
+| `ghostty/config.ghostty` | GitHub Dark theme, JetBrains Mono 12px, blinking bar cursor, padding 8x4, shell integration |
+| `ghostty/SSH_NERD_FONT.md` | Guide for Nerd Font icons to work over SSH (Ghostty → VPS) |
+
+To enable Nerd Font icons in the status line over SSH, add `TERM_PROGRAM TERM_PROGRAM_VERSION` to the sshd `AcceptEnv` on the VPS — see `ghostty/SSH_NERD_FONT.md`.
+
+```bash
+cp ~/dev/pi-dev-config/ghostty/config.ghostty ~/.config/ghostty/config.ghostty
+```
+
+Restart Ghostty completely after copying.
+
+## Context & Rules
+
+Pi loads two kinds of instruction files at startup:
+
+| File | Scope | Purpose |
+|------|-------|---------|
+| `APPEND_SYSTEM.md` | Global (`~/.pi/agent/`) | Extends the **system prompt** — behavioral rules and conventions that apply to every session (code style, testing, logging, etc.). Appended without replacing the native prompt. |
+| `AGENTS.md` | Per-project | Project-level **context** — stack, conventions, build commands, and local rules. Pi concatenates all `AGENTS.md` found from `cwd` up through parent directories plus `~/.pi/agent/`. |
+
+This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rules. Copy it once to your global config. For project-specific instructions, create `AGENTS.md` at the project root — no example is included because it should be customized per project (tech stack, build commands, team conventions).
+
+### AGENTS.md best practices
+
+See `docs/research/AGENTS.md-analysis-20260529.md` for a comprehensive research report (14 sources, 6 core areas). Key takeaways:
+
+- **6 core areas** every AGENTS.md should cover: Commands, Testing, Project Structure, Code Style, Git Workflow, Boundaries.
+- **Commands at the top** with exact flags, copy-pasteable — highest-ROI section.
+- **Boundaries with 3 levels** (Always / Ask first / Never) — single most effective constraint pattern.
+- **Code examples over descriptions** — one real snippet beats three paragraphs.
+- **≤150–180 lines is the sweet spot** — every extra line consumes context tokens.
+- **No changelog or human documentation** — AGENTS.md is a runtime instruction set; README.md is for humans.
+
 ## CI & Validation
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push, PR, and `v*.*.*` tag.
 
-**`validate` job** — runs [`validate.py`](validate.py) on every change. Validates that all JSON, TOML, and Markdown files in the repo parse correctly and that `settings.json` has the required keys (`packages`, `defaultProvider`, `defaultModel`, `enabledModels`).
-
-**`release` job** — fires only on `v*.*.*` tags. Categorizes the commits since the previous tag into Added (feat), Fixed (fix), and Changed (chore/docs/ci/refactor/style/test/perf/revert/build), and creates a GitHub release with auto-generated notes.
+- **`validate` job** — runs [`validate.py`](validate.py) on every change. Validates that all JSON, TOML, and Markdown files in the repo parse correctly and that `settings.json` has the required keys (`packages`, `defaultProvider`, `defaultModel`, `enabledModels`).
+- **`release` job** — fires only on `v*.*.*` tags. Categorizes the commits since the previous tag into Added (`feat`), Fixed (`fix`), and Changed (`chore`/`docs`/`ci`/`refactor`/`style`/`test`/`perf`/`revert`/`build`), and creates a GitHub release with auto-generated notes.
 
 Run `validate.py` locally before pushing:
 
@@ -461,74 +476,7 @@ python3 validate.py
 
 See [`docs/ci-auto-release-guide.md`](docs/ci-auto-release-guide.md) for the full release workflow.
 
-## Troubleshooting
-
-### nemotron-3-ultra: past incident and re-test plan
-
-**2026-06-04 (first deploy):** Nemotron-3-ultra was deployed as `worker` + `researcher`. It burned ~20M tokens across 29 requests and drained the Pro quota. Ollama Cloud subsequently reset session and weekly usage counters (observed same day), suggesting a **provider-side** fix for a runaway thinking loop.
-
-**2026-06-04 (re-deploy attempt):** Re-deployed after the Ollama Cloud reset. The runaway recurred. Nemotron-3-ultra was removed from `enabledModels` and `worker` + `researcher` reverted to M3.
-
-**Re-test target: 2026-06-11** (one week after the second removal). To re-enable for testing:
-
-```json
-"worker":     { "model": "nemotron-3-ultra", "thinking": "high" },
-"researcher": { "model": "nemotron-3-ultra", "thinking": "high" }
-```
-
-Also add `"nemotron-3-ultra"` back to `enabledModels`.
-
-**If the runaway recurs on the re-test:** Pull nemotron again and push the re-test target by another week. The trigger is a single request burning >1M tokens, or Pro quota dropping by more than 10% in one worker run.
-
-## Ghostty
-
-Configuração do terminal Ghostty para desenvolvimento com pi.
-
-### Arquivos
-
-| Arquivo | Descrição |
-|---------|-----------|
-| `ghostty/config.ghostty` | Tema GitHub Dark, JetBrains Mono 12px, cursor barra piscante, padding 8x4, shell integration |
-| `ghostty/SSH_NERD_FONT.md` | Guia para ícones Nerd Font funcionarem via SSH (Ghostty → VPS) |
-
-### SSH Nerd Font
-
-Para o status line mostrar ícones corretamente ao conectar em VPS via SSH:
-
-1. **Local** — a config já inclui `ssh-env` no `shell-integration-features`
-2. **VPS** — adicionar `TERM_PROGRAM TERM_PROGRAM_VERSION` no `AcceptEnv` do sshd (ver `ghostty/SSH_NERD_FONT.md`)
-
-### Copiar para o sistema
-
-```bash
-cp ~/dev/pi-dev-config/ghostty/config.ghostty ~/.config/ghostty/config.ghostty
-```
-
-Reinicie o Ghostty completamente após copiar.
-
-## Context & Rules
-
-Pi loads two kinds of instruction files at startup:
-
-| File | Scope | Purpose |
-|------|-------|---------|
-| `APPEND_SYSTEM.md` | Global (`~/.pi/agent/`) | Extends the **system prompt** — behavioral rules and conventions that apply to every agent session (code style, testing discipline, logging, etc.). Appended without replacing the native prompt. |
-| `AGENTS.md` | Per-project | Project-level **context** — stack, conventions, build commands, and local rules. Pi concatenates all `AGENTS.md` found from `cwd` up through parent directories plus `~/.pi/agent/`. |
-
-This repo ships a reusable `APPEND_SYSTEM.md` with language-agnostic coding rules. Copy it once to your global config. For project-specific instructions, create `AGENTS.md` at the project root — no example is included here because it should be customized per project (tech stack, build commands, team conventions, etc.).
-
-### AGENTS.md Best Practices
-
-See `docs/research/AGENTS.md-analysis-20260529.md` for a comprehensive research report (14 sources, 6 core areas). Key takeaways:
-
-- **6 core areas** every AGENTS.md should cover: Commands, Testing, Project Structure, Code Style, Git Workflow, Boundaries
-- **Commands at the top** with exact flags, copy-pasteable — highest-ROI section
-- **Boundaries with 3 levels** (✅ Always / ⚠️ Ask first / 🚫 Never) — single most effective constraint pattern
-- **Code examples over descriptions** — one real snippet beats three paragraphs
-- **≤150-180 linhas** é o sweet spot — cada linha extra consome tokens do context window
-- **Sem changelog ou documentação humana** — AGENTS.md é runtime instruction set, README.md é pra humanos
-
-## Structure
+## Repository Structure
 
 ```
 pi-dev-config/
@@ -543,38 +491,76 @@ pi-dev-config/
 ├── docs/
 │   ├── ci-auto-release-guide.md         # Full release workflow guide
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
-│   ├── PI_DEV_CHEATSHEET.md             # Practical workflow guide (PT)
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
-
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
 │   ├── streamlit_extras_guide.md        # streamlit-extras complete reference guide
 │   └── research/
 │       └── AGENTS.md-analysis-20260529.md  # AGENTS.md industry standard research (14 sources)
 ├── rtk/
-│   └── config.toml               # RTK exclude list: ls, grep, rg (bypass known bugs)
+│   └── config.toml                # RTK exclude list: ls, grep, rg (bypass known bugs)
 ├── ghostty/
-│   ├── config.ghostty             # Tema GitHub Dark, JetBrains Mono, shell integration
-│   └── SSH_NERD_FONT.md           # Guia de Nerd Fonts via SSH
+│   ├── config.ghostty             # GitHub Dark, JetBrains Mono, shell integration
+│   └── SSH_NERD_FONT.md           # Nerd Font icons over SSH guide
 ├── vibes/
 │   ├── startrek.txt               # Startrek: 99 phrases
 │   ├── klingon.txt                # Klingon + translations: 26 phrases
-│   ├── standup.txt                # Standup comedy: 32 phrases
-│   ├── tiozao.txt                 # Tiozão jokes: 43 phrases
+│   ├── dadjokes.txt               # Dad jokes: 200+ phrases
 │   └── bbs.txt                    # BBS taglines 90s: 52 phrases
-├── README.md                      # This file
+└── README.md                      # This file
 ```
 
-## Notes
+## Troubleshooting
 
-### "auto-update off" na barra de status
+### `auto-update off` in the status bar
 
-É o status do `pi-extension-manager`. Significa que a verificação automática de atualizações de pacotes está desligada. Para ativar:
+This is the status of `pi-extension-manager`. It means automatic package update checking is disabled. To enable:
 
 ```
 /extensions auto-update daily
 ```
 
-Outros intervalos: `weekly`, `1h`, `6h`, `3d`, `2w`, `1mo`, ou `/extensions auto-update` para o wizard interativo.
+Other intervals: `weekly`, `1h`, `6h`, `3d`, `2w`, `1mo`, or run `/extensions auto-update` for the interactive wizard.
+
+### RTK: `rtk ls` returns `(empty)` and confuses the model
+
+**Problem:** Known bug ([rtk#1418](https://github.com/rtk-ai/rtk/issues/1418)) — `rtk ls` always returns `(empty)` regardless of directory contents. When `pi-rtk-optimizer` rewrites `ls` → `rtk ls`, the model receives empty output and concludes the directory is empty.
+
+**Fix:** exclude `ls` from automatic rewriting via the RTK config:
+
+```toml
+# ~/.config/rtk/config.toml
+[hooks]
+exclude_commands = ["ls"]
+```
+
+This makes `rtk rewrite "ls ..."` return exit code 1, and `pi-rtk-optimizer` keeps the original command un-rewritten. `git status` and other commands stay optimized.
+
+**Alternatives:** switch to `suggest` mode (`/rtk` → `mode: suggest`) — only notifies, doesn't rewrite; use `rtk proxy ls` to bypass compaction; or prefix with `RTK_DISABLED=1` for one-off bypasses.
+
+### RTK: `rtk grep` returns `line:column:` without the matched content
+
+**Problem:** Bug in `rtk` v0.38.0 — `rtk grep` shows line and column but **omits the line text** after the `:`. Without line content, the model loses essential context (class/function names, values).
+
+**Fix:** exclude `grep` and `rg` along with `ls` in `exclude_commands`. The `rtk/config.toml` in this repo already contains that configuration.
+
+```toml
+# ~/.config/rtk/config.toml
+[hooks]
+exclude_commands = ["ls", "grep", "rg"]
+```
+
+### `nemotron-3-ultra`: past incident and re-test plan
+
+- **2026-06-04 (first deploy):** Nemotron-3-ultra was deployed as `worker` + `researcher`. It burned ~20M tokens across 29 requests and drained the Pro quota. Ollama Cloud subsequently reset session and weekly usage counters (observed same day), suggesting a **provider-side** fix for a runaway thinking loop.
+- **2026-06-04 (re-deploy attempt):** Re-deployed after the Ollama Cloud reset. The runaway recurred. Nemotron-3-ultra was removed from `enabledModels`; `worker` + `researcher` reverted to M3.
+- **Re-test target: 2026-06-11** (one week after the second removal). To re-enable for testing, set the following in `agentOverrides` and add `"nemotron-3-ultra"` back to `enabledModels`:
+
+  ```json
+  "worker":     { "model": "nemotron-3-ultra", "thinking": "high" },
+  "researcher": { "model": "nemotron-3-ultra", "thinking": "high" }
+  ```
+
+  **If the runaway recurs on the re-test:** pull nemotron again and push the re-test target by another week. The trigger is a single request burning >1M tokens, or Pro quota dropping by more than 10% in one worker run.
 
 ## License
 

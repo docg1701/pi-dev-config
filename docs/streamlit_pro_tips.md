@@ -1,16 +1,16 @@
-# 25+ Dicas PRO de Streamlit — De script básico a dashboard profissional
+# 25+ Streamlit PRO Tips — From Basic Script to Professional Dashboard
 
-Resumo organizado, explicado e validado contra a documentação oficial do vídeo **"25+ Streamlit PRO Tips from a Co-founder Dashboard App"** (`https://www.youtube.com/watch?v=pAPEP0j73QE`).
+Organized, explained, and validated against the official documentation of the video **"25+ Streamlit PRO Tips from a Co-founder Dashboard App"** (`https://www.youtube.com/watch?v=pAPEP0j73QE`).
 
-Cada dica traz: o que o vídeo recomenda, o motivo, o trecho de código equivalente e um link direto para a documentação oficial. Onde a transcrição diverge da documentação atual, há uma nota de **Correção**.
+Each tip includes: what the video recommends, the reason, the equivalent code snippet, and a direct link to the official documentation. Where the transcript diverges from current documentation, there is a **Correction** note.
 
 ---
 
-## 1. Configuração inicial da página
+## 1. Initial page configuration
 
-### Dica 1 — `st.set_page_config` com layout largo, título e ícone
+### Tip 1 — `st.set_page_config` with wide layout, title, and icon
 
-Sempre comece o app definindo o layout, título e ícone da aba do navegador. Isso aproveita toda a largura da tela e dá identidade visual logo na aba.
+Always start the app by defining the layout, title, and browser tab icon. This takes advantage of the full screen width and gives visual identity right in the tab.
 
 ```python
 import streamlit as st
@@ -22,53 +22,53 @@ st.set_page_config(
 )
 ```
 
-- `layout="wide"` faz o app ocupar toda a largura do navegador.
-- `page_title` aparece na aba do navegador.
-- `page_icon` aceita emoji, caminho de arquivo ou ícones Material UI no formato `:material/nome_do_icone:`.
+- `layout="wide"` makes the app take the full width of the browser.
+- `page_title` shows in the browser tab.
+- `page_icon` accepts an emoji, a file path, or Material UI icons in the format `:material/icon_name:`.
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/configuration/st.set_page_config>
+Documentation: <https://docs.streamlit.io/develop/api-reference/configuration/st.set_page_config>
 
-### Dica 2 — Ícones Material UI inline
+### Tip 2 — Inline Material UI icons
 
-Streamlit suporta a sintaxe `:material/nome_do_icone:` em qualquer texto markdown (títulos, labels, `st.write`, `st.metric`, abas etc.).
+Streamlit supports the `:material/icon_name:` syntax in any markdown text (titles, labels, `st.write`, `st.metric`, tabs, etc.).
 
 ```python
 st.write(":material/trending_up: Performance")
-st.button(":material/refresh: Atualizar")
+st.button(":material/refresh: Refresh")
 ```
 
-A grafia do nome do ícone é em **snake_case** (estilo "rounded"). Lista completa: <https://fonts.google.com/icons?icon.set=Material+Symbols&icon.style=Rounded>
+Icon names are written in **snake_case** (rounded style). Full list: <https://fonts.google.com/icons?icon.set=Material+Symbols&icon.style=Rounded>
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/text/st.markdown>
+Documentation: <https://docs.streamlit.io/develop/api-reference/text/st.markdown>
 
 ---
 
-## 2. Layout em grid com cara de dashboard
+## 2. Grid layout with a dashboard feel
 
-### Dica 3 — Colunas com larguras desiguais
+### Tip 3 — Columns with unequal widths
 
-Em vez de `st.columns(2)` (colunas iguais), passe uma lista para definir proporções.
+Instead of `st.columns(2)` (equal columns), pass a list to define proportions.
 
 ```python
 left, right = st.columns([1, 3])  # left = 25%, right = 75%
 ```
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/layout/st.columns>
+Documentation: <https://docs.streamlit.io/develop/api-reference/layout/st.columns>
 
-### Dica 4 — Containers com `border=True` para visual de "card"
+### Tip 4 — Containers with `border=True` for a "card" look
 
 ```python
 with left.container(border=True):
     st.metric("Total", "1.2k", "+5%")
 ```
 
-`border=True` desenha uma borda arredondada que dá o aspecto de cartão.
+`border=True` draws a rounded border that gives a card-like appearance.
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
+Documentation: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
 
-### Dica 5 — `height="stretch"` para alinhar alturas
+### Tip 5 — `height="stretch"` to align heights
 
-Quando você tem cards lado a lado, eles podem ter alturas diferentes e quebrar o grid. Force que ocupem toda a altura disponível:
+When you have side-by-side cards, they may have different heights and break the grid. Force them to take the full available height:
 
 ```python
 with left.container(border=True, height="stretch"):
@@ -77,32 +77,32 @@ with right.container(border=True, height="stretch"):
     ...
 ```
 
-A altura aceita `"content"` (padrão), `"stretch"` ou um inteiro em pixels.
+The `height` parameter accepts `"content"` (default), `"stretch"`, or an integer in pixels.
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
+Documentation: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
 
-### Dica 6 — `vertical_alignment="center"` para centralizar conteúdo nos cards
+### Tip 6 — `vertical_alignment="center"` to center content in cards
 
-Quando o card é grande mas o conteúdo é pequeno, ele "boia" no topo. Centralize:
+When the card is large but the content is small, it "floats" at the top. Center it:
 
 ```python
 with col.container(border=True, height="stretch", vertical_alignment="center"):
-    st.metric("Vencedoras", "12 / 20")
+    st.metric("Winners", "12 / 20")
 ```
 
-Valores aceitos: `"top"` (padrão), `"center"`, `"bottom"`, `"distribute"`.
+Accepted values: `"top"` (default), `"center"`, `"bottom"`, `"distribute"`.
 
-> ℹ️ **Observação:** `st.columns` também aceita `vertical_alignment`, porém só com `"top" | "center" | "bottom"` (sem `"distribute"`).
+> ℹ️ **Note:** `st.columns` also accepts `vertical_alignment`, but only with `"top" | "center" | "bottom"` (no `"distribute"`).
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
+Documentation: <https://docs.streamlit.io/develop/api-reference/layout/st.container>
 
 ---
 
-## 3. Carregamento de dados e cache
+## 3. Data loading and caching
 
-### Dica 7 — Cache de dados com TTL
+### Tip 7 — Data cache with TTL
 
-Evite que cada interação faça download da API novamente.
+Avoid every interaction making a fresh API download.
 
 ```python
 @st.cache_data(ttl="6h", show_spinner=False)
@@ -111,29 +111,29 @@ def load_data(tickers: tuple[str, ...]) -> pd.DataFrame:
     return yf.download(list(tickers), period="1y")
 ```
 
-- `ttl="6h"` mantém os dados em cache por 6 horas (também aceita segundos ou `timedelta`).
-- O argumento da função precisa ser **hashable** — por isso `tuple` em vez de `list`.
+- `ttl="6h"` keeps data cached for 6 hours (also accepts seconds or `timedelta`).
+- Function arguments must be **hashable** — hence `tuple` instead of `list`.
 
-> ⚠️ **Correção em relação à transcrição.** O vídeo (na transcrição automática) menciona `st.cache_resource` para `load_data`. A documentação recomenda **`st.cache_data`** quando o retorno é dado serializável (DataFrame, dict, lista, valor). Use `st.cache_resource` apenas para recursos compartilháveis e não-serializáveis (conexão de banco, modelo de ML, cliente HTTP).
+> ⚠️ **Correction to the transcript.** The video (in auto-transcript) mentions `st.cache_resource` for `load_data`. The documentation recommends **`st.cache_data`** when the return is serializable data (DataFrame, dict, list, value). Use `st.cache_resource` only for shareable, non-serializable resources (DB connection, ML model, HTTP client).
 
-Documentação:
+Documentation:
 - `st.cache_data` → <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.cache_data>
 - `st.cache_resource` → <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.cache_resource>
 
-### Dica 8 — `show_spinner=False` para esconder o spinner do cache
+### Tip 8 — `show_spinner=False` to hide the cache spinner
 
-O spinner padrão "Running load_data..." quebra a sensação de polish. Esconda-o e, se quiser, mostre seu próprio indicador.
+The default "Running load_data..." spinner breaks the polished feel. Hide it and, if you want, show your own indicator.
 
 ```python
 @st.cache_data(ttl="6h", show_spinner=False)
 def load_data(tickers): ...
 ```
 
-Também funciona com texto custom: `show_spinner="Buscando cotações..."`.
+Also works with custom text: `show_spinner="Fetching quotes..."`.
 
-### Dica 9 — Não envenenar o cache em caso de erro
+### Tip 9 — Don't poison the cache on error
 
-Se a API retornar erro de rate limit e você cachear esse erro/valor vazio, todos os usuários ficam presos por 6 horas. Limpe a entrada de cache no erro:
+If the API returns a rate-limit error and you cache that error/empty value, all users stay stuck for 6 hours. Clear the cache entry on error:
 
 ```python
 import streamlit as st
@@ -144,70 +144,70 @@ def load_data(tickers):
     try:
         return yf.download(list(tickers), period="1y")
     except yf.exceptions.YFRateLimitError as e:
-        load_data.clear()       # limpa apenas esta função
-        st.error(f"Limite da Yahoo Finance: {e}")
-        st.stop()                # interrompe o restante do app
+        load_data.clear()       # clear only this function
+        st.error(f"Yahoo Finance rate limit: {e}")
+        st.stop()                # stop the rest of the app
 ```
 
-- `funcao.clear()` apaga o cache **só dessa função** (granular).
-- `st.cache_data.clear()` apaga **todos** os caches de dados (mais agressivo).
+- `function.clear()` clears the cache **only for that function** (granular).
+- `st.cache_data.clear()` clears **all** data caches (more aggressive).
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.cache_data>
+Documentation: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.cache_data>
 
-### Dica 10 — `st.stop()` para abortar a renderização
+### Tip 10 — `st.stop()` to abort rendering
 
-Quando os dados falham, não faz sentido tentar desenhar gráficos vazios. `st.stop()` interrompe o script naquele ponto sem disparar exceção.
+When data fails, drawing empty charts doesn't make sense. `st.stop()` interrupts the script at that point without raising an exception.
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/control-flow/st.stop>
+Documentation: <https://docs.streamlit.io/develop/api-reference/control-flow/st.stop>
 
 ---
 
-## 4. Métricas e KPIs
+## 4. Metrics and KPIs
 
-### Dica 11 — `st.metric` com delta
+### Tip 11 — `st.metric` with delta
 
-Mostre variação relativa com seta colorida automática (verde/vermelho):
+Show relative change with automatic colored arrow (green/red):
 
 ```python
-st.metric(label="Vencedoras", value="12", delta="+3 vs ontem")
-st.metric(label="Perdas", value="8", delta="-2", delta_color="inverse")
+st.metric(label="Winners", value="12", delta="+3 vs yesterday")
+st.metric(label="Losses", value="8", delta="-2", delta_color="inverse")
 ```
 
-- `delta_color="inverse"` inverte as cores (útil quando "subir é ruim").
-- `border=True` adiciona o estilo de cartão diretamente no metric.
+- `delta_color="inverse"` inverts the colors (useful when "going up is bad").
+- `border=True` adds the card style directly to the metric.
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/data/st.metric>
+Documentation: <https://docs.streamlit.io/develop/api-reference/data/st.metric>
 
 ---
 
-## 5. Filtros: multiselect e pills
+## 5. Filters: multiselect and pills
 
-### Dica 12 — `st.multiselect` com texto livre
+### Tip 12 — `st.multiselect` with free text
 
-Permita que o usuário **digite novas opções** que não estavam na lista original:
+Allow the user to **type new options** that weren't in the original list:
 
 ```python
 tickers = st.multiselect(
     "Tickers",
     options=["AAPL", "MSFT", "GOOG", "NVDA"],
     default=["AAPL", "MSFT"],
-    accept_new_options=True,   # aceita texto fora das opções
-    max_selections=10,         # bom par para limitar crescimento
+    accept_new_options=True,   # accepts text outside the options
+    max_selections=10,         # good pair to limit growth
 )
 ```
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/widgets/st.multiselect>
+Documentation: <https://docs.streamlit.io/develop/api-reference/widgets/st.multiselect>
 
-### Dica 13 — `st.pills` com mapa label → valor
+### Tip 13 — `st.pills` with label → value map
 
-`st.pills` mostra opções como botões em formato de "pílulas". Para exibir um label bonito e usar um valor diferente internamente, mantenha um dicionário e use `format_func`:
+`st.pills` shows options as "pill"-shaped buttons. To display a nice label and use a different value internally, keep a dictionary and use `format_func`:
 
 ```python
 horizon_map = {"1D": "1d", "1W": "5d", "1M": "1mo", "1Y": "1y"}
 
 choice = st.pills(
-    "Horizonte",
-    options=list(horizon_map.keys()),  # mostra "1D", "1W", ...
+    "Horizon",
+    options=list(horizon_map.keys()),  # shows "1D", "1W", ...
     default="1M",
     selection_mode="single",
 )
@@ -215,35 +215,35 @@ period = horizon_map[choice]            # "1mo"
 data = load_data(tickers, period=period)
 ```
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/widgets/st.pills>
+Documentation: <https://docs.streamlit.io/develop/api-reference/widgets/st.pills>
 
-### Dica 14 — `st.info` para estados vazios
+### Tip 14 — `st.info` for empty states
 
-Em vez de mostrar gráfico em branco, oriente o usuário:
+Instead of showing a blank chart, guide the user:
 
 ```python
 if not tickers:
-    st.info(":material/info: Selecione ao menos um ticker para começar.")
+    st.info(":material/info: Select at least one ticker to start.")
     st.stop()
 ```
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/status/st.info>
+Documentation: <https://docs.streamlit.io/develop/api-reference/status/st.info>
 
 ---
 
-## 6. Pipeline de dados para gráficos
+## 6. Data pipeline for charts
 
-### Dica 15 — Normalize os preços para comparação justa
+### Tip 15 — Normalize prices for fair comparison
 
-Comparar uma ação de US$ 100 com outra de US$ 1.000 no mesmo eixo distorce a leitura. Normalize tudo para começar em **1**:
+Comparing a $100 stock with a $1,000 stock on the same axis distorts the reading. Normalize everything to start at **1**:
 
 ```python
 normalized = df.div(df.iloc[0])
 ```
 
-### Dica 16 — Wide → long com `df.melt()` para Altair
+### Tip 16 — Wide → long with `df.melt()` for Altair
 
-Altair (e a maioria das ferramentas grammar-of-graphics) prefere o formato **tidy / long**.
+Altair (and most grammar-of-graphics tools) prefer the **tidy / long** format.
 
 ```python
 long = normalized.reset_index().melt(
@@ -253,9 +253,9 @@ long = normalized.reset_index().melt(
 )
 ```
 
-### Dica 17 — Grade dinâmica de cards com `enumerate`
+### Tip 17 — Dynamic grid of cards with `enumerate`
 
-Para mostrar um mini-gráfico por ticker em uma grade de N colunas:
+To show a mini-chart per ticker in a grid of N columns:
 
 ```python
 cols = st.columns(4)
@@ -266,24 +266,24 @@ for i, ticker in enumerate(tickers):
 
 ---
 
-## 7. Estilo dos gráficos (Altair)
+## 7. Chart styling (Altair)
 
-### Dica 18 — Escala de cores categórica fixa
+### Tip 18 — Fixed categorical color scale
 
-Em vez de cores aleatórias, defina explicitamente:
+Instead of random colors, define them explicitly:
 
 ```python
 import altair as alt
 
 color = alt.Color(
     "Ticker:N",
-    scale=alt.Scale(range=["#E0413E", "#9AA0A6"]),  # vermelho + cinza
+    scale=alt.Scale(range=["#E0413E", "#9AA0A6"]),  # red + gray
 )
 ```
 
-### Dica 19 — Tooltips interativas
+### Tip 19 — Interactive tooltips
 
-Permita exploração ao passar o mouse:
+Allow exploration on hover:
 
 ```python
 chart = (
@@ -298,9 +298,9 @@ chart = (
 )
 ```
 
-### Dica 20 — Legenda na parte inferior em cards pequenos
+### Tip 20 — Legend at the bottom for small cards
 
-Em mini-gráficos, a legenda lateral come muito espaço. Mande para baixo:
+In mini-charts, the side legend eats too much space. Send it to the bottom:
 
 ```python
 color = alt.Color(
@@ -309,13 +309,13 @@ color = alt.Color(
 )
 ```
 
-Documentação Altair (oficial integrada ao Streamlit): <https://docs.streamlit.io/develop/api-reference/charts/st.altair_chart>
+Altair documentation (officially integrated with Streamlit): <https://docs.streamlit.io/develop/api-reference/charts/st.altair_chart>
 
 ---
 
-## 8. Tema customizado profissional
+## 8. Professional custom theme
 
-### Dica 21 — Crie um `.streamlit/config.toml` com tema dark customizado
+### Tip 21 — Create a `.streamlit/config.toml` with custom dark theme
 
 ```toml
 # .streamlit/config.toml
@@ -328,16 +328,16 @@ borderColor = "#2A2440"
 dataframeHeaderBackgroundColor = "#1A1530"
 ```
 
-Chaves principais:
-- `base` → `"light"` ou `"dark"` (ponto de partida).
-- `primaryColor` → cor de destaque (botões, foco, seleção).
-- `backgroundColor` / `secondaryBackgroundColor` → fundo do app e dos widgets.
-- `borderColor` → bordas dos widgets e containers.
-- `dataframeHeaderBackgroundColor` → cabeçalho do `st.dataframe`.
+Main keys:
+- `base` → `"light"` or `"dark"` (starting point).
+- `primaryColor` → accent color (buttons, focus, selection).
+- `backgroundColor` / `secondaryBackgroundColor` → app background and widget background.
+- `borderColor` → widget and container borders.
+- `dataframeHeaderBackgroundColor` → `st.dataframe` header.
 
-Documentação: <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
+Documentation: <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
 
-### Dica 22 — Fonte custom do Google Fonts (ex.: Space Grotesk)
+### Tip 22 — Custom Google Font (e.g. Space Grotesk)
 
 ```toml
 [theme]
@@ -346,7 +346,7 @@ headingFont = "Space Grotesk"
 baseFontSize = 16
 baseFontWeight = 400
 
-# Tamanhos por nível de heading (h1..h6)
+# Sizes per heading level (h1..h6)
 headingFontSizes = ["2.25rem", "1.75rem", "1.5rem", "1.25rem", "1.125rem", "1rem"]
 headingFontWeights = [700, 700, 600, 600, 500, 500]
 
@@ -357,32 +357,32 @@ weight = "300 700"
 style = "normal"
 ```
 
-Para hospedar fontes locais com seu app, ative `server.enableStaticServing = true`.
+To host local fonts with your app, enable `server.enableStaticServing = true`.
 
-Documentação:
-- Tema (cores e bordas): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
-- Tema (fontes): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-fonts>
+Documentation:
+- Theme (colors and borders): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
+- Theme (fonts): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-fonts>
 - `[[theme.fontFaces]]`: <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-fonts>
 
-> ℹ️ **Importante:** o tema **não** se aplica automaticamente aos gráficos Altair/Plotly. Você precisa definir as cores explicitamente no encoding do gráfico (ver Dica 18).
+> ℹ️ **Important:** the theme **does not** automatically apply to Altair/Plotly charts. You need to define the colors explicitly in the chart encoding (see Tip 18).
 
 ---
 
-## 9. Compartilhamento de estado via URL
+## 9. State sharing via URL
 
-### Dica 23 — Inicializar `session_state` a partir da URL
+### Tip 23 — Initialize `session_state` from the URL
 
-Permita que o usuário compartilhe um link com filtros já aplicados.
+Allow the user to share a link with filters already applied.
 
 ```python
 if "tickers" not in st.session_state:
-    qp = st.query_params.get_all("stocks")  # lista de strings
+    qp = st.query_params.get_all("stocks")  # list of strings
     st.session_state.tickers = qp or ["AAPL", "MSFT"]
 ```
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.query_params>
+Documentation: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.query_params>
 
-### Dica 24 — Usar o `session_state` como `default` do widget
+### Tip 24 — Use `session_state` as the widget's `default`
 
 ```python
 selected = st.multiselect(
@@ -394,43 +394,43 @@ selected = st.multiselect(
 )
 ```
 
-### Dica 25 — Sincronizar a URL ao mudar a seleção
+### Tip 25 — Sync the URL when the selection changes
 
-Depois de o usuário interagir, espelhe o estado de volta na query string:
+After the user interacts, mirror the state back into the query string:
 
 ```python
-st.query_params["stocks"] = selected   # aceita lista para repetir a chave
-# URL resultante: ...?stocks=AAPL&stocks=MSFT
+st.query_params["stocks"] = selected   # accepts a list to repeat the key
+# Resulting URL: ...?stocks=AAPL&stocks=MSFT
 ```
 
-> 💡 **Atalho moderno:** widgets como `st.multiselect` e `st.pills` aceitam `bind="query-params"` para sincronizar automaticamente com a URL, sem precisar do passo manual de leitura/escrita. Verifique a versão do Streamlit usada (recurso recente).
+> 💡 **Modern shortcut:** widgets like `st.multiselect` and `st.pills` accept `bind="query-params"` to sync automatically with the URL, without the manual read/write step. Check the Streamlit version in use (recent feature).
 
-Documentação: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.query_params>
+Documentation: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.query_params>
 
 ---
 
-## 10. Checklist final do "look profissional"
+## 10. Final "professional look" checklist
 
-Antes de publicar, garanta que seu app tem:
+Before publishing, make sure your app has:
 
 - [ ] `st.set_page_config(layout="wide", page_title=..., page_icon=...)`
-- [ ] Cards com `st.container(border=True, height="stretch")`
-- [ ] Métricas com `delta`
-- [ ] Filtros agrupados em uma única coluna lateral ou cabeçalho
-- [ ] `st.cache_data(ttl=..., show_spinner=False)` em todas as chamadas externas
-- [ ] Tratamento de erro com `funcao.clear()` + `st.stop()`
-- [ ] `.streamlit/config.toml` com paleta e fonte custom
-- [ ] Cores de gráfico definidas explicitamente (não confiar no tema)
-- [ ] `st.info` em estados vazios em vez de gráficos em branco
-- [ ] URL refletindo os filtros (compartilhável)
+- [ ] Cards with `st.container(border=True, height="stretch")`
+- [ ] Metrics with `delta`
+- [ ] Filters grouped in a single sidebar or header
+- [ ] `st.cache_data(ttl=..., show_spinner=False)` on all external calls
+- [ ] Error handling with `function.clear()` + `st.stop()`
+- [ ] `.streamlit/config.toml` with custom palette and font
+- [ ] Chart colors defined explicitly (don't rely on the theme)
+- [ ] `st.info` for empty states instead of blank charts
+- [ ] URL reflecting the filters (shareable)
 
 ---
 
-## Referências oficiais
+## Official references
 
 - API Reference: <https://docs.streamlit.io/develop/api-reference>
-- Tema (cores/bordas): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
-- Tema (fontes): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-fonts>
+- Theme (colors/borders): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-colors-and-borders>
+- Theme (fonts): <https://docs.streamlit.io/develop/concepts/configuration/theming-customize-fonts>
 - Cache: <https://docs.streamlit.io/develop/concepts/architecture/caching>
 - `st.query_params`: <https://docs.streamlit.io/develop/api-reference/caching-and-state/st.query_params>
-- Vídeo original: <https://www.youtube.com/watch?v=pAPEP0j73QE>
+- Original video: <https://www.youtube.com/watch?v=pAPEP0j73QE>
