@@ -21,13 +21,16 @@
   "powerline": "default",
   "transport": "sse",
   "defaultProvider": "ollama-cloud",
-  "defaultModel": "deepseek-v4-pro",
-  "defaultThinkingLevel": "xhigh",
+  "defaultModel": "minimax-m3",
+  "defaultThinkingLevel": "high",
   "quietStartup": true,
   "enabledModels": [
+    "minimax-m3",
+    "nemotron-3-ultra",
     "deepseek-v4-pro",
     "deepseek-v4-flash",
-    "kimi-k2.6"
+    "kimi-k2.6",
+    "glm-5.1"
   ],
   "workingVibe": "startrek",
   "workingVibeMode": "file",
@@ -47,7 +50,7 @@
         "thinking": "xhigh"
       },
       "reviewer": {
-        "model": "kimi-k2.6",
+        "model": "minimax-m3",
         "thinking": "high"
       },
       "oracle": {
