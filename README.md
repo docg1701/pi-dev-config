@@ -360,20 +360,6 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 | `kimi-k2.6` | 1.042T | ✅ | ✅ | 262k | high (3/4) | Vision-capable 1T-class option |
 | `glm-5.1` | 756B | ❌ | ✅ | 202k | high (3/4) | Alternative training distribution |
 
-> **Usage column = Ollama Cloud quota consumption (1-4), not thinking level.** Higher number = more GPU time per request, which burns your plan's session/weekly limit faster. The official ollama.com example cites `deepseek-v4-pro` as a level-4 model and `gpt-oss:20b` as level 1. `deepseek-v4-flash` is the cheapest (level 2); everything else is level 3.
->
-> **Ollama Cloud is not cost-zero.** Plans are subscription-based (Free / Pro $20/mo / Max $100/mo) and each request consumes a share of your session and weekly limits. The Usage column reflects that rating. See [ollama.com/pricing](https://ollama.com/pricing) for plan mechanics.
-
-**Orchestrator and planner share the M3 family.** `minimax-m3` is the **default model** (the parent Pi session that talks to you and decides when to delegate) and the `planner` subagent. M3 is multimodal, has long context, and a different training distribution from DeepSeek/Nemotron — using it for both keeps planning coherent with the user-facing session.
-
-**Worker, researcher, planner, reviewer, and delegate are all `minimax-m3`.** M3 handles every subagent role that does not specifically require V4-Pro's reasoning depth. The model is multimodal, has 524k context, and a different training distribution from the DeepSeek family — this is enough cross-family diversity for typical agentic flows. Reserve cross-family separation (different model in reviewer vs. worker) for the high-stakes review paths; the standard subagents do not need it.
-
-> **Optional: re-enable `nemotron-3-ultra` for testing.** Nemotron-3-ultra was previously removed from `enabledModels` after a runaway-token incident (2026-06-04). It is planned to be re-tested around 2026-06-11. To re-enable, add `"nemotron-3-ultra"` to `enabledModels` and set `worker` and `researcher` to `{ "model": "nemotron-3-ultra", "thinking": "high" }`. The full incident history is in the [Troubleshooting](#troubleshooting) section below.
-
-**DeepSeek V4-Pro is reserved for two roles: `oracle` and `context-builder`.** `deepseek-v4-pro` is level 4 (extra heavy), and the cost-to-quality ratio is not worth it for routine file edits. Reserve it for `oracle` (runs before risky decisions) and `context-builder` (produces the planning handoff artifacts that downstream subagents consume). Both run in low volume compared to `worker`.
-
-**`kimi-k2.6` and `glm-5.1` are alternates, not defaults.** Enable them in `enabledModels` for occasional variety — they come from different training distributions and will produce different-shaped answers. Both are kept in the catalog so they can be picked via `/model` without re-running `/ollama-cloud-refresh`.
-
 ### Subagent models
 
 | Subagent | Model | Thinking |
