@@ -352,22 +352,26 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 
 | Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
 |-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | ✅ | ✅ | 524k | high (3/4) | Default orchestrator + reviewer |
-| `nemotron-3-ultra` | 550B | ❌ | ✅ | 262k | high (3/4) | Cheaper alternative to M3 (no vision) |
-| `deepseek-v4-pro` | 1.6T | ❌ | ✅ | 1M | **extra heavy (4/4)** | Worker / planner / oracle / researcher |
+| `minimax-m3` | undisclosed | ✅ | ✅ | 524k | high (3/4) | Default orchestrator, planner, reviewer, delegate |
+| `nemotron-3-ultra` | 550B | ❌ | ✅ | 262k | high (3/4) | Worker + researcher (cost-efficient executor) |
+| `deepseek-v4-pro` | 1.6T | ❌ | ✅ | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
 | `deepseek-v4-flash` | 158B | ❌ | ✅ | 1M | low (2/4) | Scout (fast, cheap) |
 | `kimi-k2.6` | 1.042T | ✅ | ✅ | 262k | high (3/4) | Vision-capable 1T-class option |
 | `glm-5.1` | 756B | ❌ | ✅ | 202k | high (3/4) | Alternative training distribution |
 
 > **Usage column = Ollama Cloud quota consumption (1-4), not thinking level.** Higher number = more GPU time per request, which burns your plan's session/weekly limit faster. The official ollama.com example cites `deepseek-v4-pro` as a level-4 model and `gpt-oss:20b` as level 1. `deepseek-v4-flash` is the cheapest (level 2); everything else is level 3. See [ollama.com/pricing](https://ollama.com/pricing) for the plan mechanics.
 
-**Orchestrator vs. executor split:** `minimax-m3` is the **default model** (the parent Pi session, the orchestrator that talks to you, plans the work, and decides when to delegate). It is multimodal, has long context, and a different training distribution from the DeepSeek family. `deepseek-v4-pro` is the **executor**: the `worker` subagent that does the actual file edits and code work. Separating these is intentional — different models catch different mistakes.
+**Orchestrator and planner share the M3 family.** `minimax-m3` is the **default model** (the parent Pi session that talks to you and decides when to delegate) and the `planner` subagent. M3 is multimodal, has long context, and a different training distribution from DeepSeek/Nemotron — using it for both keeps planning coherent with the user-facing session.
 
-**Reviewer is intentionally a different family from the worker.** The `reviewer` subagent uses `minimax-m3` while the `worker` uses `deepseek-v4-pro`. This breaks the auto-evaluation loop where a model rubber-stamps its own output, and `minimax-m3`'s vision capability lets it review screenshots, diagrams, and rendered UI alongside code.
+**Worker is `nemotron-3-ultra`, not `deepseek-v4-pro`.** `deepseek-v4-pro` is level 4 on the Ollama Cloud usage scale (extra heavy), and the cost-to-quality ratio is not worth it for routine file edits. Nemotron 3 Ultra (550B / 55B active, level 3) is the executor: it costs less per token and the NVIDIA benchmarks show it competitive with the DeepSeek family on coding/agentic tasks. The tradeoff: no vision, so workers can't review screenshots — vision-dependent review stays with M3.
+
+**DeepSeek V4-Pro is reserved for two roles: `oracle` and `context-builder`.** These are the moments where reasoning depth genuinely justifies the level-4 cost. `oracle` runs before risky decisions; `context-builder` produces the planning handoff artifacts (context.md, meta-prompt.md) that downstream subagents consume. Both run in low volume compared to `worker`.
+
+**Reviewer is intentionally a different family from the worker.** The `reviewer` subagent uses `minimax-m3` while the `worker` uses `nemotron-3-ultra`. This breaks the auto-evaluation loop where a model rubber-stamps its own output, and M3's vision capability lets it review screenshots, diagrams, and rendered UI alongside code.
 
 **`kimi-k2.6` and `glm-5.1` are alternates, not defaults.** Enable them in `enabledModels` for occasional variety — they come from different training distributions and will produce different-shaped answers. Both are kept in the catalog so they can be picked via `/model` without re-running `/ollama-cloud-refresh`.
 
-**`nemotron-3-ultra` trade-off:** Released 2026-06-04. Strong cost/quality ratio for non-vision tasks. Not a reviewer candidate because it lacks vision. The README treats M3 as the default and nemotron as an alternative — swap by editing `defaultModel` and `subagents.agentOverrides.reviewer.model` together.
+**`nemotron-3-ultra` is the worker and researcher.** It is the cost-effective executor for code edits and web research, replacing the previous `deepseek-v4-pro` default. NVIDIA benchmarks (cited in the [Nemotron 3 Ultra blog](https://developer.nvidia.com/blog/nvidia-nemotron-3-ultra-powers-faster-more-efficient-reasoning-for-long-running-agents/)) place it at or near frontier on coding/agentic workloads while being cheaper on the Ollama Cloud quota. The README keeps `deepseek-v4-pro` enabled in `enabledModels` for `oracle` and `context-builder` only — switch by editing `subagents.agentOverrides.<role>.model`.
 
 > **Note:** Ollama Cloud is **not** cost-zero. Plans are subscription-based (Free / Pro $20/mo / Max $100/mo) and each request consumes a share of your session and weekly limits, where `deepseek-v4-pro` is rated level 4 (extra heavy) and `deepseek-v4-flash` is rated level 2. The cost column above reflects that rating. See [ollama.com/pricing](https://ollama.com/pricing) for plan mechanics.
 
@@ -376,13 +380,13 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 | Subagent | Model | Thinking |
 |----------|-------|----------|
 | scout | `deepseek-v4-flash` ⚡ | `xhigh` |
-| planner | `deepseek-v4-pro` | `xhigh` |
-| worker | `deepseek-v4-pro` | `xhigh` |
+| planner | `minimax-m3` | `high` |
+| worker | `nemotron-3-ultra` | `high` |
 | reviewer | `minimax-m3` | `high` |
 | oracle | `deepseek-v4-pro` | `xhigh` |
-| delegate | `deepseek-v4-pro` | `xhigh` |
+| delegate | `minimax-m3` | `high` |
 | context-builder | `deepseek-v4-pro` | `xhigh` |
-| researcher | `deepseek-v4-pro` | `xhigh` |
+| researcher | `nemotron-3-ultra` | `high` |
 
 > **Thinking rule (per family, sourced from each creator's official docs):**
 > - `deepseek*` → `xhigh`. The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.

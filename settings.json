@@ -42,12 +42,12 @@
         "thinking": "xhigh"
       },
       "planner": {
-        "model": "deepseek-v4-pro",
-        "thinking": "xhigh"
+        "model": "minimax-m3",
+        "thinking": "high"
       },
       "worker": {
-        "model": "deepseek-v4-pro",
-        "thinking": "xhigh"
+        "model": "nemotron-3-ultra",
+        "thinking": "high"
       },
       "reviewer": {
         "model": "minimax-m3",
@@ -62,12 +62,12 @@
         "thinking": "xhigh"
       },
       "researcher": {
-        "model": "deepseek-v4-pro",
-        "thinking": "xhigh"
+        "model": "nemotron-3-ultra",
+        "thinking": "high"
       },
       "delegate": {
-        "model": "deepseek-v4-pro",
-        "thinking": "xhigh"
+        "model": "minimax-m3",
+        "thinking": "high"
       }
     }
   }
