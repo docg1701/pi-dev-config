@@ -14,7 +14,6 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 - [Themes](#themes)
 - [Settings & Models](#settings--models)
 - [Provider Setup](#provider-setup)
-- [RTK Optimizer](#rtk-optimizer)
 - [Working Vibes](#working-vibes)
 - [Notifications](#notifications)
 - [Ghostty](#ghostty)
@@ -43,7 +42,6 @@ pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
 pi install npm:pi-alert
-pi install npm:pi-rtk-optimizer
 pi install npm:pi-working-vibe
 pi install npm:@victor-software-house/pi-curated-themes
 
@@ -140,8 +138,6 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 
 ## Extensions
 
-> **Prerequisite for `pi-rtk-optimizer`:** install the [rtk CLI](https://github.com/rtk-ai/rtk) first — `cargo install --git https://github.com/rtk-ai/rtk --locked`.
-
 | Name | Description | Install |
 |------|-------------|---------|
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
@@ -156,7 +152,6 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Companion to `pi-smart-fetch`. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
 | `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback. | `pi install npm:pi-alert` |
-| `pi-rtk-optimizer` | Token-optimized command rewriting through `rtk` proxy and output compaction. Requires the [rtk CLI](https://github.com/rtk-ai/rtk). | `pi install npm:pi-rtk-optimizer` |
 
 ## Themes
 
@@ -261,61 +256,6 @@ On first launch (before `/ollama-cloud-refresh`), a small set of fallback models
 Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
 
 > **Recommendation:** run `/ollama-webtools off` to disable `ollama_web_search` and `ollama_web_fetch`. They are inferior to DuckDuckGo's `web_search` and TLS-fingerprinted `web_fetch` — Ollama tends to prefer its own tools when available, even when the results are worse. With `/ollama-webtools off`, the model falls back to the higher-quality tools automatically.
-
-## RTK Optimizer
-
-[pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) automatically rewrites bash commands through the [rtk CLI](https://github.com/rtk-ai/rtk) proxy and compacts tool output to save context tokens.
-
-### Setup
-
-```bash
-# 1. Install the rtk CLI (Rust)
-cargo install --git https://github.com/rtk-ai/rtk --locked
-
-# 2. Install the pi extension
-pi install npm:pi-rtk-optimizer
-
-# 3. Copy the RTK exclusion config (prevents known bugs with ls, grep, rg rewrites)
-mkdir -p ~/.config/rtk
-cp ~/dev/pi-dev-config/rtk/config.toml ~/.config/rtk/config.toml
-
-# 4. Reload pi
-# /reload
-```
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `/rtk` | Open interactive settings modal |
-| `/rtk show` | Display current configuration and runtime status |
-| `/rtk verify` | Check if `rtk` binary is available to pi |
-| `/rtk stats` | Show output compaction metrics for current session |
-| `/rtk reset` | Reset all settings to defaults |
-
-### Configuration
-
-Settings are stored at `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`. Defaults:
-
-```json
-{
-  "enabled": true,
-  "mode": "rewrite",
-  "guardWhenRtkMissing": true,
-  "showRewriteNotifications": true,
-  "outputCompaction": {
-    "enabled": true,
-    "truncate": { "enabled": true, "maxChars": 12000 },
-    "aggregateTestOutput": true,
-    "filterBuildOutput": true,
-    "compactGitOutput": true,
-    "aggregateLinterOutput": true,
-    "groupSearchOutput": true
-  }
-}
-```
-
-Use `/rtk` in the pi TUI to change settings interactively.
 
 ## Working Vibes
 
@@ -510,8 +450,6 @@ pi-dev-config/
 │   ├── streamlit_extras_guide.md        # streamlit-extras complete reference guide
 │   └── research/
 │       └── AGENTS.md-analysis-20260529.md  # AGENTS.md industry standard research (14 sources)
-├── rtk/
-│   └── config.toml                # RTK exclude list: ls, grep, rg (bypass known bugs)
 ├── ghostty/
 │   ├── config.ghostty             # GitHub Dark, JetBrains Mono, shell integration
 │   └── SSH_NERD_FONT.md           # Nerd Font icons over SSH guide
@@ -534,34 +472,6 @@ This is the status of `pi-extension-manager`. It means automatic package update 
 ```
 
 Other intervals: `weekly`, `1h`, `6h`, `3d`, `2w`, `1mo`, or run `/extensions auto-update` for the interactive wizard.
-
-### RTK: `rtk ls` returns `(empty)` and confuses the model
-
-**Problem:** Known bug ([rtk#1418](https://github.com/rtk-ai/rtk/issues/1418)) — `rtk ls` always returns `(empty)` regardless of directory contents. When `pi-rtk-optimizer` rewrites `ls` → `rtk ls`, the model receives empty output and concludes the directory is empty.
-
-**Fix:** exclude `ls` from automatic rewriting via the RTK config:
-
-```toml
-# ~/.config/rtk/config.toml
-[hooks]
-exclude_commands = ["ls"]
-```
-
-This makes `rtk rewrite "ls ..."` return exit code 1, and `pi-rtk-optimizer` keeps the original command un-rewritten. `git status` and other commands stay optimized.
-
-**Alternatives:** switch to `suggest` mode (`/rtk` → `mode: suggest`) — only notifies, doesn't rewrite; use `rtk proxy ls` to bypass compaction; or prefix with `RTK_DISABLED=1` for one-off bypasses.
-
-### RTK: `rtk grep` returns `line:column:` without the matched content
-
-**Problem:** Bug in `rtk` v0.38.0 — `rtk grep` shows line and column but **omits the line text** after the `:`. Without line content, the model loses essential context (class/function names, values).
-
-**Fix:** exclude `grep` and `rg` along with `ls` in `exclude_commands`. The `rtk/config.toml` in this repo already contains that configuration.
-
-```toml
-# ~/.config/rtk/config.toml
-[hooks]
-exclude_commands = ["ls", "grep", "rg"]
-```
 
 ### `nemotron-3-ultra`: past incident and re-test plan
 
