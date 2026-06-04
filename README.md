@@ -4,6 +4,8 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 
 ![pi-dev-config screenshot](assets/screenshot-01.webp)
 
+[![CI](https://github.com/docg1701/pi-dev-config/actions/workflows/ci.yml/badge.svg)](https://github.com/docg1701/pi-dev-config/actions/workflows/ci.yml)
+
 ## Quick Start
 
 ```bash
@@ -12,10 +14,9 @@ git clone git@github.com:docg1701/pi-dev-config.git ~/dev/pi-dev-config
 
 # Install extensions
 pi install npm:pi-subagents
+pi install npm:pi-prompt-template-model
 pi install npm:pi-annotate
 pi install npm:pi-interview
-pi install npm:pi-prompt-template-model
-pi install npm:pi-subagents
 pi install npm:pi-agent-browser-native
 pi install npm:pi-extension-manager
 pi install npm:pi-mcp-adapter
@@ -27,6 +28,7 @@ pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
 pi install npm:pi-alert
 pi install npm:pi-rtk-optimizer
+pi install npm:@victor-software-house/pi-curated-themes
 
 # Install skills
 npx skills add https://github.com/upstash/context7 --skill find-docs
@@ -94,7 +96,6 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `popups` | Popups, modals, overlays, slide-ins, and banners for conversion. |
 | `lead-magnets` | Create and optimize lead magnets for email capture and lead generation. |
 | `free-tools` | Plan and build free tools for lead generation, SEO value, and brand awareness. |
-| `launch` | Product launch, feature announcement, and go-to-market strategy. |
 | `directory-submissions` | Submit product to startup/SaaS/AI directories for backlinks and discovery. |
 | `referrals` | Create and optimize referral, affiliate, and word-of-mouth programs. |
 | `co-marketing` | Find co-marketing partners and plan joint campaigns. |
@@ -129,7 +130,7 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 
 | Name | Description | Install |
 |------|-------------|---------|
-| `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, and async support. | `pi install npm:pi-subagents` |
+| `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
 | `pi-extension-manager` | `/extensions` command for local and community package management. Includes auto-update checker (off by default — enable with `/extensions auto-update daily`). | `pi install npm:pi-extension-manager` |
@@ -261,7 +262,7 @@ Available themes include: `catppuccin-mocha`, `dracula`, `gruvbox-dark`, `kanaga
 
 ## Working Vibes
 
-This repo includes **four** pre-generated vibe themes:
+This repo includes **five** pre-generated vibe themes:
 
 | Theme | File | Phrases | Sabor |
 |-------|------|---------|-------|
@@ -330,7 +331,7 @@ This repo includes a pre-generated `vibes/startrek.txt` so you don't need to wor
 /vibe off          # Disable vibes
 ```
 
-All four themes use file mode — instant, zero cost, no API calls.
+All five themes use file mode — instant, zero cost, no API calls.
 
 ## Settings
 
@@ -359,23 +360,19 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 | `kimi-k2.6` | 1.042T | ✅ | ✅ | 262k | high (3/4) | Vision-capable 1T-class option |
 | `glm-5.1` | 756B | ❌ | ✅ | 202k | high (3/4) | Alternative training distribution |
 
-> **Usage column = Ollama Cloud quota consumption (1-4), not thinking level.** Higher number = more GPU time per request, which burns your plan's session/weekly limit faster. The official ollama.com example cites `deepseek-v4-pro` as a level-4 model and `gpt-oss:20b` as level 1. `deepseek-v4-flash` is the cheapest (level 2); everything else is level 3. See [ollama.com/pricing](https://ollama.com/pricing) for the plan mechanics.
+> **Usage column = Ollama Cloud quota consumption (1-4), not thinking level.** Higher number = more GPU time per request, which burns your plan's session/weekly limit faster. The official ollama.com example cites `deepseek-v4-pro` as a level-4 model and `gpt-oss:20b` as level 1. `deepseek-v4-flash` is the cheapest (level 2); everything else is level 3.
+>
+> **Ollama Cloud is not cost-zero.** Plans are subscription-based (Free / Pro $20/mo / Max $100/mo) and each request consumes a share of your session and weekly limits. The Usage column reflects that rating. See [ollama.com/pricing](https://ollama.com/pricing) for plan mechanics.
 
 **Orchestrator and planner share the M3 family.** `minimax-m3` is the **default model** (the parent Pi session that talks to you and decides when to delegate) and the `planner` subagent. M3 is multimodal, has long context, and a different training distribution from DeepSeek/Nemotron — using it for both keeps planning coherent with the user-facing session.
 
-**Worker is `nemotron-3-ultra`, not `deepseek-v4-pro`.** `deepseek-v4-pro` is level 4 on the Ollama Cloud usage scale (extra heavy), and the cost-to-quality ratio is not worth it for routine file edits. Nemotron 3 Ultra (550B / 55B active, level 3) is the executor: it costs less per token and the NVIDIA benchmarks show it competitive with the DeepSeek family on coding/agentic tasks. The tradeoff: no vision, so workers can't review screenshots — vision-dependent review stays with M3.
+**Worker and researcher are `nemotron-3-ultra`.** Nemotron 3 Ultra (550B / 55B active, level 3) is the cost-effective executor for code edits and web research, replacing the previous `deepseek-v4-pro` default. NVIDIA benchmarks (cited in the [Nemotron 3 Ultra blog](https://developer.nvidia.com/blog/nvidia-nemotron-3-ultra-powers-faster-more-efficient-reasoning-for-long-running-agents/)) place it at or near frontier on coding/agentic workloads while being cheaper on the Ollama Cloud quota. The tradeoff: no vision, so workers can't review screenshots — vision-dependent review stays with M3.
 
-**DeepSeek V4-Pro is reserved for two roles: `oracle` and `context-builder`.** These are the moments where reasoning depth genuinely justifies the level-4 cost. `oracle` runs before risky decisions; `context-builder` produces the planning handoff artifacts (context.md, meta-prompt.md) that downstream subagents consume. Both run in low volume compared to `worker`.
+**DeepSeek V4-Pro is reserved for two roles: `oracle` and `context-builder`.** `deepseek-v4-pro` is level 4 (extra heavy), and the cost-to-quality ratio is not worth it for routine file edits. Reserve it for `oracle` (runs before risky decisions) and `context-builder` (produces the planning handoff artifacts that downstream subagents consume). Both run in low volume compared to `worker`.
 
 **Reviewer is intentionally a different family from the worker.** The `reviewer` subagent uses `minimax-m3` while the `worker` uses `nemotron-3-ultra`. This breaks the auto-evaluation loop where a model rubber-stamps its own output, and M3's vision capability lets it review screenshots, diagrams, and rendered UI alongside code.
 
 **`kimi-k2.6` and `glm-5.1` are alternates, not defaults.** Enable them in `enabledModels` for occasional variety — they come from different training distributions and will produce different-shaped answers. Both are kept in the catalog so they can be picked via `/model` without re-running `/ollama-cloud-refresh`.
-
-**`nemotron-3-ultra` is the worker and researcher.** It is the cost-effective executor for code edits and web research, replacing the previous `deepseek-v4-pro` default. NVIDIA benchmarks (cited in the [Nemotron 3 Ultra blog](https://developer.nvidia.com/blog/nvidia-nemotron-3-ultra-powers-faster-more-efficient-reasoning-for-long-running-agents/)) place it at or near frontier on coding/agentic workloads while being cheaper on the Ollama Cloud quota.
-
-> **2026-06-04 incident:** Initial nemotron worker deployment burned ~20M tokens across 29 requests and drained the Pro quota. Ollama Cloud subsequently reset session and weekly usage counters (observed same day), strongly suggesting a **provider-side** fix for a runaway thinking loop. Nemotron has been re-deployed as worker + researcher after the reset. If the issue recurs, pull it again and wait for the next upstream fix.
-
-> **Note:** Ollama Cloud is **not** cost-zero. Plans are subscription-based (Free / Pro $20/mo / Max $100/mo) and each request consumes a share of your session and weekly limits, where `deepseek-v4-pro` is rated level 4 (extra heavy) and `deepseek-v4-flash` is rated level 2. The cost column above reflects that rating. See [ollama.com/pricing](https://ollama.com/pricing) for plan mechanics.
 
 ### Subagent models
 
@@ -462,6 +459,41 @@ When no terminal-native transport is available, pi-alert falls back to the OS:
 | Windows | PowerShell `NotifyIcon` balloon notification |
 | Final resort | Terminal bell (`BEL`) |
 
+## CI & Validation
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push, PR, and `v*.*.*` tag.
+
+**`validate` job** — runs [`validate.py`](validate.py) on every change. Validates that all JSON, TOML, and Markdown files in the repo parse correctly and that `settings.json` has the required keys (`packages`, `defaultProvider`, `defaultModel`, `enabledModels`).
+
+**`release` job** — fires only on `v*.*.*` tags. Categorizes the commits since the previous tag into Added (feat), Fixed (fix), and Changed (chore/docs/ci/refactor/style/test/perf/revert/build), and creates a GitHub release with auto-generated notes.
+
+Run `validate.py` locally before pushing:
+
+```bash
+python3 validate.py
+```
+
+See [`docs/ci-auto-release-guide.md`](docs/ci-auto-release-guide.md) for the full release workflow.
+
+## Troubleshooting
+
+### Nemotron-3-ultra runaway token burn (2026-06-04)
+
+**Symptom:** Nemotron-3-ultra as `worker` or `researcher` burns tokens at a runaway rate, draining the Ollama Cloud Pro quota within ~30 requests.
+
+**Likely cause:** Provider-side bug in Ollama Cloud's thinking loop for nemotron-3-ultra. Not a model-side issue — NVIDIA's own benchmarks show normal efficiency.
+
+**Resolution observed:** Ollama Cloud reset session and weekly usage counters the same day. Nemotron has been re-deployed as `worker` + `researcher` after the reset.
+
+**If it recurs:** Pull nemotron from those roles and wait for the next upstream fix:
+
+```json
+"worker": { "model": "minimax-m3", "thinking": "high" },
+"researcher": { "model": "minimax-m3", "thinking": "high" }
+```
+
+M3 is a safe fallback (vision + 524k context + level 3 quota).
+
 ## Ghostty
 
 Configuração do terminal Ghostty para desenvolvimento com pi.
@@ -516,8 +548,13 @@ See `docs/research/AGENTS.md-analysis-20260529.md` for a comprehensive research 
 pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
 ├── settings.json                  # Pre-configured pi settings (Ollama Cloud provider)
+├── validate.py                    # Local pre-push validator (JSON/TOML/Markdown)
 ├── assets/                        # Static assets (images, etc.)
+├── .github/
+│   └── workflows/
+│       └── ci.yml                 # CI: validate on push/PR, auto-release on tags
 ├── docs/
+│   ├── ci-auto-release-guide.md         # Full release workflow guide
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
 │   ├── PI_DEV_CHEATSHEET.md             # Practical workflow guide (PT)
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
