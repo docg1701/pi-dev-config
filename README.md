@@ -353,8 +353,8 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 
 | Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
 |-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | ✅ | ✅ | 524k | high (3/4) | Default orchestrator, planner, reviewer, delegate |
-| `nemotron-3-ultra` | 550B | ❌ | ✅ | 262k | high (3/4) | Worker + researcher (cost-efficient executor) |
+| `minimax-m3` | undisclosed | ✅ | ✅ | 524k | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
+| `nemotron-3-ultra` | 550B | ❌ | ✅ | 262k | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
 | `deepseek-v4-pro` | 1.6T | ❌ | ✅ | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
 | `deepseek-v4-flash` | 158B | ❌ | ✅ | 1M | low (2/4) | Scout (fast, cheap) |
 | `kimi-k2.6` | 1.042T | ✅ | ✅ | 262k | high (3/4) | Vision-capable 1T-class option |
@@ -366,11 +366,11 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 
 **Orchestrator and planner share the M3 family.** `minimax-m3` is the **default model** (the parent Pi session that talks to you and decides when to delegate) and the `planner` subagent. M3 is multimodal, has long context, and a different training distribution from DeepSeek/Nemotron — using it for both keeps planning coherent with the user-facing session.
 
-**Worker and researcher are `nemotron-3-ultra`.** Nemotron 3 Ultra (550B / 55B active, level 3) is the cost-effective executor for code edits and web research, replacing the previous `deepseek-v4-pro` default. NVIDIA benchmarks (cited in the [Nemotron 3 Ultra blog](https://developer.nvidia.com/blog/nvidia-nemotron-3-ultra-powers-faster-more-efficient-reasoning-for-long-running-agents/)) place it at or near frontier on coding/agentic workloads while being cheaper on the Ollama Cloud quota. The tradeoff: no vision, so workers can't review screenshots — vision-dependent review stays with M3.
+**Worker, researcher, planner, reviewer, and delegate are all `minimax-m3`.** M3 handles every subagent role that does not specifically require V4-Pro's reasoning depth. The model is multimodal, has 524k context, and a different training distribution from the DeepSeek family — this is enough cross-family diversity for typical agentic flows. Reserve cross-family separation (different model in reviewer vs. worker) for the high-stakes review paths; the standard subagents do not need it.
+
+> **Optional: re-enable `nemotron-3-ultra` for testing.** Nemotron-3-ultra was previously removed from `enabledModels` after a runaway-token incident (2026-06-04). It is planned to be re-tested around 2026-06-11. To re-enable, add `"nemotron-3-ultra"` to `enabledModels` and set `worker` and `researcher` to `{ "model": "nemotron-3-ultra", "thinking": "high" }`. The full incident history is in the [Troubleshooting](#troubleshooting) section below.
 
 **DeepSeek V4-Pro is reserved for two roles: `oracle` and `context-builder`.** `deepseek-v4-pro` is level 4 (extra heavy), and the cost-to-quality ratio is not worth it for routine file edits. Reserve it for `oracle` (runs before risky decisions) and `context-builder` (produces the planning handoff artifacts that downstream subagents consume). Both run in low volume compared to `worker`.
-
-**Reviewer is intentionally a different family from the worker.** The `reviewer` subagent uses `minimax-m3` while the `worker` uses `nemotron-3-ultra`. This breaks the auto-evaluation loop where a model rubber-stamps its own output, and M3's vision capability lets it review screenshots, diagrams, and rendered UI alongside code.
 
 **`kimi-k2.6` and `glm-5.1` are alternates, not defaults.** Enable them in `enabledModels` for occasional variety — they come from different training distributions and will produce different-shaped answers. Both are kept in the catalog so they can be picked via `/model` without re-running `/ollama-cloud-refresh`.
 
@@ -380,12 +380,12 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 |----------|-------|----------|
 | scout | `deepseek-v4-flash` ⚡ | `xhigh` |
 | planner | `minimax-m3` | `high` |
-| worker | `nemotron-3-ultra` | `high` |
+| worker | `minimax-m3` | `high` |
 | reviewer | `minimax-m3` | `high` |
 | oracle | `deepseek-v4-pro` | `xhigh` |
 | delegate | `minimax-m3` | `high` |
 | context-builder | `deepseek-v4-pro` | `xhigh` |
-| researcher | `nemotron-3-ultra` | `high` |
+| researcher | `minimax-m3` | `high` |
 
 > **Thinking rule (per family, sourced from each creator's official docs):**
 > - `deepseek*` → `xhigh`. The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
@@ -477,22 +477,22 @@ See [`docs/ci-auto-release-guide.md`](docs/ci-auto-release-guide.md) for the ful
 
 ## Troubleshooting
 
-### Nemotron-3-ultra runaway token burn (2026-06-04)
+### nemotron-3-ultra: past incident and re-test plan
 
-**Symptom:** Nemotron-3-ultra as `worker` or `researcher` burns tokens at a runaway rate, draining the Ollama Cloud Pro quota within ~30 requests.
+**2026-06-04 (first deploy):** Nemotron-3-ultra was deployed as `worker` + `researcher`. It burned ~20M tokens across 29 requests and drained the Pro quota. Ollama Cloud subsequently reset session and weekly usage counters (observed same day), suggesting a **provider-side** fix for a runaway thinking loop.
 
-**Likely cause:** Provider-side bug in Ollama Cloud's thinking loop for nemotron-3-ultra. Not a model-side issue — NVIDIA's own benchmarks show normal efficiency.
+**2026-06-04 (re-deploy attempt):** Re-deployed after the Ollama Cloud reset. The runaway recurred. Nemotron-3-ultra was removed from `enabledModels` and `worker` + `researcher` reverted to M3.
 
-**Resolution observed:** Ollama Cloud reset session and weekly usage counters the same day. Nemotron has been re-deployed as `worker` + `researcher` after the reset.
-
-**If it recurs:** Pull nemotron from those roles and wait for the next upstream fix:
+**Re-test target: 2026-06-11** (one week after the second removal). To re-enable for testing:
 
 ```json
-"worker": { "model": "minimax-m3", "thinking": "high" },
-"researcher": { "model": "minimax-m3", "thinking": "high" }
+"worker":     { "model": "nemotron-3-ultra", "thinking": "high" },
+"researcher": { "model": "nemotron-3-ultra", "thinking": "high" }
 ```
 
-M3 is a safe fallback (vision + 524k context + level 3 quota).
+Also add `"nemotron-3-ultra"` back to `enabledModels`.
+
+**If the runaway recurs on the re-test:** Pull nemotron again and push the re-test target by another week. The trigger is a single request burning >1M tokens, or Pro quota dropping by more than 10% in one worker run.
 
 ## Ghostty
 
@@ -549,6 +549,7 @@ pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
 ├── settings.json                  # Pre-configured pi settings (Ollama Cloud provider)
 ├── validate.py                    # Local pre-push validator (JSON/TOML/Markdown)
+├── VERSION                        # Current release version (single source of truth)
 ├── assets/                        # Static assets (images, etc.)
 ├── .github/
 │   └── workflows/
