@@ -42,12 +42,12 @@
         "thinking": "high"
       },
       "worker": {
-        "model": "minimax-m3",
+        "model": "kimi-k2.6",
         "thinking": "high"
       },
       "reviewer": {
-        "model": "minimax-m3",
-        "thinking": "high"
+        "model": "deepseek-v4-pro",
+        "thinking": "xhigh"
       },
       "oracle": {
         "model": "deepseek-v4-pro",
@@ -58,11 +58,11 @@
         "thinking": "xhigh"
       },
       "researcher": {
-        "model": "minimax-m3",
+        "model": "kimi-k2.6",
         "thinking": "high"
       },
       "delegate": {
-        "model": "minimax-m3",
+        "model": "kimi-k2.6",
         "thinking": "high"
       }
     }
