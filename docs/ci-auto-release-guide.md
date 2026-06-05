@@ -378,8 +378,9 @@ SUBTITLE=$(git tag -l --format='%(contents)' "${{ github.ref_name }}" | head -1)
 if echo "$SUBTITLE" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
   echo "ERROR: Tag annotation starts with a version number." >&2
   echo "  The CI prepends the version automatically. Drop the prefix." >&2
-  echo "  Good: git tag -a ${{ github.ref_name }} -m 'fix rate limit overflow'" >&2
-  echo "  Bad:  git tag -a ${{ github.ref_name }} -m '${{ github.ref_name }}: fix rate limit'" >&2
+  echo "  Good: git tag -a ${{ github.ref_name }} -m 'sec fix and docs update'" >&2
+  bad="git tag -a \${{ github.ref_name }} -m '\${{ github.ref_name }}: bad example'"
+  echo "  Bad:  $bad" >&2
   exit 1
 fi
 ```
@@ -389,8 +390,9 @@ CONTRIBUTING.md so developers know the convention. The CI guard is the enforceme
 the documentation prevents the mistake from being attempted.
 
 **Correct usage**:
+
 ```bash
 git tag -a v1.3.1 -m "CI passing, markdownlint clean, 341 tests, tests OK"
 ```
 
-Result: `v1.3.1: CI passing, markdownlint clean, 341 tests, tests OK` — clean title, no duplication.
+Result: `v1.3.1: CI passing, 341 tests, markdownlint clean` — no duplication.
