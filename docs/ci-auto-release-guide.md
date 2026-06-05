@@ -283,38 +283,6 @@ lockfile with `pyproject.toml` and fails if they are out of sync.
 To fix locally, run `uv lock` and commit the updated `uv.lock` together with the
 version bump.
 
-### 10. Duplicated version number in release title
-
-**Problem**: when the tag annotation starts with a version number (e.g., `v1.3.0: fix bug`),
-the CI prepends it again, producing `v1.3.0: v1.3.0: fix bug` — duplicated prefix.
-
-**Solution A — CI guard (prevention)**: add a validation step before `gh release create`
-that rejects tag annotations starting with a version pattern:
-
-```bash
-SUBTITLE=$(git tag -l --format='%(contents)' "${{ github.ref_name }}" | head -1)
-
-# Guard: subtitle MUST NOT start with version number
-if echo "$SUBTITLE" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
-  echo "ERROR: Tag annotation starts with a version number." >&2
-  echo "  The CI prepends the version automatically. Drop the prefix." >&2
-  echo "  Good: git tag -a ${{ github.ref_name }} -m 'fix rate limit overflow'" >&2
-  echo "  Bad:  git tag -a ${{ github.ref_name }} -m '${{ github.ref_name }}: fix rate limit'" >&2
-  exit 1
-fi
-```
-
-**Solution B — discipline (documentation)**: document the rule in AGENTS.md or
-CONTRIBUTING.md so developers know the convention. The CI guard is the enforcement;
-the documentation prevents the mistake from being attempted.
-
-**Correct usage**:
-```bash
-git tag -a v1.3.1 -m "CI passing, markdownlint clean, 341 tests, tests OK"
-```
-
-Result: `v1.3.1: CI passing, markdownlint clean, 341 tests, tests OK` — clean title, no duplication.
-
 ### 9. Hardcoded `__version__` in `__init__.py` and tests breaks every bump
 
 **Problem**: many projects keep `__version__ = "X.Y.Z"` hardcoded in
@@ -394,3 +362,35 @@ Instead of:
 ```
 v2.5.0: My description here
 ```
+
+### 10. Duplicated version number in release title
+
+**Problem**: when the tag annotation starts with a version number (e.g., `v1.3.0: fix bug`),
+the CI prepends it again, producing `v1.3.0: v1.3.0: fix bug` — duplicated prefix.
+
+**Solution A — CI guard (prevention)**: add a validation step before `gh release create`
+that rejects tag annotations starting with a version pattern:
+
+```bash
+SUBTITLE=$(git tag -l --format='%(contents)' "${{ github.ref_name }}" | head -1)
+
+# Guard: subtitle MUST NOT start with version number
+if echo "$SUBTITLE" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+  echo "ERROR: Tag annotation starts with a version number." >&2
+  echo "  The CI prepends the version automatically. Drop the prefix." >&2
+  echo "  Good: git tag -a ${{ github.ref_name }} -m 'fix rate limit overflow'" >&2
+  echo "  Bad:  git tag -a ${{ github.ref_name }} -m '${{ github.ref_name }}: fix rate limit'" >&2
+  exit 1
+fi
+```
+
+**Solution B — discipline (documentation)**: document the rule in AGENTS.md or
+CONTRIBUTING.md so developers know the convention. The CI guard is the enforcement;
+the documentation prevents the mistake from being attempted.
+
+**Correct usage**:
+```bash
+git tag -a v1.3.1 -m "CI passing, markdownlint clean, 341 tests, tests OK"
+```
+
+Result: `v1.3.1: CI passing, markdownlint clean, 341 tests, tests OK` — clean title, no duplication.
