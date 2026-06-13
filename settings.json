@@ -15,18 +15,18 @@
     "npm:pi-alert",
     "npm:pi-working-vibe"
   ],
-  "theme": "github-dark-high-contrast",
+  "theme": "smyck",
   "powerline": "default",
   "transport": "sse",
   "defaultProvider": "ollama-cloud",
-  "defaultModel": "minimax-m3",
-  "defaultThinkingLevel": "high",
+  "defaultModel": "kimi-k2.7-code",
+  "defaultThinkingLevel": "xhigh",
   "quietStartup": true,
   "enabledModels": [
-    "minimax-m3",
-    "deepseek-v4-pro",
     "deepseek-v4-flash",
+    "minimax-m3",
     "kimi-k2.7-code",
+    "deepseek-v4-pro",
     "glm-5.1"
   ],
   "workingVibe": true,
