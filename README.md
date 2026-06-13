@@ -186,18 +186,18 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 |-------|--------|--------|----------|---------|--------------------|------|
 | `minimax-m3` | undisclosed | yes | yes | 512K | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
 | `nemotron-3-ultra` | 550B | no | yes | 256K | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
-| `deepseek-v4-pro` | undisclosed | no | yes | 1M | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
+| `deepseek-v4-pro` | undisclosed | no | yes | 512K | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
 | `deepseek-v4-flash` | 158B | no | yes | 1M | low (2/4) | Scout (fast, cheap) |
-| `kimi-k2.6` | 1.04T | yes | yes | 256K | high (3/4) | Vision-capable 1T-class option |
+| `kimi-k2.7-code` | 1.04T | yes | yes | 256K | high (3/4) | Moonshot AI code-specialized 1T-class model |
 | `glm-5.1` | 756B | no | yes | 198K | high (3/4) | Alternative training distribution |
 
-> **⚠️ Context window may expand without notice.** Two models in this catalog are
-> currently capped below the vendor's advertised limit by the Ollama Cloud provider:
+> **⚠️ Context window may not match vendor specs.** The models below are advertised by their vendors with larger context windows than the values currently returned by the Ollama Cloud `/api/show` endpoint. The original model specs are shown in the table; the reduced values are what pi sees from Ollama Cloud today:
 >
-> | Model | Ollama Cloud (current) | Vendor (advertised) | Source |
+> | Model | Vendor advertised | Ollama Cloud (current) | Source |
 > |---|---|---|---|
-> | `minimax-m3` | 512K | 1M (guaranteed minimum per the vendor) | [MiniMax docs](https://www.minimax.io/models/text/m3) |
-> | `nemotron-3-ultra` | 256K | 1M | [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b) |
+> | `deepseek-v4-pro` | 1M | 512K | [Ollama Cloud](https://ollama.com/library/deepseek-v4-pro) |
+> | `minimax-m3` | 1M (guaranteed minimum per the vendor) | 512K | [MiniMax docs](https://www.minimax.io/models/text/m3) |
+> | `nemotron-3-ultra` | 1M | 256K | [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b) |
 >
 > When Ollama Cloud raises these limits, re-run `/ollama-cloud-refresh` in pi and
 > update the `Context` column in this table to match the live value reported in
@@ -223,7 +223,7 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 Per family, sourced from each creator's official docs:
 
 - **`deepseek*` → `xhigh`.** The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
-- **`minimax*`, `nemotron*`, `kimi*`, `glm*` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), kimi-k2.6, and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota. The `reviewer` subagent sits at `high` for this reason.
+- **`minimax*`, `nemotron*`, `kimi*`, `glm*` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), kimi-k2.7-code, and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota. The `reviewer` subagent sits at `high` for this reason.
 - The default orchestrator (`minimax-m3`) sits at `high` via `defaultThinkingLevel`.
 
 ## Provider Setup

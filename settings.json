@@ -26,7 +26,7 @@
     "minimax-m3",
     "deepseek-v4-pro",
     "deepseek-v4-flash",
-    "kimi-k2.6",
+    "kimi-k2.7-code",
     "glm-5.1"
   ],
   "workingVibe": true,
@@ -42,7 +42,7 @@
         "thinking": "high"
       },
       "worker": {
-        "model": "kimi-k2.6",
+        "model": "kimi-k2.7-code",
         "thinking": "high"
       },
       "reviewer": {
@@ -58,11 +58,11 @@
         "thinking": "xhigh"
       },
       "researcher": {
-        "model": "kimi-k2.6",
+        "model": "kimi-k2.7-code",
         "thinking": "high"
       },
       "delegate": {
-        "model": "kimi-k2.6",
+        "model": "kimi-k2.7-code",
         "thinking": "high"
       }
     }

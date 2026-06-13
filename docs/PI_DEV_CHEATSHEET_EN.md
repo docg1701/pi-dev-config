@@ -178,9 +178,9 @@ models in the chain:
 // Example: chain in settings.json or prompt template
 {
   "chain": [
-    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.6" },
+    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.7-code" },
     { "agent": "reviewer", "model": "ollama-cloud/deepseek-v4-pro" },
-    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.6" }
+    { "agent": "reviewer", "model": "ollama-cloud/kimi-k2.7-code" }
   ]
 }
 ```
