@@ -184,13 +184,15 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 
 | Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
 |-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | yes | yes | 512K | high (3/4) | Default orchestrator, planner, worker, reviewer, researcher, delegate |
+| `minimax-m3` | undisclosed | yes | yes | 512K | high (3/4) | Researcher, delegate |
 | `nemotron-3-ultra` | 550B | no | yes | 256K | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
-| `deepseek-v4-pro` | undisclosed | no | yes | 512K | **extra heavy (4/4)** | Oracle + context-builder (where reasoning depth justifies cost) |
+| `deepseek-v4-pro` | undisclosed | no | yes | 512K | **extra heavy (4/4)** | Context-builder (where reasoning depth justifies cost) |
 | `deepseek-v4-flash` | 158B | no | yes | 1M | low (2/4) | Scout (fast, cheap) |
-| `kimi-k2.7-code` | 1.04T | yes | yes | 256K | high (3/4) | Moonshot AI code-specialized 1T-class model |
-| `glm-5.1` | 756B | no | yes | 198K | high (3/4) | Alternative training distribution |
+| `kimi-k2.7-code` | 1.04T | yes | yes | 256K | high (3/4) | Default orchestrator, reviewer |
+| `glm-5.2` | 756B | no | yes | 1M | high (3/4) | Planner, worker, oracle |
 
+> **Note:** The default orchestrator is `kimi-k2.7-code` with `defaultThinkingLevel: "xhigh"`. For `deepseek*` and `glm-5.2`, `xhigh` maps to `max` thinking effort (graduated). For `minimax*`, `kimi*`, `glm-5`, and `nemotron*` it is effectively a no-op because those models expose thinking as a binary toggle, not a graduated effort level.
+>
 > **⚠️ Context window may not match vendor specs.** The models below are advertised by their vendors with larger context windows than the values currently returned by the Ollama Cloud `/api/show` endpoint. The original model specs are shown in the table; the reduced values are what pi sees from Ollama Cloud today:
 >
 > | Model | Vendor advertised | Ollama Cloud (current) | Source |
@@ -210,21 +212,22 @@ This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-
 | Subagent | Model | Thinking |
 |----------|-------|----------|
 | scout | `deepseek-v4-flash` (fast) | `xhigh` |
-| planner | `minimax-m3` | `high` |
-| worker | `minimax-m3` | `high` |
-| reviewer | `minimax-m3` | `high` |
-| oracle | `deepseek-v4-pro` | `xhigh` |
+| planner | `glm-5.2` | `xhigh` |
+| worker | `glm-5.2` | `xhigh` |
+| reviewer | `kimi-k2.7-code` | `high` |
+| oracle | `glm-5.2` | `xhigh` |
 | context-builder | `deepseek-v4-pro` | `xhigh` |
-| researcher | `minimax-m3` | `high` |
-| delegate | `minimax-m3` | `high` |
+| researcher | `kimi-k2.7-code` | `high` |
+| delegate | `kimi-k2.7-code` | `high` |
 
 ### Thinking rules
 
 Per family, sourced from each creator's official docs:
 
 - **`deepseek*` → `xhigh`.** The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
-- **`minimax*`, `nemotron*`, `kimi*`, `glm*` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), kimi-k2.7-code, and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota. The `reviewer` subagent sits at `high` for this reason.
-- The default orchestrator (`minimax-m3`) sits at `high` via `defaultThinkingLevel`.
+- **`glm-5.2` → `xhigh`.** [GLM-5.2 is the first in the GLM family to support `reasoning_effort`](https://docs.z.ai/guides/capabilities/thinking). Values: `max` (default, recommended), `xhigh`, `high`, `medium`, `low`, `minimal`, `none`. `xhigh` maps to `max`; `low`/`medium` map to `high`. Use `xhigh` for agentic workloads.
+- **`minimax*`, `nemotron*`, `kimi*`, `glm-5` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), [Kimi K2.7 Code](https://platform.kimi.ai/docs/guide/use-kimi-k2-thinking-model), and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota.
+- The default orchestrator (`kimi-k2.7-code`) sits at `xhigh` via `defaultThinkingLevel`. For Kimi this is a no-op (binary thinking), but the setting is kept at `xhigh` so that switching the default model to a `deepseek*` or `glm-5.2` model does not silently downgrade thinking effort.
 
 ## Provider Setup
 

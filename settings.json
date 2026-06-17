@@ -27,7 +27,7 @@
     "minimax-m3",
     "kimi-k2.7-code",
     "deepseek-v4-pro",
-    "glm-5.1"
+    "glm-5.2"
   ],
   "workingVibe": true,
   "workingVibeName": "startrek",
@@ -38,19 +38,19 @@
         "thinking": "xhigh"
       },
       "planner": {
-        "model": "minimax-m3",
-        "thinking": "high"
+        "model": "glm-5.2",
+        "thinking": "xhigh"
       },
       "worker": {
+        "model": "glm-5.2",
+        "thinking": "xhigh"
+      },
+      "reviewer": {
         "model": "kimi-k2.7-code",
         "thinking": "high"
       },
-      "reviewer": {
-        "model": "deepseek-v4-pro",
-        "thinking": "xhigh"
-      },
       "oracle": {
-        "model": "deepseek-v4-pro",
+        "model": "glm-5.2",
         "thinking": "xhigh"
       },
       "context-builder": {
