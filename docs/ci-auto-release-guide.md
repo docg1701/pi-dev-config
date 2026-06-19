@@ -8,7 +8,7 @@ generation from semver tags, with categorized changelog.
 - Python 3.11+ with `uv` as package manager
 - Tests with `pytest`
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `ci:`, etc.)
-- Annotated semver tags (`git tag -a vX.Y.Z -F file.txt`)
+- Lightweight semver tags (`git tag vX.Y.Z <commit-sha>`) — the tagged commit's subject becomes the release subtitle (see "How to use")
 
 ## Architecture
 
@@ -22,7 +22,7 @@ push tag v*.*.* ──► job: test (same matrix)
                           └── if pass ──► job: release
                                                 │
                                                 ├── git fetch --tags
-                                                ├── read tag annotation → title
+                                                ├── read tagged commit subject → title
                                                 ├── categorized git log → body
                                                 └── gh release create
 ```
@@ -83,7 +83,7 @@ jobs:
 
           PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -v "${{ github.ref_name }}" | head -1 || true)
 
-          # Tag annotation first line → title subtitle (fall back to bare version)
+          # Tagged commit subject (lightweight) or tag message (annotated) → title subtitle
           SUBTITLE=$(git tag -l --format='%(contents)' "${{ github.ref_name }}" 2>/dev/null | head -1 || true)
           if [ -z "$SUBTITLE" ]; then
             TITLE="${{ github.ref_name }}"
@@ -128,25 +128,30 @@ jobs:
 
 ## How to use
 
-### 1. Create the tag
+### 1. Create the tag (lightweight — recommended)
 
-The tag annotation (file passed with `-F`) defines the release subtitle.
-**Important**: do not start lines with `#` — Git treats them as comments
-and strips them via `git stripspace`.
+Create a **lightweight** tag on the version-bump commit. Its subject becomes the
+release subtitle — no tag message to author, no duplication risk:
 
 ```bash
-cat > /tmp/release-notes.txt << 'EOF'
-New feature X with fixes Y and Z
-EOF
-
-git tag -a v2.4.2 -F /tmp/release-notes.txt
+git tag v2.4.2 <version-bump-commit-sha>
 git push origin v2.4.2
 ```
 
-Result:
+For a version-bump commit `fix: version bump 2.4.1 -> 2.4.2 (context)`, the result:
 
-- Title: `v2.4.2: New feature X with fixes Y and Z`
+- Title: `v2.4.2: fix: version bump 2.4.1 -> 2.4.2 (context)`
 - Body: categorized changelog auto-generated from commits
+
+The release job reads `git tag -l --format='%(contents)'`; for a lightweight tag this
+returns the tagged commit's message (first line = subject), so the title is
+`<tag>: <commit subject>` with zero manual authoring.
+
+> **Why lightweight, not annotated**: an annotated tag (`git tag -a -m "..."`) makes
+> the CI use the tag message as the subtitle. If that message starts with the version
+> (a natural mistake), the CI prepends the tag name again → `v2.4.2: v2.4.2: ...`
+> (see Pitfall 10). A lightweight tag has no message, so the commit subject is used
+> as-is — and you also avoid the `git stripspace` / `#`-comment pitfalls.
 
 ### 2. What happens
 
@@ -154,7 +159,7 @@ Result:
 2. `job: test` runs pytest on Python 3.11 and 3.13
 3. If both pass, `job: release` runs:
    - `git fetch --tags --force` to ensure the annotated tag is locally available
-   - Reads the tag annotation → first line becomes the title subtitle
+   - Reads the tagged commit subject (via `git tag -l --format='%(contents)'`) → first line becomes the title subtitle
    - `git log` between previous and current tag, grouped by commit type
    - `sed` removes the prefix (`fix:` → empty, `feat(scope):` → empty)
    - Creates the release via `gh release create`
@@ -348,28 +353,29 @@ Use `actions/setup-python`:
 - run: pytest -v
 ```
 
-### Tag without annotation (lightweight)
+### Lightweight tag (recommended — see "How to use" above)
 
-If the tag is created without `-a` (lightweight), `git tag -l --format='%(contents)'`
-returns empty. The fallback uses the bare version number as title:
+A lightweight tag (`git tag vX.Y.Z <sha>`, no `-a`) does **not** return empty:
+`git tag -l --format='%(contents)'` returns the tagged **commit message**, whose first
+line (the commit subject) becomes the subtitle. The title is `<tag>: <commit subject>`,
+e.g. `v2.5.0: feat: version bump 2.4.4 → 2.5.0 (scheduled upload notifications)`.
 
-```
-v2.5.0
-```
-
-Instead of:
-
-```
-v2.5.0: My description here
-```
+No tag message to author, and no risk of duplicating the version number. Use an
+annotated tag (`-a -m`) only if you need a subtitle different from the commit subject
+— and then never start the message with the version (Pitfall 10).
 
 ### 10. Duplicated version number in release title
 
-**Problem**: when the tag annotation starts with a version number (e.g., `v1.3.0: fix bug`),
-the CI prepends it again, producing `v1.3.0: v1.3.0: fix bug` — duplicated prefix.
+**Problem**: with an **annotated** tag whose message starts with a version number
+(e.g. `v1.3.0: fix bug`), the CI prepends the tag name again → `v1.3.0: v1.3.0: fix bug`.
 
-**Solution A — CI guard (prevention)**: add a validation step before `gh release create`
-that rejects tag annotations starting with a version pattern:
+**Solution A — use a lightweight tag (recommended; eliminates the whole class of bug)**:
+`git tag vX.Y.Z <commit-sha>` (no `-a`, no `-m`). With no tag message, the CI uses the
+tagged commit's subject as the subtitle — nothing can be duplicated. This is the default
+shown in "How to use" above.
+
+**Solution B — CI guard (only if you keep annotated tags)**: add a validation step before
+`gh release create` that rejects tag annotations starting with a version pattern:
 
 ```bash
 SUBTITLE=$(git tag -l --format='%(contents)' "${{ github.ref_name }}" | head -1)
@@ -385,14 +391,116 @@ if echo "$SUBTITLE" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
 fi
 ```
 
-**Solution B — discipline (documentation)**: document the rule in AGENTS.md or
-CONTRIBUTING.md so developers know the convention. The CI guard is the enforcement;
-the documentation prevents the mistake from being attempted.
+**Solution C — discipline**: document the rule in AGENTS.md / CONTRIBUTING.md. The CI
+guard enforces; the docs prevent the attempt.
 
-**Correct usage**:
+## Myth: "only annotated tags trigger the release job"
 
-```bash
-git tag -a v1.3.1 -m "CI passing, markdownlint clean, 341 tests, tests OK"
+False. `on: push: tags: ['v*.*.*']` fires for **any** tag push — lightweight or
+annotated. The release job's `if: startsWith(github.ref, 'refs/tags/v')` does not
+inspect tag type. A lightweight `git tag vX.Y.Z <sha>` + `git push origin vX.Y.Z`
+triggers the release job exactly like an annotated tag (verified empirically). Do not
+write "only annotated tags trigger the release" in your AGENTS.md — it is wrong and
+pushes people toward the duplication-prone annotated-tag flow.
+
+## Keeping README version/tests badges in sync (private repos)
+
+shields.io dynamic badges (`github/v/release`, `github/actions/workflow/status`) only
+work for **public** repos — for a private repo they return "repo not found". To keep
+the README version (and tests) badge on the current release without manual edits, add a
+CI job that syncs the static badge numbers from the single source of truth.
+
+`sync-badges` runs on every push to the default branch, reads the version from
+`pyproject.toml` (or your `VERSION` file) and the test count from pytest, rewrites the
+two badge URLs in README, and commits `[skip ci]` **only when a value changed**:
+
+```yaml
+  sync-badges:
+    needs: test            # or needs: validate — whatever your gate job is called
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          python-version: '3.13'
+          enable-cache: true
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/uv.lock
+      - name: Sync README badges (version from pyproject, tests from pytest)
+        continue-on-error: true   # cosmetic — never fail CI over a badge
+        run: |
+          set -uo pipefail
+          VERSION=$(grep -E '^version\s*=' pyproject.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+          COUNT=$(uv run --frozen pytest --co -q 2>&1 | grep -E '[0-9]+ tests collected' | grep -oE '[0-9]+' | head -1)
+          echo "version=$VERSION count=$COUNT"
+          if [ -z "$VERSION" ] || [ -z "$COUNT" ]; then echo "skip"; exit 0; fi
+          sed -i -E "s#(badge/version-)[0-9]+\.[0-9]+\.[0-9]+(-blue)#\1${VERSION}\2#" README.md
+          sed -i -E "s#(badge/tests-)[0-9]+(%20passed-brightgreen)#\1${COUNT}\2#" README.md
+          if git diff --quiet README.md; then
+            echo "badges already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore(sync-badges): v${VERSION} / ${COUNT} tests [skip ci]"
+            git push
+          fi
 ```
 
-Result: `v1.3.1: CI passing, 341 tests, markdownlint clean` — no duplication.
+Notes:
+
+- `[skip ci]` plus the fact that `GITHUB_TOKEN` commits do not trigger downstream
+  workflow runs means no infinite loop.
+- `continue-on-error: true` keeps CI green even if badge sync hiccups.
+- Adjust the version source (`pyproject.toml` vs a `VERSION` file) and the badge URL
+  patterns to match your README.
+- For a public repo, prefer the dynamic shields.io badges — no CI job needed.
+
+## Documenting the release in AGENTS.md
+
+The CI only enforces *what* happens on a tag push. It does not tell an agent *how* to
+cut a release, so agents improvise (annotated tags, manual `gh release create`, stale
+badges). Add a "Release & version bump" section to the project's AGENTS.md so the next
+agent follows the exact procedure. The pattern is: **version in ONE place, everything
+else derived/automated, and the release driven by a lightweight tag + CI auto-release.**
+
+Template (adapt the source-of-truth file and branch name to the project):
+
+```markdown
+## Release & version bump
+
+The version lives in ONE place: `pyproject.toml`'s `version` (or the `VERSION` file).
+Everything else is derived — do NOT edit version numbers elsewhere.
+
+- `uv.lock` — syncs automatically: run `uv lock` after bumping `pyproject.toml`.
+- README `version` + `tests` badges — kept in sync by the CI `sync-badges` job. NEVER
+  edit them manually (private repo: shields.io dynamic badges don't work).
+- Git tag `vX.Y.Z` + GitHub release — created at release time (below).
+
+### Release procedure (follow EXACTLY — CI auto-creates the release)
+
+1. Bump `version` in `pyproject.toml` (the ONLY numeric edit).
+2. `uv lock` to sync `uv.lock`. Commit `pyproject.toml` + `uv.lock` in ONE version-bump
+   commit: `fix: version bump X.Y.Z -> A.B.C (context)`.
+3. Push to the default branch via PR (never push directly to main/master without PR).
+4. Create a **lightweight** tag on the version-bump commit: `git tag vX.Y.Z <sha>`
+   — NOT `git tag -a`, NOT `-m`.
+5. `git push origin vX.Y.Z`. CI's `release` job auto-creates the GitHub release named
+   `vX.Y.Z: <subject of the tagged commit>`. Do NOT create or edit the release manually.
+
+### 🚫 NEVER (release)
+- `git tag -a` / `git tag -m` — annotated tags make CI name the release from the tag
+  message, producing duplicated titles (e.g. `v2.5.1: v2.5.1 — ...`).
+- `gh release create` / `gh release edit` — the CI `release` job owns the release.
+- Editing the README `version` or `tests` badges — CI `sync-badges` owns them.
+- Force-pushing a tag after CI created the release — makes `release` fail (release
+  already exists) and leaves a red CI run.
+- Bumping the version anywhere except the single source of truth.
+```
+
+This implements the pattern "when the agent errs a pattern repeatedly, add a specific
+rule to AGENTS.md" — the cheapest way to stop recurring wrong version bumps.
