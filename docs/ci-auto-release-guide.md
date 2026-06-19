@@ -491,6 +491,8 @@ Everything else is derived — do NOT edit version numbers elsewhere.
    — NOT `git tag -a`, NOT `-m`.
 5. `git push origin vX.Y.Z`. CI's `release` job auto-creates the GitHub release named
    `vX.Y.Z: <subject of the tagged commit>`. Do NOT create or edit the release manually.
+6. **(local, uv-installed CLI)** `uv tool install .` — cutting a release does NOT update
+   the local install; reinstall to use the new version on this machine.
 
 ### 🚫 NEVER (release)
 - `git tag -a` / `git tag -m` — annotated tags make CI name the release from the tag
