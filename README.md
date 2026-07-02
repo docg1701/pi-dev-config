@@ -31,6 +31,7 @@ git clone git@github.com:docg1701/pi-dev-config.git ~/dev/pi-dev-config
 
 # Install extensions
 pi install npm:pi-subagents
+pi install npm:pi-intercom
 pi install npm:pi-prompt-template-model
 pi install npm:pi-agent-browser-native
 pi install npm:pi-extension-manager
@@ -81,6 +82,7 @@ cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 | `product-marketing` | Create `.agents/product-marketing.md` (foundational positioning/messaging). Use first before other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
 | `systematic-debugging` | 4-phase root-cause debugging. Includes root-cause-tracing, defense-in-depth, condition-based-waiting. | `npx skills add https://github.com/obra/superpowers --skill systematic-debugging` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
+| `pi-intercom` | Session-to-session coordination: `send`, `ask`, `reply`, and subagent-to-supervisor escalation. Planner-worker and cross-session context-sharing patterns. | Bundled with `pi-intercom` |
 
 ### Marketing suite
 
@@ -141,6 +143,7 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | Name | Description | Install |
 |------|-------------|---------|
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
+| `pi-intercom` | Direct 1:1 messaging between pi sessions on the same machine. `intercom` tool + `Alt+M` overlay; subagent `contact_supervisor` escalation. Companion to `pi-subagents`. | `pi install npm:pi-intercom` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
 | `pi-extension-manager` | `/extensions` command for local and community package management. Includes auto-update checker (off by default — enable with `/extensions auto-update daily`). | `pi install npm:pi-extension-manager` |
