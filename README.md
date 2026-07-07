@@ -15,7 +15,6 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 - [Settings & Models](#settings--models)
 - [Provider Setup](#provider-setup)
 - [Working Vibes](#working-vibes)
-- [Notifications](#notifications)
 - [Ghostty](#ghostty)
 - [Context & Rules](#context--rules)
 - [CI & Validation](#ci--validation)
@@ -34,15 +33,12 @@ pi install npm:pi-subagents
 pi install npm:pi-intercom
 pi install npm:pi-prompt-template-model
 pi install npm:pi-agent-browser-native
-pi install npm:pi-extension-manager
 pi install npm:pi-mcp-adapter
-pi install npm:pi-mermaid
 pi install npm:pi-smart-fetch
 pi install npm:pi-glance
 pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
-pi install npm:pi-alert
 pi install npm:pi-working-vibe
 pi install npm:@victor-software-house/pi-curated-themes
 
@@ -146,15 +142,12 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `pi-intercom` | Direct 1:1 messaging between pi sessions on the same machine. `intercom` tool + `Alt+M` overlay; subagent `contact_supervisor` escalation. Companion to `pi-subagents`. | `pi install npm:pi-intercom` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
 | `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
-| `pi-extension-manager` | `/extensions` command for local and community package management. Includes auto-update checker (off by default — enable with `/extensions auto-update daily`). | `pi install npm:pi-extension-manager` |
 | `pi-mcp-adapter` | Token-efficient MCP proxy. Lazy servers, cached metadata. | `pi install npm:pi-mcp-adapter` |
-| `pi-mermaid` | Mermaid diagrams as ASCII art in TUI. | `pi install npm:pi-mermaid` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-glance` | Calm input surface with rounded multiline editor and inline status (model · context · tokens · cost · git). 10 built-in themes. | `pi install npm:pi-glance` |
 | `@eko24ive/pi-ask` | Ask tool with structured questions (single/multi/preview), option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Companion to `pi-smart-fetch`. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
-| `pi-alert` | System notification when the agent finishes its turn. Terminal-native (Ghostty, iTerm2, WezTerm, Kitty, rxvt-unicode) with OS fallback. | `pi install npm:pi-alert` |
 
 ## Themes
 
@@ -354,34 +347,6 @@ User files in `~/.pi/agent/vibes/` override bundled files of the same name, so y
 | `workingIndicatorFrames` | string[] | `[]` | Custom frames (when `workingIndicator: "custom"`) |
 | `workingIndicatorIntervalMs` | number | `90` | Spinner frame interval. Floor 40ms |
 
-## Notifications
-
-[pi-alert](https://github.com/maxpetretta/pi-alert) sends a system notification when the agent finishes its turn. Notifications fire automatically after every prompt — no configuration needed.
-
-**Notification body** shows an activity summary with elapsed time, prioritizing the most useful signal from the completed run: updated files → other tool calls → read files → generic completion fallback. **Title** uses the project root directory name (e.g. `pi — pi-dev-config`).
-
-### Delivery
-
-Terminal-native notifications when running in a supported terminal:
-
-| Terminal | Protocol |
-|----------|----------|
-| Ghostty | OSC 777 |
-| iTerm2 | OSC 9 |
-| WezTerm | OSC 777 |
-| Kitty | OSC 99 |
-| rxvt-unicode | OSC 777 |
-| tmux | Passthrough to outer terminal |
-
-When no terminal-native transport is available, pi-alert falls back to the OS:
-
-| OS | Fallback |
-|----|----------|
-| macOS | `osascript` with native notification + `Glass` sound |
-| Linux | `notify-send` (install `libnotify-bin` if missing) |
-| Windows | PowerShell `NotifyIcon` balloon notification |
-| Final resort | Terminal bell (`BEL`) |
-
 ## Ghostty
 
 Terminal configuration for development with pi.
@@ -468,16 +433,6 @@ pi-dev-config/
 ```
 
 ## Troubleshooting
-
-### `auto-update off` in the status bar
-
-This is the status of `pi-extension-manager`. It means automatic package update checking is disabled. To enable:
-
-```
-/extensions auto-update daily
-```
-
-Other intervals: `weekly`, `1h`, `6h`, `3d`, `2w`, `1mo`, or run `/extensions auto-update` for the interactive wizard.
 
 ### `nemotron-3-ultra`: past incident and re-test plan
 

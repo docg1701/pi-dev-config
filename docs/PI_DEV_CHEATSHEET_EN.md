@@ -8,7 +8,6 @@
 
 ```bash
 pi install npm:pi-subagents
-pi install npm:pi-alert
 ```
 
 Done. No need to create agents, write config, or memorize commands.
