@@ -16,15 +16,15 @@
   "powerline": "default",
   "transport": "sse",
   "defaultProvider": "ollama-cloud",
-  "defaultModel": "kimi-k2.7-code",
+  "defaultModel": "glm-5.2",
   "defaultThinkingLevel": "xhigh",
   "quietStartup": true,
   "enabledModels": [
-    "deepseek-v4-flash",
-    "minimax-m3",
-    "kimi-k2.7-code",
-    "deepseek-v4-pro",
-    "glm-5.2"
+    "ollama-cloud/deepseek-v4-flash",
+    "ollama-cloud/glm-5.2",
+    "ollama-cloud/minimax-m3",
+    "ollama-cloud/deepseek-v4-pro",
+    "ollama-cloud/kimi-k2.7-code"
   ],
   "workingVibe": true,
   "workingVibeName": "startrek",
@@ -39,29 +39,33 @@
         "thinking": "xhigh"
       },
       "worker": {
-        "model": "glm-5.2",
+        "model": "kimi-k2.7-code",
         "thinking": "xhigh"
       },
       "reviewer": {
-        "model": "kimi-k2.7-code",
-        "thinking": "high"
-      },
-      "oracle": {
-        "model": "glm-5.2",
-        "thinking": "xhigh"
-      },
-      "context-builder": {
         "model": "deepseek-v4-pro",
         "thinking": "xhigh"
       },
-      "researcher": {
+      "oracle": {
         "model": "kimi-k2.7-code",
-        "thinking": "high"
+        "thinking": "xhigh"
+      },
+      "context-builder": {
+        "model": "deepseek-v4-flash",
+        "thinking": "xhigh"
+      },
+      "researcher": {
+        "model": "deepseek-v4-flash",
+        "thinking": "xhigh"
       },
       "delegate": {
         "model": "kimi-k2.7-code",
-        "thinking": "high"
+        "thinking": "xhigh"
       }
     }
+  },
+  "lastChangelogVersion": "0.80.6",
+  "terminal": {
+    "imageWidthCells": 120
   }
 }
