@@ -39,6 +39,7 @@ pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
 pi install npm:pi-ollama-cloud
 pi install npm:pi-working-vibe
+pi install npm:@dietrichgebert/ponytail
 pi install npm:@victor-software-house/pi-curated-themes
 
 # Install skills
@@ -145,6 +146,7 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `@eko24ive/pi-ask` | Ask tool with structured questions (single/multi/preview), option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Companion to `pi-smart-fetch`. | `pi install npm:@leonardorick/pi-web-search` |
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
+| `@dietrichgebert/ponytail` | Lazy senior dev mode — writes only what the task needs. Cuts ~54% LOC, ~20% tokens/cost, ~27% time. 100% safe. | `pi install npm:@dietrichgebert/ponytail` |
 
 ## Themes
 

@@ -10,14 +10,15 @@
     "npm:@eko24ive/pi-ask",
     "npm:@leonardorick/pi-web-search",
     "npm:pi-ollama-cloud",
-    "npm:pi-working-vibe"
+    "npm:pi-working-vibe",
+    "npm:@dietrichgebert/ponytail"
   ],
   "theme": "smyck",
   "powerline": "default",
   "transport": "sse",
-  "defaultProvider": "ollama-cloud",
-  "defaultModel": "glm-5.2",
-  "defaultThinkingLevel": "xhigh",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultThinkingLevel": "max",
   "quietStartup": true,
   "enabledModels": [
     "ollama-cloud/deepseek-v4-flash",
@@ -35,7 +36,7 @@
         "thinking": "xhigh"
       },
       "planner": {
-        "model": "glm-5.2",
+        "model": "minimax-m3",
         "thinking": "xhigh"
       },
       "worker": {
@@ -47,7 +48,7 @@
         "thinking": "xhigh"
       },
       "oracle": {
-        "model": "kimi-k2.7-code",
+        "model": "minimax-m3",
         "thinking": "xhigh"
       },
       "context-builder": {
@@ -59,7 +60,7 @@
         "thinking": "xhigh"
       },
       "delegate": {
-        "model": "kimi-k2.7-code",
+        "model": "minimax-m3",
         "thinking": "xhigh"
       }
     }
