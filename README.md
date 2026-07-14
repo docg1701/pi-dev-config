@@ -148,6 +148,28 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
 | `@dietrichgebert/ponytail` | Lazy senior dev mode — writes only what the task needs. Cuts ~54% LOC, ~20% tokens/cost, ~27% time. 100% safe. | `pi install npm:@dietrichgebert/ponytail` |
 
+### Ponytail
+
+Three levels controlling how aggressively the [ladder](https://github.com/DietrichGebert/ponytail) is enforced:
+
+| Level | Behavior |
+|-------|----------|
+| `lite` | Build what's asked, suggest the lazier alternative in one line. |
+| `full` | **(default)** Enforce the ladder: stdlib & native first, shortest working diff. |
+| `ultra` | YAGNI extremist. Delete before add, ship the one-liner, challenge the rest. |
+
+Switch with `/ponytail lite|full|ultra`. Persists per session.
+
+**Bundled skills:**
+
+| Command | Purpose |
+|---------|---------|
+| `/ponytail-review` | Code review focused on over-engineering — what to delete, simplify, or replace with stdlib. |
+| `/ponytail-audit` | Full repo audit for bloat — ranked list of what to cut. |
+| `/ponytail-debt` | Harvest `ponytail:` comments into a debt ledger. |
+| `/ponytail-gain` | Show measured impact scoreboard (LOC, cost, speed). |
+| `/ponytail-help` | Quick-reference card for all commands and levels. |
+
 ## Themes
 
 | Name | Description | Install |
