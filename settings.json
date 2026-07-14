@@ -16,16 +16,18 @@
   "theme": "smyck",
   "powerline": "default",
   "transport": "sse",
-  "defaultProvider": "deepseek",
-  "defaultModel": "deepseek-v4-flash",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "max",
   "quietStartup": true,
   "enabledModels": [
-    "ollama-cloud/deepseek-v4-flash",
-    "ollama-cloud/glm-5.2",
-    "ollama-cloud/minimax-m3",
-    "ollama-cloud/deepseek-v4-pro",
-    "ollama-cloud/kimi-k2.7-code"
+    "opencode-go/deepseek-v4-flash",
+    "opencode-go/deepseek-v4-pro",
+    "opencode-go/glm-5.2",
+    "opencode-go/kimi-k2.7-code",
+    "opencode-go/minimax-m3",
+    "opencode-go/qwen3.7-plus",
+    "opencode-go/qwen3.7-max"
   ],
   "workingVibe": true,
   "workingVibeName": "startrek",
@@ -40,15 +42,15 @@
         "thinking": "xhigh"
       },
       "worker": {
-        "model": "kimi-k2.7-code",
-        "thinking": "xhigh"
-      },
-      "reviewer": {
         "model": "deepseek-v4-pro",
         "thinking": "xhigh"
       },
-      "oracle": {
+      "reviewer": {
         "model": "minimax-m3",
+        "thinking": "xhigh"
+      },
+      "oracle": {
+        "model": "deepseek-v4-pro",
         "thinking": "xhigh"
       },
       "context-builder": {
@@ -60,7 +62,7 @@
         "thinking": "xhigh"
       },
       "delegate": {
-        "model": "minimax-m3",
+        "model": "kimi-k2.7-code",
         "thinking": "xhigh"
       }
     }
