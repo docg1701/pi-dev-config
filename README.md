@@ -14,6 +14,7 @@ Reproducible [Pi](https://pi.dev) configuration. Clone, install, and run anywher
 - [Themes](#themes)
 - [Settings & Models](#settings--models)
 - [Provider Setup](#provider-setup)
+- [ModLens (Vision Bridge)](#modlens-vision-bridge)
 - [Working Vibes](#working-vibes)
 - [Ghostty](#ghostty)
 - [Context & Rules](#context--rules)
@@ -50,6 +51,12 @@ npx skills add https://github.com/streamlit/agent-skills --skill developing-with
 npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation
 npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing
 npx skills add https://github.com/obra/superpowers --skill systematic-debugging
+npx -y skills add liustack/modlens
+
+# Install the ModLens CLI (the skill install adds only the skill, not the binary)
+npm i -g @liustack/modlens
+modlens config set gemini-api.apiKey <key>   # free key: https://aistudio.google.com
+modlens config set provider gemini-api
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -77,6 +84,7 @@ cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 | `ansible-automation` | Infrastructure automation with Ansible playbooks, roles, and inventory. | `npx skills add https://github.com/aj-geddes/useful-ai-prompts --skill ansible-automation` |
 | `product-marketing` | Create `.agents/product-marketing.md` (foundational positioning/messaging). Use first before other marketing skills. | `npx skills add https://github.com/coreyhaines31/marketingskills --skill product-marketing` |
 | `systematic-debugging` | 4-phase root-cause debugging. Includes root-cause-tracing, defense-in-depth, condition-based-waiting. | `npx skills add https://github.com/obra/superpowers --skill systematic-debugging` |
+| `modlens` | Vision bridge for text-only models — converts images into structured JSON evidence (OCR, layout, semantics, uncertainty). | `npx -y skills add liustack/modlens` |
 | `ask-user` | Reinforces when to use `ask_user` for structured clarification instead of guessing. | Bundled with `@eko24ive/pi-ask` |
 
 ### Marketing suite
@@ -276,6 +284,35 @@ On first launch (before `/ollama-cloud-refresh`), a small set of fallback models
 Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
 
 > **Recommendation:** run `/ollama-webtools off` to disable `ollama_web_search` and `ollama_web_fetch`. They are inferior to DuckDuckGo's `web_search` and TLS-fingerprinted `web_fetch` — Ollama tends to prefer its own tools when available, even when the results are worse. With `/ollama-webtools off`, the model falls back to the higher-quality tools automatically.
+
+## ModLens (Vision Bridge)
+
+[ModLens](https://github.com/liustack/modlens) gives text-only models (e.g. `deepseek-v4-flash`, `glm-5.2`) vision capabilities. It hands images to a real vision engine and returns structured JSON evidence — every word transcribed, layout regions in reading order, semantics, and explicit `uncertainty` — that the model can quote instead of guessing.
+
+**Setup:**
+
+```bash
+# 1. Install the skill (agent trigger: pasted images and image paths)
+npx -y skills add liustack/modlens
+
+# 2. Install the CLI — the skill install does not include the binary
+npm i -g @liustack/modlens
+
+# 3. Configure a vision provider (free Gemini key from https://aistudio.google.com)
+modlens config set gemini-api.apiKey <key>
+modlens config set provider gemini-api
+
+# 4. Verify
+modlens -i some-image.png
+```
+
+Validated with `deepseek-v4-flash` (no native vision): OCR read test text exactly (`ModLens validation 2026-08-05`, ~7.5s per image via `gemini-api`).
+
+**Providers:** `gemini-api` is the fastest free route (5–10s). The default `antigravity-cli` needs no key but is slower (15–40s) with a tight weekly quota. `openai`, `anthropic`, and `claude-cli` are also supported.
+
+**Pasted images:** the skill's `recover-paste` pulls images pasted into the chat out of the harness's session storage (pi stores them in `~/.pi/agent/sessions/`) — no need to save a file first.
+
+**Automatic trigger:** `APPEND_SYSTEM.md` ships a `VISION` rule that forces text-only models to load the modlens skill whenever an image appears. Without it, models may not trigger the skill on their own (pi loads skills on demand; the model decides). If you skip the rule, expect to prompt the model explicitly (`/skill:modlens` or "use modlens on this image").
 
 ## Working Vibes
 
