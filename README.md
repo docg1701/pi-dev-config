@@ -38,7 +38,6 @@ pi install npm:pi-smart-fetch
 pi install npm:pi-glance
 pi install npm:@eko24ive/pi-ask
 pi install npm:@leonardorick/pi-web-search
-pi install npm:pi-ollama-cloud
 pi install npm:pi-working-vibe
 pi install npm:@dietrichgebert/ponytail
 pi install npm:@victor-software-house/pi-curated-themes
@@ -55,8 +54,11 @@ npx -y skills add liustack/modlens
 
 # Install the ModLens CLI (the skill install adds only the skill, not the binary)
 npm i -g @liustack/modlens
-modlens config set gemini-api.apiKey <key>   # free key: https://aistudio.google.com
-modlens config set provider gemini-api
+
+# Configure modlens: copy the bundled config template and replace the key
+# (free key from https://ollama.com/account/keys)
+cp ~/dev/pi-dev-config/modlens-config.example.json ~/.modlens/config.json
+# then edit ~/.modlens/config.json: replace <YOUR_OLLAMA_API_KEY> with your key
 
 # Copy APPEND_SYSTEM.md to extend the agent's system prompt
 cp ~/dev/pi-dev-config/APPEND_SYSTEM.md ~/.pi/agent/APPEND_SYSTEM.md
@@ -153,7 +155,6 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 | `pi-glance` | Calm input surface with rounded multiline editor and inline status (model · context · tokens · cost · git). 10 built-in themes. | `pi install npm:pi-glance` |
 | `@eko24ive/pi-ask` | Ask tool with structured questions (single/multi/preview), option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |
 | `@leonardorick/pi-web-search` | Real DuckDuckGo web search as a native `web_search` tool. Companion to `pi-smart-fetch`. | `pi install npm:@leonardorick/pi-web-search` |
-| `pi-ollama-cloud` | Ollama Cloud provider with dynamic model discovery, persistent cache, and built-in `ollama_web_search`/`ollama_web_fetch` tools. | `pi install npm:pi-ollama-cloud` |
 | `@dietrichgebert/ponytail` | Lazy senior dev mode — writes only what the task needs. Cuts ~54% LOC, ~20% tokens/cost, ~27% time. 100% safe. | `pi install npm:@dietrichgebert/ponytail` |
 
 ### Ponytail
@@ -205,45 +206,42 @@ cp ~/dev/pi-dev-config/settings.json ~/.pi/agent/settings.json
 
 ### Model catalog
 
-This repository targets the [Ollama Cloud](https://ollama.com) catalog via [`pi-ollama-cloud`](https://github.com/fgrehm/pi-ollama-cloud). Capabilities below come from the live Ollama Cloud `/api/show` endpoint — run `/ollama-cloud-refresh` to refresh them locally.
+This repository uses pi's built-in `opencode-go` and `deepseek` providers — no extra extension required. The roles below match the [Subagent models](#subagent-models) table.
 
-| Model | Params | Vision | Thinking | Context | Usage (ollama.com) | Role |
-|-------|--------|--------|----------|---------|--------------------|------|
-| `minimax-m3` | undisclosed | yes | yes | 512K | high (3/4) | Researcher, delegate |
-| `nemotron-3-ultra` | 550B | no | yes | 256K | high (3/4) | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
-| `deepseek-v4-pro` | undisclosed | no | yes | 512K | **extra heavy (4/4)** | Context-builder (where reasoning depth justifies cost) |
-| `deepseek-v4-flash` | 158B | no | yes | 1M | low (2/4) | Scout (fast, cheap) |
-| `kimi-k2.7-code` | 1.04T | yes | yes | 256K | high (3/4) | Default orchestrator, reviewer |
-| `glm-5.2` | 756B | no | yes | 1M | high (3/4) | Planner, worker, oracle |
+| Model | Params | Vision | Thinking | Context | Role |
+|-------|--------|--------|----------|---------|------|
+| `minimax-m3` | undisclosed | yes | yes | 512K | Planner, reviewer |
+| `nemotron-3-ultra` | 550B | no | yes | 256K | Disabled by default — see [Troubleshooting](#troubleshooting); re-test target 2026-06-11 |
+| `deepseek-v4-pro` | undisclosed | no | yes | 512K | Worker, oracle |
+| `deepseek-v4-flash` | 158B | no | yes | 1M | Default model; scout, researcher, context-builder |
+| `kimi-k2.7-code` | 1.04T | yes | yes | 256K | Delegate |
 
-> **Note:** The default orchestrator is `kimi-k2.7-code` with `defaultThinkingLevel: "xhigh"`. For `deepseek*` and `glm-5.2`, `xhigh` maps to `max` thinking effort (graduated). For `minimax*`, `kimi*`, `glm-5`, and `nemotron*` it is effectively a no-op because those models expose thinking as a binary toggle, not a graduated effort level.
+Also enabled (no fixed role, pick via `/model`): `opencode-go/kimi-k3`, `opencode-go/qwen3.7-plus`, `opencode-go/qwen3.7-max`, `opencode-go/minimax-m3`, `opencode-go/kimi-k2.7-code`, `deepseek/deepseek-v4-pro`.
+
+> **Note:** The default model is `deepseek-v4-flash` with `defaultThinkingLevel: "max"`. For `deepseek*`, `xhigh` maps to `max` thinking effort (graduated). For `minimax*`, `kimi*`, and `nemotron*` it is effectively a no-op because those models expose thinking as a binary toggle, not a graduated effort level.
 >
-> **⚠️ Context window may not match vendor specs.** The models below are advertised by their vendors with larger context windows than the values currently returned by the Ollama Cloud `/api/show` endpoint. The original model specs are shown in the table; the reduced values are what pi sees from Ollama Cloud today:
+> **⚠️ Context window may not match vendor specs.** The values above are what pi currently sees from the providers; vendors advertise larger windows:
 >
-> | Model | Vendor advertised | Ollama Cloud (current) | Source |
+> | Model | Vendor advertised | Current | Source |
 > |---|---|---|---|
-> | `deepseek-v4-pro` | 1M | 512K | [Ollama Cloud](https://ollama.com/library/deepseek-v4-pro) |
+> | `deepseek-v4-pro` | 1M | 512K | [DeepSeek-V4 Pro model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) |
 > | `minimax-m3` | 1M (guaranteed minimum per the vendor) | 512K | [MiniMax docs](https://www.minimax.io/models/text/m3) |
 > | `nemotron-3-ultra` | 1M | 256K | [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b) |
 >
-> When Ollama Cloud raises these limits, re-run `/ollama-cloud-refresh` in pi and
-> update the `Context` column in this table to match the live value reported in
-> `~/.pi/agent/cache/ollama-cloud-models.json`. If a model stops being available
-> entirely, re-validate the subagent mappings in
-> [Subagent models](#subagent-models) against whatever replaces it.
+> If a provider raises a limit, re-verify the value (e.g. via its `/api/show` endpoint) and update the `Context` column. If a model stops being available, re-validate the subagent mappings in [Subagent models](#subagent-models).
 
 ### Subagent models
 
 | Subagent | Model | Thinking |
 |----------|-------|----------|
 | scout | `deepseek-v4-flash` (fast) | `xhigh` |
-| planner | `glm-5.2` | `xhigh` |
-| worker | `glm-5.2` | `xhigh` |
-| reviewer | `kimi-k2.7-code` | `high` |
-| oracle | `glm-5.2` | `xhigh` |
-| context-builder | `deepseek-v4-pro` | `xhigh` |
-| researcher | `kimi-k2.7-code` | `high` |
-| delegate | `kimi-k2.7-code` | `high` |
+| planner | `minimax-m3` | `xhigh` |
+| worker | `deepseek-v4-pro` | `xhigh` |
+| reviewer | `minimax-m3` | `xhigh` |
+| oracle | `deepseek-v4-pro` | `xhigh` |
+| context-builder | `deepseek-v4-flash` | `xhigh` |
+| researcher | `deepseek-v4-flash` | `xhigh` |
+| delegate | `kimi-k2.7-code` | `xhigh` |
 
 ### Thinking rules
 
@@ -251,43 +249,30 @@ Per family, sourced from each creator's official docs:
 
 - **`deepseek*` → `xhigh`.** The [DeepSeek API docs](https://api-docs.deepseek.com/guides/thinking_mode) define exactly two effort levels — `high` and `max` — and document that `xhigh` maps to `max`. Default is `high`; [complex agent requests (Claude Code, OpenCode) are auto-promoted to `max`](https://api-docs.deepseek.com/guides/thinking_mode). The [DeepSeek-V4 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro) shows measurable gains from `max` over `high` on agentic benchmarks (Apex 27.4→38.3, BrowseComp 53.5→73.2, LiveCodeBench 88.4→91.6 for V4-Flash). This config runs agentic loops, so `xhigh` is the right level.
 - **`glm-5.2` → `xhigh`.** [GLM-5.2 is the first in the GLM family to support `reasoning_effort`](https://docs.z.ai/guides/capabilities/thinking). Values: `max` (default, recommended), `xhigh`, `high`, `medium`, `low`, `minimal`, `none`. `xhigh` maps to `max`; `low`/`medium` map to `high`. Use `xhigh` for agentic workloads.
-- **`minimax*`, `nemotron*`, `kimi*`, `glm-5` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), [Kimi K2.7 Code](https://platform.kimi.ai/docs/guide/use-kimi-k2-thinking-model), and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The `pi-ollama-cloud` extension passes `max` for `xhigh` to the OpenAI-compat endpoint, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota.
-- The default orchestrator (`kimi-k2.7-code`) sits at `xhigh` via `defaultThinkingLevel`. For Kimi this is a no-op (binary thinking), but the setting is kept at `xhigh` so that switching the default model to a `deepseek*` or `glm-5.2` model does not silently downgrade thinking effort.
+- **`minimax*`, `nemotron*`, `kimi*`, `glm-5` → `high`.** The creator docs for [MiniMax M3](https://minimax.io/blog/minimax-m3), [NVIDIA Nemotron 3 Ultra](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b), [Kimi K2.7 Code](https://platform.kimi.ai/docs/guide/use-kimi-k2-thinking-model), and [GLM-5.1](https://huggingface.co/zai-org/GLM-5.1) expose thinking as a binary on/off toggle, not as a graduated effort level. The providers pass `max` for `xhigh` to the OpenAI-compat endpoints, but those models do not differentiate between `high` and `max` — the parameter is effectively a no-op. Use `high` to keep the config honest; pushing to `xhigh` is wasted quota.
+- The default model (`deepseek-v4-flash`) sits at `max` via `defaultThinkingLevel`. For DeepSeek this maps to the documented `max` effort; the setting stays at `max` so that switching the default model to a `glm-5.2` does not silently downgrade thinking effort.
 
 ## Provider Setup
 
-### Ollama Cloud
+### OpenCode Go + DeepSeek
 
-[pi-ollama-cloud](https://github.com/fgrehm/pi-ollama-cloud) registers Ollama Cloud as a model provider with dynamically fetched models and built-in web search/fetch tools.
+Models come from pi's built-in `opencode-go` (OpenCode gateway) and `deepseek` providers — no extension needed.
 
 **Setup:**
 
 ```bash
-# 1. Get an API key at ollama.com and set it
-export OLLAMA_API_KEY="your-ollama-cloud-api-key"
-# Or add it to ~/.pi/agent/auth.json:
-# { "ollama-cloud": { "type": "api_key", "key": "your-key" } }
+# 1. Add API keys to ~/.pi/agent/auth.json:
+# { "opencode-go": { "type": "api_key", "key": "..." },
+#   "deepseek":    { "type": "api_key", "key": "..." } }
 
-# 2. Fetch the full model list (run after install and whenever models change)
-/ollama-cloud-refresh
+# 2. The `enabledModels` list in settings.json controls which models appear in /model
 ```
 
-On first launch (before `/ollama-cloud-refresh`), a small set of fallback models is used. After refresh, all tool-capable Ollama Cloud models become available under the `ollama-cloud` provider — switch with `/model` or `Ctrl+L`. Models are cached at `~/.pi/agent/cache/ollama-cloud-models.json` (never expires; refresh manually).
-
-**Tools added:**
-
-| Tool | Description |
-|------|-------------|
-| `ollama_web_search` | Web search via Ollama Cloud's search API |
-| `ollama_web_fetch` | Web page fetch and extraction via Ollama Cloud |
-
-Both use the same API key configured for the provider — no local Ollama server needed. These coexist with `web_search` (DuckDuckGo via `pi-web-search`) and `web_fetch` (via `pi-smart-fetch`).
-
-> **Recommendation:** run `/ollama-webtools off` to disable `ollama_web_search` and `ollama_web_fetch`. They are inferior to DuckDuckGo's `web_search` and TLS-fingerprinted `web_fetch` — Ollama tends to prefer its own tools when available, even when the results are worse. With `/ollama-webtools off`, the model falls back to the higher-quality tools automatically.
+Switch models with `/model` or `Ctrl+L`. Provider-qualified names (e.g. `opencode-go/deepseek-v4-flash`) work alongside bare names.
 
 ## ModLens (Vision Bridge)
 
-[ModLens](https://github.com/liustack/modlens) gives text-only models (e.g. `deepseek-v4-flash`, `glm-5.2`) vision capabilities. It hands images to a real vision engine and returns structured JSON evidence — every word transcribed, layout regions in reading order, semantics, and explicit `uncertainty` — that the model can quote instead of guessing.
+[ModLens](https://github.com/liustack/modlens) gives text-only models (e.g. `deepseek-v4-flash` and other models without vision) vision capabilities. It hands images to a real vision engine and returns structured JSON evidence — every word transcribed, layout regions in reading order, semantics, and explicit `uncertainty` — that the model can quote instead of guessing.
 
 **Setup:**
 
@@ -298,18 +283,20 @@ npx -y skills add liustack/modlens
 # 2. Install the CLI — the skill install does not include the binary
 npm i -g @liustack/modlens
 
-# 3. Configure the vision provider — Ollama Cloud via its OpenAI-compatible endpoint
-#    (same key/quota as pi's `ollama-cloud` provider; no new cost)
-modlens config set openai.baseUrl https://ollama.com/v1
-modlens config set openai.apiKey <OLLAMA_API_KEY>   # same key as ~/.pi/agent/auth.json
-modlens config set openai.model minimax-m3
-modlens config set provider openai   # config 'provider' overrides the CLI default (antigravity-cli)
+# 3. Configure the vision provider — copy the bundled config and set your key
+#    (free key from https://ollama.com/account/keys)
+#
+#    ⚠️ Naming trap: the provider is called "openai" in modlens because it accepts
+#    ANY OpenAI-compatible endpoint. The template points it at ollama.com — NOT
+#    api.openai.com — so the key must be from ollama.com, never from OpenAI.
+cp ~/dev/pi-dev-config/modlens-config.example.json ~/.modlens/config.json
+# then edit ~/.modlens/config.json: replace <YOUR_OLLAMA_API_KEY> with your key
 
 # 4. Verify
 modlens -i some-image.png
 ```
 
-**Default provider (this repo's setup):** `openai` → Ollama Cloud with `minimax-m3` — validated 2026-08-05, ~5s/image, OCR exact, zero extra cost (uses the Ollama Cloud quota pi already pays).
+**Default provider (this repo's setup):** `openai` → Ollama Cloud with `minimax-m3` — validated 2026-08-05, ~5s/image, OCR exact, zero extra cost (free ollama.com API key).
 
 **Alternatives:** `gemini-api` (free AI Studio key, but rate-limits with 503s under load — keep as fallback with `-p gemini-api`), `antigravity-cli` (no key needed, 15–40s, tight weekly quota), `anthropic`/`claude-cli` (rides a Claude login, 20–45s). The skill's CLI default is `antigravity-cli`; `modlens config set provider` overrides it.
 
@@ -467,7 +454,8 @@ See [`docs/ci-auto-release-guide.md`](docs/ci-auto-release-guide.md) for the ful
 ```
 pi-dev-config/
 ├── APPEND_SYSTEM.md               # Global system-prompt rules and conventions
-├── settings.json                  # Pre-configured pi settings (Ollama Cloud provider)
+├── settings.json                  # Pre-configured pi settings (OpenCode Go + DeepSeek providers)
+├── modlens-config.example.json    # ModLens config template (openai → ollama.com, minimax-m3)
 ├── validate.py                    # Local pre-push validator (JSON/TOML/Markdown)
 ├── VERSION                        # Current release version (single source of truth)
 ├── assets/                        # Static assets (images, etc.)

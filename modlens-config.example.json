@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "gemini-api": {
+      "apiKey": "<GEMINI_API_KEY_OPTIONAL_FALLBACK>"
+    },
+    "openai": {
+      "baseUrl": "https://ollama.com/v1",
+      "apiKey": "<YOUR_OLLAMA_API_KEY>",
+      "model": "minimax-m3"
+    }
+  },
+  "provider": "openai"
+}

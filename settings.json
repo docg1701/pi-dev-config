@@ -9,25 +9,26 @@
     "npm:pi-prompt-template-model",
     "npm:@eko24ive/pi-ask",
     "npm:@leonardorick/pi-web-search",
-    "npm:pi-ollama-cloud",
     "npm:pi-working-vibe",
     "npm:@dietrichgebert/ponytail"
   ],
   "theme": "smyck",
   "powerline": "default",
   "transport": "sse",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "deepseek-v4-pro",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "max",
   "quietStartup": true,
   "enabledModels": [
     "opencode-go/deepseek-v4-flash",
     "opencode-go/deepseek-v4-pro",
-    "opencode-go/glm-5.2",
     "opencode-go/kimi-k2.7-code",
     "opencode-go/minimax-m3",
     "opencode-go/qwen3.7-plus",
-    "opencode-go/qwen3.7-max"
+    "opencode-go/qwen3.7-max",
+    "opencode-go/kimi-k3",
+    "deepseek/deepseek-v4-flash",
+    "deepseek/deepseek-v4-pro"
   ],
   "workingVibe": true,
   "workingVibeName": "startrek",
@@ -67,7 +68,7 @@
       }
     }
   },
-  "lastChangelogVersion": "0.80.6",
+  "lastChangelogVersion": "0.83.0",
   "terminal": {
     "imageWidthCells": 120
   }
