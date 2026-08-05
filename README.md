@@ -298,17 +298,20 @@ npx -y skills add liustack/modlens
 # 2. Install the CLI — the skill install does not include the binary
 npm i -g @liustack/modlens
 
-# 3. Configure a vision provider (free Gemini key from https://aistudio.google.com)
-modlens config set gemini-api.apiKey <key>
-modlens config set provider gemini-api
+# 3. Configure the vision provider — Ollama Cloud via its OpenAI-compatible endpoint
+#    (same key/quota as pi's `ollama-cloud` provider; no new cost)
+modlens config set openai.baseUrl https://ollama.com/v1
+modlens config set openai.apiKey <OLLAMA_API_KEY>   # same key as ~/.pi/agent/auth.json
+modlens config set openai.model minimax-m3
+modlens config set provider openai   # config 'provider' overrides the CLI default (antigravity-cli)
 
 # 4. Verify
 modlens -i some-image.png
 ```
 
-Validated with `deepseek-v4-flash` (no native vision): OCR read test text exactly (`ModLens validation 2026-08-05`, ~7.5s per image via `gemini-api`).
+**Default provider (this repo's setup):** `openai` → Ollama Cloud with `minimax-m3` — validated 2026-08-05, ~5s/image, OCR exact, zero extra cost (uses the Ollama Cloud quota pi already pays).
 
-**Providers:** `gemini-api` is the fastest free route (5–10s). The default `antigravity-cli` needs no key but is slower (15–40s) with a tight weekly quota. `openai`, `anthropic`, and `claude-cli` are also supported.
+**Alternatives:** `gemini-api` (free AI Studio key, but rate-limits with 503s under load — keep as fallback with `-p gemini-api`), `antigravity-cli` (no key needed, 15–40s, tight weekly quota), `anthropic`/`claude-cli` (rides a Claude login, 20–45s). The skill's CLI default is `antigravity-cli`; `modlens config set provider` overrides it.
 
 **Pasted images:** the skill's `recover-paste` pulls images pasted into the chat out of the harness's session storage (pi stores them in `~/.pi/agent/sessions/`) — no need to save a file first.
 
