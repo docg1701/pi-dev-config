@@ -332,8 +332,9 @@ Accepted risks (documented, deliberate):
 - **No app-level rate limiting** on login/TOTP forms (by design). scrypt
   cost is the soft throttle; TOTP is the anti-robot barrier; the edge rate
   limiting rule at Cloudflare (production domain `radtracker.drgalvanimd.com`,
-  proxied) is the network barrier — 10 POSTs/min on `/`, block 10 min. See
-  `docs/deployment.md` §8 in the radtracker repo for the exact rule config.
+  proxied) is the network barrier — 10 POSTs/10 s on `/`, block 10 s
+  (Free-plan fixed values). See `docs/deployment.md` §8 in the radtracker
+  repo for the exact rule config.
 - **Session cookie readable by JS** (no HttpOnly). XSS = session theft; the
   compensating controls are Streamlit's default HTML escaping and the
   project's `unsafe_allow_html` ban (two static exceptions only).
