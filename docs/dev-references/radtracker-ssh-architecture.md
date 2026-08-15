@@ -67,8 +67,8 @@ the password — the attacker would need SSH.
 | `src/cookies.py` | One-way CCv2 cookie components (reader/writer) + session-cookie helpers |
 | `src/ui/login.py` | Web gate: restore → login form → TOTP step; sidebar header/footer; logout |
 | `scripts/manage_auth.py` | Interactive SSH CLI (KIAUH-style menu), the only writer besides bootstrap |
-| `ansible/playbooks/deploy.yml` | Writes `.auth_creds` (`no_log`), runs bootstrap in container, installs the wrapper, fail2ban sshd jail |
-| `tests/test_auth_*.py`, `test_manage_auth.py`, `test_cookies.py` | Behavior pins: 62+ tests across the auth modules |
+| `ansible/playbooks/deploy.yml` | Writes `.auth_creds` (`no_log`), runs bootstrap in container, installs the wrapper, adds the SSH user to the `docker` group, fail2ban sshd jail |
+| `tests/test_auth_*.py`, `test_manage_auth.py` | Behavior pins: 62 tests (26 crypto + 25 store + 8 bootstrap + 3 manage_auth). `src/cookies.py` has no unit suite — the one-way CCv2 components are validated by browser smoke tests |
 
 ## 4. The state file: `data/auth.json`
 
@@ -202,6 +202,17 @@ exec docker compose --project-directory /home/<user>/radtracker \
 The CLI runs **inside the app container** — same code, same `AUTH_PATH`,
 same mounted `data/` — so there is exactly one definition of the schema and
 one writer, exercised identically in dev and prod.
+
+Wrapper prerequisites (all enforced by `deploy.yml` — do not remove any):
+
+- the SSH user must be in the `docker` group (otherwise `docker compose`
+  fails with `permission denied while trying to connect to the docker API`);
+- the host `.env` (DOMAIN/TZ/RADTRACKER_MODE only, no secrets) must be
+  world-readable (0644) — `docker compose` reads it even for `exec`, and a
+  0600 root-owned `.env` makes the wrapper fail for non-root users;
+- `scripts/` must be part of the container image (it was once excluded by
+  `.dockerignore`, which made `python -m scripts.manage_auth` fail with
+  `ModuleNotFoundError`).
 
 ### 8.1 Menu v7 semantics
 
@@ -351,6 +362,8 @@ validation (incl. bool-in-int), bootstrap idempotence and exit codes,
 session-token tamper/expiry/rotation cases, and the CLI's session-days
 rotation semantics. The CLI's interactive paths are covered via the pure
 helpers; the menu loop itself is exercised by hand on the VPS.
+`src/cookies.py` (one-way CCv2 components) has no unit suite — pinned by
+browser smoke tests instead.
 
 ## 14. Invariants when evolving
 
