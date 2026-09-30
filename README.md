@@ -43,7 +43,7 @@ pi install npm:@victor-software-house/pi-curated-themes
 
 # Browser automation via the official Playwright MCP (see "MCP & Browser Automation")
 npx -y @playwright/mcp@latest install-browser chromium
-pi mcp add playwright --description "Playwright browser automation (accessibility snapshots, navigate, click, forms, tabs)" -- npx -y @playwright/mcp@latest
+pi mcp add playwright --description "Playwright browser automation (accessibility snapshots, navigate, click, forms, tabs)" -- npx -y @playwright/mcp@latest --browser chromium
 
 # Install skills
 npx skills add https://github.com/upstash/context7 --skill find-docs
@@ -190,8 +190,8 @@ Browser automation uses Microsoft's official **Playwright MCP**. It replaces the
 # One-time: Playwright's bundled Chromium (~119 MB) — no system Chrome required
 npx -y @playwright/mcp@latest install-browser chromium
 
-# Register the server globally (codemode exposure is the default)
-pi mcp add playwright --description "Playwright browser automation (accessibility snapshots, navigate, click, forms, tabs)" -- npx -y @playwright/mcp@latest
+# Register the server globally (bundled Chromium; codemode exposure is the default)
+pi mcp add playwright --description "Playwright browser automation (accessibility snapshots, navigate, click, forms, tabs)" -- npx -y @playwright/mcp@latest --browser chromium
 
 # Verify: connects and lists the 25 tools
 pi mcp list
