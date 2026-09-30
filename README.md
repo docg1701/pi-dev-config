@@ -32,7 +32,6 @@ git clone git@github.com:docg1701/pi-dev-config.git ~/dev/pi-dev-config
 # Install extensions
 pi install npm:pi-subagents
 pi install npm:pi-prompt-template-model
-pi install npm:pi-agent-browser-native
 pi install npm:pi-smart-fetch
 pi install npm:pi-glance
 pi install npm:@eko24ive/pi-ask
@@ -148,7 +147,6 @@ All from [`coreyhaines31/marketingskills`](https://github.com/coreyhaines31/mark
 |------|-------------|---------|
 | `pi-subagents` | Delegate tasks to subagents with chains, parallel execution, TUI clarification, and async support. | `pi install npm:pi-subagents` |
 | `pi-prompt-template-model` | Prompt templates with model/skill frontmatter and slash commands. | `pi install npm:pi-prompt-template-model` |
-| `pi-agent-browser-native` | `agent-browser` as a native tool. Snapshots, screenshots, sessions. | `pi install npm:pi-agent-browser-native` |
 | `pi-smart-fetch` | Smarter `web_fetch` with TLS fingerprinting and Defuddle extraction. | `pi install npm:pi-smart-fetch` |
 | `pi-glance` | Calm input surface with rounded multiline editor and inline status (model · context · tokens · cost · git). 10 built-in themes. | `pi install npm:pi-glance` |
 | `@eko24ive/pi-ask` | Ask tool with structured questions (single/multi/preview), option notes, elaboration flow, and native `@` file references. | `pi install npm:@eko24ive/pi-ask` |

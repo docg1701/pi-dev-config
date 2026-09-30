@@ -1,6 +1,5 @@
 {
   "packages": [
-    "npm:pi-agent-browser-native",
     "npm:pi-smart-fetch",
     "npm:pi-glance",
     "npm:@victor-software-house/pi-curated-themes",
