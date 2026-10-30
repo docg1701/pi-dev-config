@@ -4,6 +4,43 @@
 > `lxqt-config-monitor` offers 2560x1440, 3840x2160, 5120x2160 etc. and the guest
 > jumps to whatever size the Boxes window has.
 
+## Reference system
+
+Captured on the VM this was built in (2025-10-30) — replicate these details and
+the fix behaves the same way.
+
+| Item | Value |
+| --- | --- |
+| Host client | GNOME Boxes (SPICE) |
+| Machine / firmware | `Standard PC (Q35 + ICH9, 2009)` (`/sys/class/dmi/id/product_name`), PCIe root ports `1b36:000c` |
+| Guest OS | Debian GNU/Linux **13.7** (trixie) |
+| Kernel | `6.12.113+deb13-amd64` |
+| Desktop | **LXQt 2.1** — `lxqt-core 33.2`, `lxqt-session 2.1.1`, `lxqt-panel 2.1.4`, `lxqt-config 2.1.1`, `pcmanfm-qt 2.1.0` |
+| Session | X11 — `XDG_SESSION_TYPE=x11`, `XDG_CURRENT_DESKTOP=LXQt` |
+| X server | `xserver-xorg-core 2:21.1.16-1.3+deb13u4`, driver `modesetting` on KMS |
+| GPU | `Virtio 1.0 GPU [1af4:1050]`, driver `virtio_gpu`, connector `Virtual-1`, EDID vendor string `QEMU Monitor` |
+| Other virtio devices | net `1af4:1041`, block `1af4:1042`, console `1af4:1043`, balloon `1af4:1045`, xHCI `1b36:000d` |
+| Guest agents | `spice-vdagent 0.22.1-4.1`, `spice-webdavd 3.0-9+b2`, `qemu-guest-agent 1:10.0.13+ds-0+deb13u1` |
+| `xrandr` | `x11-xserver-utils 7.7+11` |
+| Icons | `papirus-icon-theme 20250501-1` (theme `Papirus`) |
+| Resources | 1 display / 4 vCPU / ~3.8 GiB RAM (sizes are arbitrary, not a requirement) |
+
+How to confirm the same shape on a new VM:
+
+```bash
+systemd-detect-virt            # kvm
+cat /etc/debian_version        # 13.x
+lspci -nn | grep -i vga        # Red Hat, Inc. Virtio 1.0 GPU [1af4:1050]
+ls /sys/class/drm/             # card0, card0-Virtual-1
+echo $XDG_SESSION_TYPE $XDG_CURRENT_DESKTOP   # x11 LXQt
+```
+
+Recreating the VM: any Debian 13 install works as long as the desktop is LXQt
+and the session is X11. GNOME Boxes already picks the Q35 machine and the
+virtio-gpu / virtio-net / virtio-blk devices above — no tuning needed on the
+host side. Only the guest packages from [Install](#install) are missing after a
+plain Debian install.
+
 ## The problem
 
 The display device is QEMU/KVM `virtio-gpu` (`1af4:1050`), connector `Virtual-1`,
@@ -32,6 +69,23 @@ This does **not** shorten the mode list (see the EDID appendix), and a Boxes
 window resize will re-apply the window size — click the icon again.
 
 ## Install
+
+### 1. Guest integration packages
+
+Debian's installer does not pull the SPICE/QEMU guest agents in by default.
+Without `spice-vdagent` there is no clipboard, no file transfer and no dynamic
+resize at all; `x11-xserver-utils` is what provides `xrandr`.
+
+```bash
+sudo apt update
+sudo apt install -y spice-vdagent spice-webdavd qemu-guest-agent x11-xserver-utils papirus-icon-theme
+```
+
+`spice-vdagent` autostarts from `/etc/xdg/autostart/spice-vdagent.desktop`;
+`spice-vdagentd` runs as a system service (`systemctl is-active spice-vdagentd`).
+No configuration is needed.
+
+### 2. The one-click fix
 
 Two files, both per-user, no root required. Copy-paste block:
 
@@ -80,6 +134,10 @@ Result:
 | `~/Desktop/res-1920x1080.desktop` | desktop icon, `Terminal=false`, Papirus `video-display` icon |
 
 ## Verify
+
+On this VM, after the first click: `xrandr --listactivemonitors` shows
+`+*Virtual-1 1920/600x1080/340+0+0` and the framebuffer shrank with it, while the
+Boxes window stayed fullscreen.
 
 ```bash
 xrandr | head -2                # current 1920 x 1080
