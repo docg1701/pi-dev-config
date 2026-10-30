@@ -493,6 +493,7 @@ pi-dev-config/
 ├── docs/
 │   ├── ci-auto-release-guide.md         # Full release workflow guide
 │   ├── DESIGN.md                        # Cal.com design system analysis (Dembrandt)
+│   ├── gnome-boxes-vm-1920x1080.md      # Force 1920x1080 in a Boxes/SPICE VM (LXQt, X11)
 │   ├── PI_DEV_CHEATSHEET_EN.md          # Practical workflow guide (EN)
 │   ├── streamlit_pro_tips.md            # 25+ Streamlit PRO tips from official video
 │   ├── streamlit_extras_guide.md        # streamlit-extras complete reference guide
